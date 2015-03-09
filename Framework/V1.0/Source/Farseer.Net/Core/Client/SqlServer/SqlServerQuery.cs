@@ -43,7 +43,7 @@ namespace FS.Core.Client.SqlServer
         public void Append()
         {
             if (QueryQueue != null) { GroupQueryQueueList.Add(QueryQueue); }
-            Clear();
+            QueryQueue = new SqlServerQueryQueue(GroupQueryQueueList.Count, this);
         }
 
         public int Commit()
@@ -58,7 +58,6 @@ namespace FS.Core.Client.SqlServer
             // 清除队列
             GroupQueryQueueList.ForEach(o => o.Dispose());
             GroupQueryQueueList.Clear();
-            Clear();
             return result;
         }
 

@@ -11,9 +11,22 @@ namespace Farseer.Net.Core.Tests.Context
         [TestMethod]
         public void TestMethod1()
         {
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 10000; i++)
             {
-                TableContext<UserPO>.Data.Insert(new UserPO() { UserName = i.ToString() });
+                TableContext<UserPO>.Data.Insert(new UserPO() { UserName = "xx" });
+            }
+        }
+
+        [TestMethod]
+        public void TestMethod2()
+        {
+            using (var table = new TableContext<UserPO>())
+            {
+                for (var i = 0; i < 10000; i++)
+                {
+                    table.TableSet.Insert(new UserPO() { UserName = "yy" });
+                }
+                table.SaveChanges();
             }
         }
     }

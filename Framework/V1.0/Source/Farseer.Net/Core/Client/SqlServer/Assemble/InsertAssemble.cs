@@ -31,13 +31,7 @@ namespace FS.Core.Client.SqlServer.Assemble
                 if (obj == null || obj is TableSet<TEntity>) { continue; }
 
                 //  查找组中是否存在已有的参数，有则直接取出
-                var newParam = lstParam.Find(o => o.Value == obj) ?? param.ToList().Find(o => o.Value == obj);
-                if (newParam == null)
-                {
-                    newParam = QueryProvider.DbProvider.CreateDbParam(kic.Value.Column.Name, obj);
-                    newParam.ParameterName = QueryProvider.DbProvider.ParamsPrefix + QueryProvider.QueryQueue.Index + "_" + kic.Value.Column.Name;
-                    param.Add(newParam);
-                }
+                var newParam = QueryProvider.DbProvider.CreateDbParam(kic.Value.Column.Name, obj, lstParam, param, QueryProvider.QueryQueue.Index);
 
                 //  添加参数到列表
                 strFields.AppendFormat("{0},", QueryProvider.DbProvider.KeywordAegis(kic.Key.Name));

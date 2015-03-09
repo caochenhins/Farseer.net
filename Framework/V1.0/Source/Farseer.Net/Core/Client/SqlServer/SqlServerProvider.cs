@@ -9,6 +9,11 @@ namespace FS.Core.Client.SqlServer
 {
     public class SqlServerProvider : DbProvider
     {
+        public override int ParamsMaxLength
+        {
+            get { return 2100; }
+        }
+
         public override string ParamsPrefix
         {
             get { return "@"; }

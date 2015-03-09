@@ -64,6 +64,7 @@ namespace FS.Core.Context
         /// </summary>
         public int SaveChanges()
         {
+            if (QueryProvider.Param.Count > QueryProvider.DbProvider.ParamsMaxLength) { throw new Exception(string.Format("SQL参数过多，当前数据库类型，最多支持：{0}个，目前生成了{1}个", QueryProvider.DbProvider.ParamsMaxLength, QueryProvider.Param.Count)); }
             return QueryProvider.Commit();
         }
 
