@@ -16,7 +16,7 @@ namespace FS.Core.Client.SqlServer.Assemble
         public string Execute<TEntity>(TEntity entity, out IList<DbParameter> param) where TEntity : class,new()
         {
             // 要更新的字段
-            param = QueryProvider.DbProvider.GetParameter(entity);
+            param = QueryProvider.DbProvider.GetParameter(entity, QueryProvider.Param);
 
             #region 如果主键有值，则取消修改主键的SQL
             var map = TableMapCache.GetMap(entity);
