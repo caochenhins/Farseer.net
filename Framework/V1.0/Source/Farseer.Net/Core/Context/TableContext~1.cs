@@ -17,7 +17,7 @@ namespace FS.Core.Context
         /// <summary>
         /// 通过TEntity的特性，获取数据库配置
         /// </summary>
-        public TableContext(string tableName = null) : this(TableMapCache.GetMap(typeof(TableContext<TEntity>)).ClassInfo.DbIndex, tableName) { }
+        public TableContext(string tableName = null) : this(TableMapCache.GetMap(typeof(TableContext<TEntity>)).ClassInfo.ConnStr, TableMapCache.GetMap(typeof(TableContext<TEntity>)).ClassInfo.DataType, TableMapCache.GetMap(typeof(TableContext<TEntity>)).ClassInfo.CommandTimeout, tableName) { }
 
         /// <summary>
         /// 通过数据库配置，连接数据库

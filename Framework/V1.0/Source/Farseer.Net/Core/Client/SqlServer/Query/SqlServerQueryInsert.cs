@@ -23,26 +23,26 @@ namespace FS.Core.Client.SqlServer.Query
 
         public void Query<T>(T entity) where T : class,new()
         {
-            _queryProvider.QueryQueue.Sql = new StringBuilder();
-            IList<DbParameter> param = new List<DbParameter>();
-            var strinsertAssemble = new InsertAssemble(_queryProvider).Execute(entity, ref param);
+            //_queryProvider.QueryQueue.Sql = new StringBuilder();
+            //IList<DbParameter> param = new List<DbParameter>();
+            //var strinsertAssemble = new InsertAssemble(_queryProvider).Execute(entity, ref param);
 
-            var map = TableMapCache.GetMap(entity);
+            //var map = TableMapCache.GetMap(entity);
 
-            var indexHaveValue = map.GetModelInfo().Key != null && map.GetModelInfo().Key.GetValue(entity, null) != null;
-            if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { _queryProvider.QueryQueue.Sql.AppendFormat("SET IDENTITY_INSERT {0} ON ; ", _queryProvider.TableContext.TableName); }
+            //var indexHaveValue = map.GetModelInfo().Key != null && map.GetModelInfo().Key.GetValue(entity, null) != null;
+            //if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { _queryProvider.QueryQueue.Sql.AppendFormat("SET IDENTITY_INSERT {0} ON ; ", _queryProvider.TableContext.TableName); }
 
-            _queryProvider.QueryQueue.Sql.AppendFormat("INSERT INTO {0} ", _queryProvider.TableContext.TableName);
-            _queryProvider.QueryQueue.Sql.Append(strinsertAssemble);
+            //_queryProvider.QueryQueue.Sql.AppendFormat("INSERT INTO {0} ", _queryProvider.TableContext.TableName);
+            //_queryProvider.QueryQueue.Sql.Append(strinsertAssemble);
 
-            if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { _queryProvider.QueryQueue.Sql.AppendFormat("; SET IDENTITY_INSERT {0} OFF ", _queryProvider.TableContext.TableName); }
+            //if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { _queryProvider.QueryQueue.Sql.AppendFormat("; SET IDENTITY_INSERT {0} OFF ", _queryProvider.TableContext.TableName); }
 
-            _queryProvider.QueryQueue.Param = param;
+            //_queryProvider.QueryQueue.Param = param;
 
-            // 非合并提交，则直接提交
-            if (!_queryProvider.TableContext.IsMergeCommand) { _queryProvider.QueryQueue.Execute(); return; }
+            //// 非合并提交，则直接提交
+            //if (!_queryProvider.TableContext.IsMergeCommand) { _queryProvider.QueryQueue.Execute(); return; }
 
-            _queryProvider.Append();
+            //_queryProvider.Append();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using Demo.PO.Table.Members;
 using FS.Core.Context;
+using FS.Core.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Farseer.Net.Core.Tests.Context
@@ -11,7 +12,7 @@ namespace Farseer.Net.Core.Tests.Context
         [TestMethod]
         public void TestMethod1()
         {
-            for (var i = 0; i < 10000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 TableContext<UserPO>.Data.Insert(new UserPO() { UserName = "xx" });
             }
@@ -20,13 +21,15 @@ namespace Farseer.Net.Core.Tests.Context
         [TestMethod]
         public void TestMethod2()
         {
-            using (var table = new TableContext<UserPO>())
+            for (var i = 0; i < 1000; i++)
             {
-                for (var i = 0; i < 10000; i++)
+                using (var table = new TableContext<UserPO>())
                 {
-                    table.TableSet.Insert(new UserPO() { UserName = "yy" });
+
+                    //table.TableSet.Insert(new UserPO() { UserName = "yy" });
+
+                    //table.SaveChanges();
                 }
-                table.SaveChanges();
             }
         }
     }

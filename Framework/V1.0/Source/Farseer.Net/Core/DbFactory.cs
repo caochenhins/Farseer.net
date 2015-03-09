@@ -89,85 +89,45 @@ namespace FS.Core
         /// <param name="poolMinSize">连接池最小数量</param>
         /// <param name="poolMaxSize">连接池最大数量</param>
         /// <param name="port">端口</param>
-        public static string CreateConnString(DataBaseType dataType, string userID, string passWord, string server,
-                                              string catalog, string dataVer, int connectTimeout = 60, int poolMinSize = 16,
-                                              int poolMaxSize = 100, string port = "")
+        public static string CreateConnString(DataBaseType dataType, string userID, string passWord, string server, string catalog, string dataVer, int connectTimeout = 60, int poolMinSize = 16, int poolMaxSize = 100, string port = "")
         {
+            var sb = new StringBuilder();
             switch (dataType)
             {
                 case DataBaseType.MySql:
                     {
-                        return string.Format(
-                                "Data Source='{0}';User Id='{1}';Password='{2}';Database='{3}';charset='gbk'", server, userID, passWord, catalog);
+                        return string.Format("Data Source='{0}';User Id='{1}';Password='{2}';Database='{3}';charset='gbk'", server, userID, passWord, catalog);
                     }
                 case DataBaseType.SqlServer:
                     {
-                        string connString;
-                        if (string.IsNullOrWhiteSpace(userID) && string.IsNullOrWhiteSpace(passWord))
-                        {
-                            connString = string.Format("Pooling=true;Integrated Security=True;");
-                        }
-                        else
-                        {
-                            connString = string.Format("User ID={0};Password={1};Pooling=true;", userID, passWord);
-                        }
+                        if (string.IsNullOrWhiteSpace(userID) && string.IsNullOrWhiteSpace(passWord)) { sb.Append(string.Format("Pooling=true;Integrated Security=True;")); }
+                        else { sb.Append(string.Format("User ID={0};Password={1};Pooling=true;", userID, passWord)); }
 
-                        connString += string.Format("Data Source={0};Initial Catalog={1};", server, catalog);
+                        sb.Append(string.Format("Data Source={0};Initial Catalog={1};", server, catalog));
 
-                        if (poolMinSize > 0)
-                        {
-                            connString += string.Format("Min Pool Size={0};", poolMinSize);
-                        }
-                        if (poolMaxSize > 0)
-                        {
-                            connString += string.Format("Max Pool Size={0};", poolMaxSize);
-                        }
-                        if (connectTimeout > 0)
-                        {
-                            connString += string.Format("Connect Timeout={0};", connectTimeout);
-                        }
-                        return connString;
+                        if (poolMinSize > 0) { sb.Append(string.Format("Min Pool Size={0};", poolMinSize)); }
+                        if (poolMaxSize > 0) { sb.Append(string.Format("Max Pool Size={0};", poolMaxSize)); }
+                        if (connectTimeout > 0) { sb.Append(string.Format("Connect Timeout={0};", connectTimeout)); }
+                        return sb.ToString();
                     }
                 case DataBaseType.OleDb:
                     {
-                        string connString;
                         switch (dataVer)
                         {
-                            case "3.0":
-                                {
-                                    connString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Extended Properties=Excel 3.0;"); break;
-                                }
-                            case "4.0":
-                                {
-                                    connString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Extended Properties=Excel 4.0;"); break;
-                                }
-                            case "5.0":
-                                {
-                                    connString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Extended Properties=Excel 5.0;"); break;
-                                }
-                            case "95":
-                                {
-                                    connString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Extended Properties=Excel 5.0;"); break;
-                                }
-                            case "97":
-                                {
-                                    connString = string.Format("Provider=Microsoft.Jet.OLEDB.3.51;"); break;
-                                }
-                            case "2003":
-                                {
-                                    connString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Extended Properties=Excel 8.0;"); break;
-                                }
-                            default://2007+
-                                {
-                                    //DR=YES
-                                    connString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Extended Properties=Excel 12.0;"); break;
-                                }
+                            case "3.0": { sb.Append(string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Extended Properties=Excel 3.0;")); break; }
+                            case "4.0": { sb.Append(string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Extended Properties=Excel 4.0;")); break; }
+                            case "5.0": { sb.Append(string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Extended Properties=Excel 5.0;")); break; }
+                            case "95": { sb.Append(string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Extended Properties=Excel 5.0;")); break; }
+                            case "97": { sb.Append(string.Format("Provider=Microsoft.Jet.OLEDB.3.51;")); break; }
+                            case "2003": { sb.Append(string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Extended Properties=Excel 8.0;")); break; }
+                            //  2007+   DR=YES
+                            default: { sb.Append(string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Extended Properties=Excel 12.0;")); break; }
                         }
-                        connString += string.Format("Data Source={0};", GetFilePath(server));
-                        if (!string.IsNullOrWhiteSpace(userID)) { connString += string.Format("User ID={0};", userID); }
-                        if (!string.IsNullOrWhiteSpace(passWord)) { connString += string.Format("Password={0};", passWord); }
+                        sb.Append(string.Format("Data Source={0};", GetFilePath(server)));
+                        if (!string.IsNullOrWhiteSpace(userID)) { sb.Append(string.Format("User ID={0};", userID)); }
+                        if (!string.IsNullOrWhiteSpace(passWord)) { sb.Append(string.Format("Password={0};", passWord)); }
 
-                        return connString;
+                        return sb.ToString();
                     }
                 case DataBaseType.Xml:
                     {
@@ -175,32 +135,17 @@ namespace FS.Core
                     }
                 case DataBaseType.SQLite:
                     {
-                        var plus = new StringBuilder();
-                        plus.AppendFormat("Data Source={0};Min Pool Size={1};Max Pool Size={2};", GetFilePath(server),
-                                          poolMinSize, poolMaxSize);
-                        if (!string.IsNullOrWhiteSpace(passWord))
-                        {
-                            plus.AppendFormat("Password={0};", passWord);
-                        }
-                        if (!string.IsNullOrWhiteSpace(dataVer))
-                        {
-                            plus.AppendFormat("Version={0};", dataVer);
-                        }
-                        return plus.ToString();
+                        sb.AppendFormat("Data Source={0};Min Pool Size={1};Max Pool Size={2};", GetFilePath(server), poolMinSize, poolMaxSize);
+                        if (!string.IsNullOrWhiteSpace(passWord)) { sb.AppendFormat("Password={0};", passWord); }
+                        if (!string.IsNullOrWhiteSpace(dataVer)) { sb.AppendFormat("Version={0};", dataVer); }
+                        return sb.ToString();
                     }
                 case DataBaseType.Oracle:
                     {
-                        if (string.IsNullOrWhiteSpace(port))
-                        {
-                            port = "1521";
-                        }
-                        return
-                            string.Format(
-                                "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST={0})(PORT={3})))(CONNECT_DATA=(SERVER=DEDICATED)(SID={4})));User Id={1};Password={2};",
-                                server, userID, passWord, port, catalog);
+                        if (string.IsNullOrWhiteSpace(port)) { port = "1521"; }
+                        return string.Format("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST={0})(PORT={3})))(CONNECT_DATA=(SERVER=DEDICATED)(SID={4})));User Id={1};Password={2};", server, userID, passWord, port, catalog);
                     }
-                default:
-                    return string.Empty;
+                default: return string.Empty;
             }
         }
 
