@@ -1,8 +1,11 @@
-﻿using System.Linq.Expressions;
+﻿using System.Collections.Generic;
+using System.Data.Common;
+using System.Linq.Expressions;
 using System.Text;
 using FS.Core.Client.SqlServer.Assemble;
 using FS.Core.Infrastructure;
 using FS.Core.Infrastructure.Query;
+using FS.Mapping.Table;
 
 namespace FS.Core.Client.SqlServer.Query
 {
@@ -18,37 +21,28 @@ namespace FS.Core.Client.SqlServer.Query
             _queryProvider = queryProvider;
         }
 
-        public void Query()
+        public void Query<T>(T entity) where T : class,new()
         {
             _queryProvider.QueryQueue.Sql = new StringBuilder();
+            IList<DbParameter> param = new List<DbParameter>();
+            var strinsertAssemble = new InsertAssemble(_queryProvider).Execute(entity, ref param);
 
-            var strSelectSql = new SelectAssemble(_queryProvider).Execute(_queryProvider.QueryQueue.ExpSelect);
-            var strWhereSql = new WhereAssemble(_queryProvider).Execute(_queryProvider.QueryQueue.ExpWhere);
-            var strOrderBySql = new OrderByAssemble(_queryProvider).Execute(_queryProvider.QueryQueue.ExpOrderBy);
+            var map = TableMapCache.GetMap(entity);
 
+            var indexHaveValue = map.GetModelInfo().Key != null && map.GetModelInfo().Key.GetValue(entity, null) != null;
+            if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { _queryProvider.QueryQueue.Sql.AppendFormat("SET IDENTITY_INSERT {0} ON ; ", _queryProvider.TableContext.TableName); }
 
-            if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "*"; }
-            _queryProvider.QueryQueue.Sql.Append(string.Format("select top 1 {0} ", strSelectSql));
+            _queryProvider.QueryQueue.Sql.AppendFormat("INSERT INTO {0} ", _queryProvider.TableContext.TableName);
+            _queryProvider.QueryQueue.Sql.Append(strinsertAssemble);
 
-            _queryProvider.QueryQueue.Sql.Append(string.Format("from {0} ", _queryProvider.DbProvider.KeywordAegis(_queryProvider.TableContext.TableName)));
+            if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { _queryProvider.QueryQueue.Sql.AppendFormat("; SET IDENTITY_INSERT {0} OFF ", _queryProvider.TableContext.TableName); }
 
-            if (!string.IsNullOrWhiteSpace(strWhereSql))
-            {
-                _queryProvider.QueryQueue.Sql.Append(string.Format("where {0} ", strWhereSql));
-            }
+            _queryProvider.QueryQueue.Param = param;
 
-            if (!string.IsNullOrWhiteSpace(strOrderBySql))
-            {
-                _queryProvider.QueryQueue.Sql.Append(string.Format("orderby {0} ", strOrderBySql));
-            }
-        }
+            // 非合并提交，则直接提交
+            if (!_queryProvider.TableContext.IsMergeCommand) { _queryProvider.QueryQueue.Execute(); return; }
 
-        public int Query<T>(T entity) where T : class
-        {
-            Query();
-            var result = _queryProvider.TableContext.Database.ExecuteNonQuery(System.Data.CommandType.Text, _queryProvider.QueryQueue.Sql.ToString());
             _queryProvider.Append();
-            return result;
         }
     }
 }

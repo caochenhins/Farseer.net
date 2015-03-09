@@ -72,24 +72,22 @@ namespace FS.Core.Context
         /// <param name="entity">实体类</param>
         public TEntity Update(TEntity entity)
         {
-            //  获取当前队列索引
-            var index = _tableContext.QueryProvider.QueryQueue.Index;
-            //  执行SQL
+            //  执行SQL、非合并提交，则直接提交
             _tableContext.QueryProvider.QueryQueue.Update.Query(entity);
-            // 非合并提交，则直接提交
-            if (!_tableContext.IsMergeCommand) { _tableContext.QueryProvider.GetQueryQueue(index).Execute(); }
             return entity;
-        }
-
-        public int Delete()
-        {
-            return _tableContext.QueryProvider.QueryQueue.Delete.Query<TEntity>();
         }
 
         public TEntity Insert(TEntity entity)
         {
+            //  执行SQL、非合并提交，则直接提交
             _tableContext.QueryProvider.QueryQueue.Insert.Query(entity);
             return entity;
+        }
+
+        public void Delete()
+        {
+            //  执行SQL、非合并提交，则直接提交
+            _tableContext.QueryProvider.QueryQueue.Delete.Query();
         }
 
         public void Dispose()

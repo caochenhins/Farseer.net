@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using FS.Configs;
 using FS.Core.Data;
 using FS.Mapping.Table;
@@ -36,7 +40,7 @@ namespace FS.Core.Context
         /// </summary>
         /// <param name="database">数据库执行</param>
         /// <param name="tableName">表名称</param>
-        public TableContext(DbExecutor database, string tableName = null) : base(database, tableName)
+        public TableContext(DbExecutor database, string tableName = null): base(database, tableName)
         {
             if (string.IsNullOrWhiteSpace(tableName)) { TableName = TableMapCache.GetMap<TEntity>().ClassInfo.Name; }
             TableSet = new TableSet<TEntity>(this);

@@ -11,21 +11,22 @@ namespace FS.Core.Client.SqlServer.Assemble
     /// <summary>
     /// 组装赋值SQL
     /// </summary>
-    public class AssignAssemble : SqlAssemble
+    public class InsertAssemble : SqlAssemble
     {
-        public AssignAssemble(IQuery queryProvider) : base(queryProvider) { }
+        public InsertAssemble(IQuery queryProvider) : base(queryProvider) { }
 
         public string Execute<TEntity>(TEntity entity, ref IList<DbParameter> param) where TEntity : class,new()
         {
             var map = TableMapCache.GetMap(entity);
             var lstParam = (List<DbParameter>)QueryProvider.Param ?? new List<DbParameter>();
-            var sb = new StringBuilder();
+            //  字段
+            var strFields = new StringBuilder();
+            //  值
+            var strValues = new StringBuilder();
 
             //  迭代实体赋值情况
             foreach (var kic in map.ModelList.Where(o => o.Value.IsDbField))
             {
-                // 如果主键有值，则取消修改主键的SQL
-                if (kic.Value.Column.IsDbGenerated) { continue; }
                 var obj = kic.Key.GetValue(entity, null);
                 if (obj == null || obj is TableSet<TEntity>) { continue; }
 
@@ -39,10 +40,11 @@ namespace FS.Core.Client.SqlServer.Assemble
                 }
 
                 //  添加参数到列表
-                sb.AppendFormat("{0} = {1} ,", QueryProvider.DbProvider.KeywordAegis(kic.Key.Name), newParam.ParameterName);
+                strFields.AppendFormat("{0},", QueryProvider.DbProvider.KeywordAegis(kic.Key.Name));
+                strValues.AppendFormat("{0},", newParam.ParameterName);
             }
 
-            return sb.Length > 0 ? sb.Remove(sb.Length - 1, 1).ToString() : sb.ToString();
+            return "(" + strFields.Remove(strFields.Length - 1, 1) + ") VALUES (" + strValues.Remove(strValues.Length - 1, 1) + ")";
         }
     }
 }

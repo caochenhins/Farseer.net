@@ -5,6 +5,6 @@
         /// <summary>
         /// 生成SQL
         /// </summary>
-        int Query<T>() where T : class;
+        void Query();
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
+using System.Text;
 using FS.Core.Context;
 using FS.Core.Infrastructure;
 using System.Linq;
@@ -20,7 +22,7 @@ namespace FS.Core.Client.SqlServer
             TableContext = tableContext;
             GroupQueryQueueList = new List<IQueryQueue>();
             DbProvider = new SqlServerProvider();
-            Init();
+            Clear();
         }
         public IQueryQueue GetQueryQueue(int index)
         {
@@ -41,24 +43,28 @@ namespace FS.Core.Client.SqlServer
         public void Append()
         {
             if (QueryQueue != null) { GroupQueryQueueList.Add(QueryQueue); }
-            Init();
+            Clear();
         }
 
         public int Commit()
         {
-            var result = 0;
+            var sb = new StringBuilder();
             foreach (var queryQueue in GroupQueryQueueList)
             {
-                result += queryQueue.Execute();
-                queryQueue.Dispose();
+                sb.AppendLine(queryQueue.Sql + ";");
             }
+            var result = TableContext.Database.ExecuteNonQuery(CommandType.Text, sb.ToString(), Param == null ? null : ((List<DbParameter>)Param).ToArray());
+
+            // 清除队列
+            GroupQueryQueueList.ForEach(o => o.Dispose());
             GroupQueryQueueList.Clear();
-            Init();
+            Clear();
             return result;
         }
 
-        public void Init()
+        public void Clear()
         {
+            if (QueryQueue != null) { QueryQueue.Dispose(); }
             QueryQueue = new SqlServerQueryQueue(GroupQueryQueueList.Count, this);
         }
     }

@@ -53,6 +53,7 @@
     <Compile Include="Configs\GeneralConfigs.cs" />
     <Compile Include="Configs\RewriterConfigs.cs" />
     <Compile Include="Configs\SystemConfigs.cs" />
+    <Compile Include="Core\Client\SqlServer\Assemble\InsertAssemble.cs" />
     <Compile Include="Core\Client\SqlServer\Assemble\OrderByAssemble.cs" />
     <Compile Include="Core\Client\SqlServer\Assemble\AssignAssemble.cs" />
     <Compile Include="Core\Client\SqlServer\Assemble\WhereAssemble.cs" />

@@ -22,16 +22,19 @@ namespace FS.Core.Client.SqlServer.Query
         public void Query<T>(T entity) where T : class,new()
         {
             _queryProvider.QueryQueue.Sql = new StringBuilder();
-            IList<DbParameter> param;
-            var strWhereSql = new WhereAssemble(_queryProvider).Execute(_queryProvider.QueryQueue.ExpWhere);
-            var strAssemble = new AssignAssemble(_queryProvider).Execute(entity, out param);
+            IList<DbParameter> param = new List<DbParameter>();
+            var strWhereSql = new WhereAssemble(_queryProvider).Execute(_queryProvider.QueryQueue.ExpWhere, ref param);
+            var strAssemble = new AssignAssemble(_queryProvider).Execute(entity, ref param);
 
             _queryProvider.QueryQueue.Sql.AppendFormat("UPDATE {0} SET ", _queryProvider.DbProvider.KeywordAegis(_queryProvider.TableContext.TableName));
             _queryProvider.QueryQueue.Sql.Append(strAssemble);
-            if (!string.IsNullOrWhiteSpace(strWhereSql)) { _queryProvider.QueryQueue.Sql.Append(string.Format(" where {0} ", strWhereSql)); }
+            if (!string.IsNullOrWhiteSpace(strWhereSql)) { _queryProvider.QueryQueue.Sql.Append(string.Format(" WHERE {0} ", strWhereSql)); }
 
-            //var result = _queryProvider.TableContext.Database.ExecuteNonQuery(System.Data.CommandType.Text, _queryProvider.QueryQueue.Sql.ToString());
             _queryProvider.QueryQueue.Param = param;
+
+            // 非合并提交，则直接提交
+            if (!_queryProvider.TableContext.IsMergeCommand) { _queryProvider.QueryQueue.Execute(); return; }
+
             _queryProvider.Append();
         }
     }

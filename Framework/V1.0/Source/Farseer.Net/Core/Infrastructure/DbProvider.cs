@@ -133,7 +133,7 @@ namespace FS.Core.Infrastructure
         ///     获取该实体类的参数
         /// </summary>
         /// <param name="entity">实体类</param>
-        public virtual IList<DbParameter> GetParameter<TEntity>(TEntity entity, List<DbParameter> Param) where TEntity : class,new()
+        public virtual IList<DbParameter> GetParameter<TEntity>(TEntity entity) where TEntity : class,new()
         {
             var map = TableMapCache.GetMap(entity);
             var lst = new List<DbParameter>();
@@ -142,8 +142,6 @@ namespace FS.Core.Infrastructure
             {
                 var obj = kic.Key.GetValue(entity, null);
                 if (obj == null || obj is TableSet<TEntity>) { continue; }
-
-                var param = Param.Find(o => o.Value == obj);
 
                 //  添加参数到列表
                 lst.Add(CreateDbParam(kic.Value.Column.Name, obj));

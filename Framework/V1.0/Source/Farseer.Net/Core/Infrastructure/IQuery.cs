@@ -49,8 +49,8 @@ namespace FS.Core.Infrastructure
         int Commit();
 
         /// <summary>
-        /// 初始化当前查询队列
+        /// 清除当前队列
         /// </summary>
-        void Init();
+        void Clear();
     }
 }
