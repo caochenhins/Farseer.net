@@ -32,10 +32,7 @@ namespace FS.Core.Bean
 
             //要插入的表
             var sql = new StringBuilder();
-            if (!Map.IndexName.IsNullOrEmpty() && indexHaveValue)
-            {
-                sql.AppendFormat("SET IDENTITY_INSERT {0} ON ; ", TableName);
-            }
+            if (!Map.IndexName.IsNullOrEmpty() && indexHaveValue) { sql.AppendFormat("SET IDENTITY_INSERT {0} ON ; ", TableName); }
 
             sql.AppendFormat("INSERT INTO {0} ", TableName);
 
@@ -54,10 +51,7 @@ namespace FS.Core.Bean
 
             #endregion
 
-            if (!Map.IndexName.IsNullOrEmpty() && indexHaveValue)
-            {
-                sql.AppendFormat("; SET IDENTITY_INSERT {0} OFF ", TableName);
-            }
+            if (!Map.IndexName.IsNullOrEmpty() && indexHaveValue) { sql.AppendFormat("; SET IDENTITY_INSERT {0} OFF ", TableName); }
 
             return sql.ToString() + ";";
         }
