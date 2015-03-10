@@ -14,9 +14,9 @@ namespace FS.Core.Client.SqlServer
         /// 组列表
         /// </summary>
         private List<IQueryQueue> GroupQueryQueueList { get; set; }
-        public TableContext TableContext { get; private set; }
-        public IQueryQueue QueryQueue { get; set; }
         public DbProvider DbProvider { get; set; }
+        public IQueryQueue QueryQueue { get; set; }
+        public TableContext TableContext { get; private set; }
         public SqlServerQuery(TableContext tableContext)
         {
             TableContext = tableContext;
@@ -28,7 +28,6 @@ namespace FS.Core.Client.SqlServer
         {
             return GroupQueryQueueList[index];
         }
-
         public IList<DbParameter> Param
         {
             get
@@ -39,6 +38,9 @@ namespace FS.Core.Client.SqlServer
                 return lst;
             }
         }
+
+        private ISqlQuery _sqlQuery;
+        public ISqlQuery SqlQuery { get { return _sqlQuery ?? (_sqlQuery = new SqlServerSqlQuery(this)); } }
 
         public void Append()
         {

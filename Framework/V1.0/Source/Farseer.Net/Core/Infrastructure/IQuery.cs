@@ -26,17 +26,22 @@ namespace FS.Core.Infrastructure
         /// 根据索引，返回IQueryQueue
         /// </summary>
         /// <param name="index"></param>
-        /// <returns></returns>
         IQueryQueue GetQueryQueue(int index);
-        /// <summary>
-        /// 返回所有组队列的参数Param
-        /// </summary>
-        /// <returns></returns>
-        IList<DbParameter> Param { get; }
+
         /// <summary>
         /// 数据库提供者
         /// </summary>
         DbProvider DbProvider { get; set; }
+
+        /// <summary>
+        /// SQL语句生成查询
+        /// </summary>
+        ISqlQuery SqlQuery { get; }
+
+        /// <summary>
+        /// 返回所有组队列的参数Param
+        /// </summary>
+        IList<DbParameter> Param { get; }
 
         /// <summary>
         /// 将GroupQueryQueue提交到组中，并创建新的GroupQueryQueue

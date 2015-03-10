@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
 using System.Linq.Expressions;
-using FS.Core.Infrastructure;
 
 namespace FS.Core.Context
 {
@@ -58,12 +55,12 @@ namespace FS.Core.Context
         }
         public List<TEntity> ToList()
         {
-            return _tableContext.QueryProvider.QueryQueue.List.Query<TEntity>();
+            return _tableContext.QueryProvider.SqlQuery.ToList<TEntity>();
         }
 
         public TEntity ToInfo()
         {
-            return _tableContext.QueryProvider.QueryQueue.Info.Query<TEntity>();
+            return _tableContext.QueryProvider.SqlQuery.ToInfo<TEntity>();
         }
 
         /// <summary>
@@ -73,21 +70,21 @@ namespace FS.Core.Context
         public TEntity Update(TEntity entity)
         {
             //  执行SQL、非合并提交，则直接提交
-            _tableContext.QueryProvider.QueryQueue.Update.Query(entity);
+            _tableContext.QueryProvider.SqlQuery.Update(entity);
             return entity;
         }
 
         public TEntity Insert(TEntity entity)
         {
             //  执行SQL、非合并提交，则直接提交
-            _tableContext.QueryProvider.QueryQueue.Insert.Query(entity);
+            _tableContext.QueryProvider.SqlQuery.Insert(entity);
             return entity;
         }
 
         public void Delete()
         {
             //  执行SQL、非合并提交，则直接提交
-            _tableContext.QueryProvider.QueryQueue.Delete.Query();
+            _tableContext.QueryProvider.SqlQuery.Delete();
         }
 
         public void Dispose()

@@ -4,10 +4,12 @@ using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using FS.Core.Infrastructure.Query;
 
 namespace FS.Core.Infrastructure
 {
+    /// <summary>
+    /// 持久化当前数据库查询
+    /// </summary>
     public interface IQueryQueue : IDisposable
     {
         /// <summary>
@@ -34,11 +36,6 @@ namespace FS.Core.Infrastructure
         /// 当前生成的参数
         /// </summary>
         IList<DbParameter> Param { get; set; }
-        IQueryQueueList List { get; }
-        IQueryQueueInfo Info { get; }
-        IQueryQueueInsert Insert { get; }
-        IQueryQueueUpdate Update { get; }
-        IQueryQueueDelete Delete { get; }
 
         /// <summary>
         /// 非合并SQL下，立即执行

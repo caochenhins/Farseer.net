@@ -29,6 +29,5 @@ namespace FS.Core.Client.SqlServer
             return string.Format("[{0}]", fieldName);
         }
 
-
     }
 }
