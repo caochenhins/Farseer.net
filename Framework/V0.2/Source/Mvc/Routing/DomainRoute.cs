@@ -182,7 +182,7 @@ namespace FS.Mvc
             var paramName = str.Substring(fristLeft + 1, fristRight - fristLeft - 1);//参数名
             if (paramName.IsNullOrEmpty()) { return str; }
 
-            var value = "(?<" + paramName + ">" + (Constraints != null && Constraints.ContainsKey(paramName) ? Constraints[paramName] + ")" : @"([a-zA-Z0-9_\-]*))");
+            var value = "(?<" + paramName + ">" + (Constraints != null && Constraints.ContainsKey(paramName) ? Constraints[paramName] + ")" : @"([a-zA-Z0-9]*))");
 
             return str.Replace("{" + paramName + "}", value);
         }
