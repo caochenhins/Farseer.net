@@ -183,7 +183,7 @@ namespace FS.Core.Infrastructure
             var newValu = ParamConvertValue(valu, type);
 
             //  查找组中是否存在已有的参数，有则直接取出
-            var newParam = lstParam.Find(o => o.DbType == type && o.Value.GetType() == newValu.GetType() && o.Value.ToString() == newValu.ToString()) ?? param.ToList().Find(o => o.Value == valu && o.DbType == type);
+            var newParam = (lstParam == null ? null : lstParam.Find(o => o.DbType == type && o.Value.GetType() == newValu.GetType() && o.Value.ToString() == newValu.ToString())) ?? param.ToList().Find(o => o.Value == valu && o.DbType == type);
             if (newParam == null)
             {
                 newParam = CreateDbParam(name, valu, type, len);

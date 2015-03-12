@@ -65,6 +65,10 @@
     <Compile Include="Common\WinRAR.cs" />
     <Compile Include="IHttpModule\CDN.cs" />
     <Compile Include="IHttpModule\UrlRewriter.cs" />
+    <Compile Include="Interface\IAuditInfo.cs" />
+    <Compile Include="Interface\ICreateInfo.cs" />
+    <Compile Include="Interface\ILoginInfo.cs" />
+    <Compile Include="Interface\IUpdateInfo.cs" />
     <Compile Include="Open\QQWebOpen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SocketHelper\ClientSocket.cs" />

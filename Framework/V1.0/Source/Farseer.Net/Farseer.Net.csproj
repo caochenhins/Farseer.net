@@ -64,7 +64,6 @@
     <Compile Include="Core\Client\SqlServer\SqlServerSqlQuery.cs" />
     <Compile Include="Core\Infrastructure\DbProvider.cs" />
     <Compile Include="Core\Infrastructure\IQueryQueue.cs" />
-    <Compile Include="Core\Infrastructure\IQueryQueueExecute.cs" />
     <Compile Include="Core\Infrastructure\IQuery.cs" />
     <Compile Include="Core\Context\TableContext~1.cs" />
     <Compile Include="Core\Context\TableSet.cs" />
@@ -75,11 +74,6 @@
     <Compile Include="Core\Infrastructure\ISqlQuery.cs" />
     <Compile Include="Core\Infrastructure\SqlAssemble.cs" />
     <Compile Include="Extend\IDataReaderExtend.cs" />
-    <Compile Include="Interface\IAuditInfo.cs" />
-    <Compile Include="Interface\ICreateInfo.cs" />
-    <Compile Include="Interface\IEntity.cs" />
-    <Compile Include="Interface\ILoginInfo.cs" />
-    <Compile Include="Interface\IUpdateInfo.cs" />
     <Compile Include="Mapping\Table\DBAttribute.cs" />
     <Compile Include="Mapping\Table\FieldMapState.cs" />
     <Compile Include="Mapping\Table\TableMap.cs" />

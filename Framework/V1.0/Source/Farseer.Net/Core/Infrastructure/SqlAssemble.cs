@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Data.Common;
 
 namespace FS.Core.Infrastructure
 {
@@ -10,14 +8,15 @@ namespace FS.Core.Infrastructure
     /// </summary>
     public abstract class SqlAssemble
     {
-        /// <summary>
-        /// 数据库提供者（不同数据库的特性）
-        /// </summary>
-        protected IQuery QueryProvider { get; private set; }
+        protected readonly IQueryQueue QueryQueue;
+        protected readonly DbProvider DbProvider;
+        protected readonly IList<DbParameter> LstParam;
 
-        protected SqlAssemble(IQuery queryProvider)
+        protected SqlAssemble(IQueryQueue queryQueue, DbProvider dbProvider, IList<DbParameter> lstParam)
         {
-            QueryProvider = queryProvider;
+            QueryQueue = queryQueue;
+            DbProvider = dbProvider;
+            LstParam = lstParam;
         }
     }
 }

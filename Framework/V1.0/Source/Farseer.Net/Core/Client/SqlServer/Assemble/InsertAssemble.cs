@@ -13,12 +13,12 @@ namespace FS.Core.Client.SqlServer.Assemble
     /// </summary>
     public class InsertAssemble : SqlAssemble
     {
-        public InsertAssemble(IQuery queryProvider) : base(queryProvider) { }
+        public InsertAssemble(IQueryQueue queryQueue, DbProvider dbProvider, IList<DbParameter> lstParam) : base(queryQueue, dbProvider, lstParam) { }
 
         public string Execute<TEntity>(TEntity entity, ref IList<DbParameter> param) where TEntity : class,new()
         {
             var map = TableMapCache.GetMap(entity);
-            var lstParam = (List<DbParameter>)QueryProvider.Param ?? new List<DbParameter>();
+            var lstParam = (List<DbParameter>)LstParam;
             //  字段
             var strFields = new StringBuilder();
             //  值
@@ -31,10 +31,10 @@ namespace FS.Core.Client.SqlServer.Assemble
                 if (obj == null || obj is TableSet<TEntity>) { continue; }
 
                 //  查找组中是否存在已有的参数，有则直接取出
-                var newParam = QueryProvider.DbProvider.CreateDbParam(kic.Value.Column.Name, obj, lstParam, param, QueryProvider.QueryQueue.Index);
+                var newParam = DbProvider.CreateDbParam(kic.Value.Column.Name, obj, lstParam, param, QueryQueue.Index);
 
                 //  添加参数到列表
-                strFields.AppendFormat("{0},", QueryProvider.DbProvider.KeywordAegis(kic.Key.Name));
+                strFields.AppendFormat("{0},", DbProvider.KeywordAegis(kic.Key.Name));
                 strValues.AppendFormat("{0},", newParam.ParameterName);
             }
 

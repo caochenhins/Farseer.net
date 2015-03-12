@@ -1,5 +1,6 @@
 ﻿using System;
 using Demo.PO.Table.Members;
+using FS.Core.Client.SqlServer;
 using FS.Core.Context;
 using FS.Core.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -21,15 +22,13 @@ namespace Farseer.Net.Core.Tests.Context
         [TestMethod]
         public void TestMethod2()
         {
-            for (var i = 0; i < 1000; i++)
+            using (var table = new TableContext<UserPO>())
             {
-                using (var table = new TableContext<UserPO>())
+                for (var i = 0; i < 1000; i++)
                 {
-
-                    //table.TableSet.Insert(new UserPO() { UserName = "yy" });
-
-                    //table.SaveChanges();
+                    table.TableSet.Insert(new UserPO() { UserName = "yy" });
                 }
+                table.SaveChanges();
             }
         }
     }

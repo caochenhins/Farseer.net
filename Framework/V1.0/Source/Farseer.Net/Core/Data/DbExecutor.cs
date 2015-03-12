@@ -15,12 +15,12 @@ namespace FS.Core.Data
         /// <summary>
         ///     数据库执行时间，单位秒
         /// </summary>
-        private readonly int CommandTimeout;
+        private readonly int _commandTimeout;
 
         /// <summary>
         ///     连接字符串
         /// </summary>
-        private readonly string ConnectionString;
+        private readonly string _connectionString;
 
         /// <summary>
         ///     数据类型
@@ -56,8 +56,8 @@ namespace FS.Core.Data
         /// <param name="tranLevel">开启事务等级</param>
         public DbExecutor(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, int commandTimeout = 30, IsolationLevel tranLevel = IsolationLevel.Unspecified)
         {
-            ConnectionString = Regex.Replace(connectionString, "|RootDirectory|".Replace("|", "\\|"), AppDomain.CurrentDomain.BaseDirectory, RegexOptions.IgnoreCase);
-            CommandTimeout = commandTimeout;
+            _connectionString = Regex.Replace(connectionString, "|RootDirectory|".Replace("|", "\\|"), AppDomain.CurrentDomain.BaseDirectory, RegexOptions.IgnoreCase);
+            _commandTimeout = commandTimeout;
             DataType = dbType;
 
             OpenTran(tranLevel);
@@ -86,6 +86,15 @@ namespace FS.Core.Data
         }
 
         /// <summary>
+        ///     关闭事务。
+        /// </summary>
+        public void CloseTran()
+        {
+            if (IsTransaction && comm != null && comm.Transaction != null) { comm.Transaction.Dispose(); }
+            IsTransaction = false;
+        }
+
+        /// <summary>
         ///     打开数据库连接
         /// </summary>
         public void Open()
@@ -94,10 +103,10 @@ namespace FS.Core.Data
             {
                 Factory = DbFactory.GetDbProvider(DataType);
                 comm = Factory.CreateCommand();
-                comm.CommandTimeout = CommandTimeout;
+                comm.CommandTimeout = _commandTimeout;
 
                 conn = Factory.CreateConnection();
-                conn.ConnectionString = ConnectionString;
+                conn.ConnectionString = _connectionString;
                 comm.Connection = conn;
             }
             if (conn.State == ConnectionState.Closed)

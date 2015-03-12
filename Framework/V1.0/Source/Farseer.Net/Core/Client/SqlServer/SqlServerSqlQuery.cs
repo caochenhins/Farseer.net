@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using FS.Core.Client.SqlServer.Assemble;
 using FS.Core.Infrastructure;
@@ -12,138 +13,249 @@ namespace FS.Core.Client.SqlServer
 {
     public class SqlServerSqlQuery : ISqlQuery
     {
-        private readonly IQuery _queryProvider;
+        private readonly IQueryQueue _queryQueue;
+        private readonly DbProvider _dbProvider;
+        private readonly string _tableName;
+        private readonly IList<DbParameter> _lstParam;
 
-        public SqlServerSqlQuery(IQuery queryProvider)
+        public SqlServerSqlQuery(IQueryQueue queryQueue, DbProvider dbProvider, IList<DbParameter> lstParam, string tableName)
         {
-            _queryProvider = queryProvider;
+            _queryQueue = queryQueue;
+            _dbProvider = dbProvider;
+            _tableName = tableName;
+            _lstParam = lstParam;
+        }
+
+        public void ToInfo()
+        {
+            _queryQueue.Sql = new StringBuilder();
+            IList<DbParameter> param = new List<DbParameter>();
+            var strSelectSql = new SelectAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
+            var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
+            var strOrderBySql = new OrderByAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpOrderBy);
+
+
+            if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "*"; }
+            _queryQueue.Sql.Append(string.Format("SELECT TOP 1 {0} ", strSelectSql));
+
+            _queryQueue.Sql.Append(string.Format("FROM {0} ", _dbProvider.KeywordAegis(_tableName)));
+
+            if (!string.IsNullOrWhiteSpace(strWhereSql))
+            {
+                _queryQueue.Sql.Append(string.Format("WHERE {0} ", strWhereSql));
+            }
+
+            if (!string.IsNullOrWhiteSpace(strOrderBySql))
+            {
+                _queryQueue.Sql.Append(string.Format("ORDERBY {0} ", strOrderBySql));
+            }
+        }
+
+        public void ToList()
+        {
+            IList<DbParameter> param = new List<DbParameter>();
+            var strSelectSql = new SelectAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
+            var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
+            var strOrderBySql = new OrderByAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpOrderBy);
+
+            _queryQueue.Sql = new StringBuilder();
+
+            if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "*"; }
+            _queryQueue.Sql.Append(string.Format("SELECT {0} ", strSelectSql));
+
+            _queryQueue.Sql.Append(string.Format("FROM {0} ", _dbProvider.KeywordAegis(_tableName)));
+
+            if (!string.IsNullOrWhiteSpace(strWhereSql))
+            {
+                _queryQueue.Sql.Append(string.Format("WHERE {0} ", strWhereSql));
+            }
+
+            if (!string.IsNullOrWhiteSpace(strOrderBySql))
+            {
+                _queryQueue.Sql.Append(string.Format("ORDERBY {0} ", strOrderBySql));
+            }
+        }
+
+        public void Count()
+        {
+            _queryQueue.Sql = new StringBuilder();
+            IList<DbParameter> param = new List<DbParameter>();
+            var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
+
+            _queryQueue.Sql.Append(string.Format("SELECT Count(0) "));
+
+            _queryQueue.Sql.Append(string.Format("FROM {0} ", _dbProvider.KeywordAegis(_tableName)));
+
+            if (!string.IsNullOrWhiteSpace(strWhereSql))
+            {
+                _queryQueue.Sql.Append(string.Format("WHERE {0} ", strWhereSql));
+            }
+        }
+
+        public void Sum()
+        {
+            _queryQueue.Sql = new StringBuilder();
+            IList<DbParameter> param = new List<DbParameter>();
+            var strSelectSql = new SelectAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
+            var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
+
+
+            if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "0"; }
+            _queryQueue.Sql.Append(string.Format("SELECT SUM({0}) ", strSelectSql));
+
+            _queryQueue.Sql.Append(string.Format("FROM {0} ", _dbProvider.KeywordAegis(_tableName)));
+
+            if (!string.IsNullOrWhiteSpace(strWhereSql))
+            {
+                _queryQueue.Sql.Append(string.Format("WHERE {0} ", strWhereSql));
+            }
+        }
+
+        public void Max()
+        {
+            _queryQueue.Sql = new StringBuilder();
+            IList<DbParameter> param = new List<DbParameter>();
+            var strSelectSql = new SelectAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
+            var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
+
+
+            if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "0"; }
+            _queryQueue.Sql.Append(string.Format("SELECT MAX({0}) ", strSelectSql));
+
+            _queryQueue.Sql.Append(string.Format("FROM {0} ", _dbProvider.KeywordAegis(_tableName)));
+
+            if (!string.IsNullOrWhiteSpace(strWhereSql))
+            {
+                _queryQueue.Sql.Append(string.Format("WHERE {0} ", strWhereSql));
+            }
+        }
+
+        public void Min()
+        {
+            _queryQueue.Sql = new StringBuilder();
+            IList<DbParameter> param = new List<DbParameter>();
+            var strSelectSql = new SelectAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
+            var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
+
+
+            if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "0"; }
+            _queryQueue.Sql.Append(string.Format("SELECT MIN({0}) ", strSelectSql));
+
+            _queryQueue.Sql.Append(string.Format("FROM {0} ", _dbProvider.KeywordAegis(_tableName)));
+
+            if (!string.IsNullOrWhiteSpace(strWhereSql))
+            {
+                _queryQueue.Sql.Append(string.Format("WHERE {0} ", strWhereSql));
+            }
+        }
+
+        public void Value()
+        {
+            _queryQueue.Sql = new StringBuilder();
+            IList<DbParameter> param = new List<DbParameter>();
+            var strSelectSql = new SelectAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
+            var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
+            var strOrderBySql = new OrderByAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpOrderBy);
+
+
+            if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "*"; }
+            _queryQueue.Sql.Append(string.Format("SELECT TOP 1 {0} ", strSelectSql));
+
+            _queryQueue.Sql.Append(string.Format("FROM {0} ", _dbProvider.KeywordAegis(_tableName)));
+
+            if (!string.IsNullOrWhiteSpace(strWhereSql))
+            {
+                _queryQueue.Sql.Append(string.Format("WHERE {0} ", strWhereSql));
+            }
+
+            if (!string.IsNullOrWhiteSpace(strOrderBySql))
+            {
+                _queryQueue.Sql.Append(string.Format("ORDERBY {0} ", strOrderBySql));
+            }
         }
 
         public void Delete()
         {
-            _queryProvider.QueryQueue.Sql = new StringBuilder();
+            _queryQueue.Sql = new StringBuilder();
             IList<DbParameter> param = new List<DbParameter>();
-            var strWhereSql = new WhereAssemble(_queryProvider).Execute(_queryProvider.QueryQueue.ExpWhere, ref param);
+            var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
 
-            _queryProvider.QueryQueue.Sql.AppendFormat("DELETE FROM {0} ", _queryProvider.DbProvider.KeywordAegis(_queryProvider.TableContext.TableName));
-            if (!string.IsNullOrWhiteSpace(strWhereSql)) { _queryProvider.QueryQueue.Sql.Append(string.Format("WHERE {0} ", strWhereSql)); }
+            _queryQueue.Sql.AppendFormat("DELETE FROM {0} ", _dbProvider.KeywordAegis(_tableName));
+            if (!string.IsNullOrWhiteSpace(strWhereSql)) { _queryQueue.Sql.Append(string.Format("WHERE {0} ", strWhereSql)); }
 
-            _queryProvider.QueryQueue.Param = param;
-
-            // 非合并提交，则直接提交
-            if (!_queryProvider.TableContext.IsMergeCommand) { _queryProvider.QueryQueue.Execute(); return; }
-
-            _queryProvider.Append();
+            _queryQueue.Param = param;
         }
 
-        public T ToInfo<T>() where T : class, new()
+        public void Insert<TEntity>(TEntity entity) where TEntity : class, new()
         {
-            _queryProvider.QueryQueue.Sql = new StringBuilder();
+            _queryQueue.Sql = new StringBuilder();
             IList<DbParameter> param = new List<DbParameter>();
-            var strSelectSql = new SelectAssemble(_queryProvider).Execute(_queryProvider.QueryQueue.ExpSelect);
-            var strWhereSql = new WhereAssemble(_queryProvider).Execute(_queryProvider.QueryQueue.ExpWhere, ref param);
-            var strOrderBySql = new OrderByAssemble(_queryProvider).Execute(_queryProvider.QueryQueue.ExpOrderBy);
-
-
-            if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "*"; }
-            _queryProvider.QueryQueue.Sql.Append(string.Format("SELECT TOP 1 {0} ", strSelectSql));
-
-            _queryProvider.QueryQueue.Sql.Append(string.Format("FROM {0} ", _queryProvider.DbProvider.KeywordAegis(_queryProvider.TableContext.TableName)));
-
-            if (!string.IsNullOrWhiteSpace(strWhereSql))
-            {
-                _queryProvider.QueryQueue.Sql.Append(string.Format("WHERE {0} ", strWhereSql));
-            }
-
-            if (!string.IsNullOrWhiteSpace(strOrderBySql))
-            {
-                _queryProvider.QueryQueue.Sql.Append(string.Format("ORDERBY {0} ", strOrderBySql));
-            }
-            T t;
-            using (var reader = _queryProvider.TableContext.Database.GetReader(System.Data.CommandType.Text, _queryProvider.QueryQueue.Sql.ToString()))
-            {
-                t = reader.ToInfo<T>();
-                reader.Close();
-            }
-            _queryProvider.Clear();
-            return t;
-        }
-
-        public void Insert<T>(T entity) where T : class, new()
-        {
-            _queryProvider.QueryQueue.Sql = new StringBuilder();
-            IList<DbParameter> param = new List<DbParameter>();
-            var strinsertAssemble = new InsertAssemble(_queryProvider).Execute(entity, ref param);
+            var strinsertAssemble = new InsertAssemble(_queryQueue, _dbProvider, _lstParam).Execute(entity, ref param);
 
             var map = TableMapCache.GetMap(entity);
 
             var indexHaveValue = map.GetModelInfo().Key != null && map.GetModelInfo().Key.GetValue(entity, null) != null;
-            if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { _queryProvider.QueryQueue.Sql.AppendFormat("SET IDENTITY_INSERT {0} ON ; ", _queryProvider.TableContext.TableName); }
+            if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { _queryQueue.Sql.AppendFormat("SET IDENTITY_INSERT {0} ON ; ", _tableName); }
 
-            _queryProvider.QueryQueue.Sql.AppendFormat("INSERT INTO {0} ", _queryProvider.TableContext.TableName);
-            _queryProvider.QueryQueue.Sql.Append(strinsertAssemble);
+            _queryQueue.Sql.AppendFormat("INSERT INTO {0} ", _tableName);
+            _queryQueue.Sql.Append(strinsertAssemble);
 
-            if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { _queryProvider.QueryQueue.Sql.AppendFormat("; SET IDENTITY_INSERT {0} OFF ", _queryProvider.TableContext.TableName); }
+            if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { _queryQueue.Sql.AppendFormat("; SET IDENTITY_INSERT {0} OFF ", _tableName); }
 
-            _queryProvider.QueryQueue.Param = param;
-
-            // 非合并提交，则直接提交
-            if (!_queryProvider.TableContext.IsMergeCommand) { _queryProvider.QueryQueue.Execute(); return; }
-
-            _queryProvider.Append();
+            _queryQueue.Param = param;
         }
 
-        public List<T> ToList<T>() where T : class, new()
+        public void InsertIdentity<TEntity>(TEntity entity) where TEntity : class, new()
         {
+            _queryQueue.Sql = new StringBuilder();
             IList<DbParameter> param = new List<DbParameter>();
-            var strSelectSql = new SelectAssemble(_queryProvider).Execute(_queryProvider.QueryQueue.ExpSelect);
-            var strWhereSql = new WhereAssemble(_queryProvider).Execute(_queryProvider.QueryQueue.ExpWhere, ref param);
-            var strOrderBySql = new OrderByAssemble(_queryProvider).Execute(_queryProvider.QueryQueue.ExpOrderBy);
+            var strinsertAssemble = new InsertAssemble(_queryQueue, _dbProvider, _lstParam).Execute(entity, ref param);
 
-            _queryProvider.QueryQueue.Sql = new StringBuilder();
+            var map = TableMapCache.GetMap(entity);
 
-            if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "*"; }
-            _queryProvider.QueryQueue.Sql.Append(string.Format("SELECT {0} ", strSelectSql));
+            var indexHaveValue = map.GetModelInfo().Key != null && map.GetModelInfo().Key.GetValue(entity, null) != null;
+            if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { _queryQueue.Sql.AppendFormat("SET IDENTITY_INSERT {0} ON ; ", _tableName); }
 
-            _queryProvider.QueryQueue.Sql.Append(string.Format("FROM {0} ", _queryProvider.DbProvider.KeywordAegis(_queryProvider.TableContext.TableName)));
+            _queryQueue.Sql.AppendFormat("INSERT INTO {0} ", _tableName);
+            _queryQueue.Sql.Append(strinsertAssemble);
 
-            if (!string.IsNullOrWhiteSpace(strWhereSql))
-            {
-                _queryProvider.QueryQueue.Sql.Append(string.Format("WHERE {0} ", strWhereSql));
-            }
+            if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { _queryQueue.Sql.AppendFormat("; SET IDENTITY_INSERT {0} OFF; ", _tableName); }
 
-            if (!string.IsNullOrWhiteSpace(strOrderBySql))
-            {
-                _queryProvider.QueryQueue.Sql.Append(string.Format("ORDERBY {0} ", strOrderBySql));
-            }
-
-            List<T> t;
-            using (var reader = _queryProvider.TableContext.Database.GetReader(System.Data.CommandType.Text, _queryProvider.QueryQueue.Sql.ToString()))
-            {
-                t = reader.ToList<T>();
-                reader.Close();
-            }
-            _queryProvider.Clear();
-            return t;
+            _queryQueue.Sql.AppendFormat("SELECT @@IDENTITY;");
+            _queryQueue.Param = param;
         }
 
-        public void Update<T>(T entity) where T : class, new()
+        public void Update<TEntity>(TEntity entity) where TEntity : class, new()
         {
-            _queryProvider.QueryQueue.Sql = new StringBuilder();
+            _queryQueue.Sql = new StringBuilder();
             IList<DbParameter> param = new List<DbParameter>();
-            var strWhereSql = new WhereAssemble(_queryProvider).Execute(_queryProvider.QueryQueue.ExpWhere, ref param);
-            var strAssemble = new AssignAssemble(_queryProvider).Execute(entity, ref param);
+            var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
+            var strAssemble = new AssignAssemble(_queryQueue, _dbProvider, _lstParam).Execute(entity, ref param);
 
-            _queryProvider.QueryQueue.Sql.AppendFormat("UPDATE {0} SET ", _queryProvider.DbProvider.KeywordAegis(_queryProvider.TableContext.TableName));
-            _queryProvider.QueryQueue.Sql.Append(strAssemble);
-            if (!string.IsNullOrWhiteSpace(strWhereSql)) { _queryProvider.QueryQueue.Sql.Append(string.Format(" WHERE {0} ", strWhereSql)); }
+            _queryQueue.Sql.AppendFormat("UPDATE {0} SET ", _dbProvider.KeywordAegis(_tableName));
+            _queryQueue.Sql.Append(strAssemble);
+            if (!string.IsNullOrWhiteSpace(strWhereSql)) { _queryQueue.Sql.Append(string.Format(" WHERE {0} ", strWhereSql)); }
 
-            _queryProvider.QueryQueue.Param = param;
+            _queryQueue.Param = param;
+        }
 
-            // 非合并提交，则直接提交
-            if (!_queryProvider.TableContext.IsMergeCommand) { _queryProvider.QueryQueue.Execute(); return; }
+        public void AddUp()
+        {
+            _queryQueue.Sql = new StringBuilder();
+            IList<DbParameter> param = new List<DbParameter>();
+            var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
+            var strAssemble = new AssignAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpAssign, ref param);
 
-            _queryProvider.Append();
+            _queryQueue.Sql.AppendFormat("UPDATE {0} SET ", _dbProvider.KeywordAegis(_tableName));
+            _queryQueue.Sql.Append(strAssemble);
+            if (!string.IsNullOrWhiteSpace(strWhereSql)) { _queryQueue.Sql.Append(string.Format(" WHERE {0} ", strWhereSql)); }
+
+            _queryQueue.Param = param;
+        }
+
+        public void BulkCopy<TEntity>(List<TEntity> lst) where TEntity : class, new()
+        {
+            throw new NotImplementedException();
         }
     }
 }

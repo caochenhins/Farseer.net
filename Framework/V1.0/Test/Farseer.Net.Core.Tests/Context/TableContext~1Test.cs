@@ -15,7 +15,8 @@ namespace Farseer.Net.Core.Tests.Context
         {
             using (var context = new TableContext<UserPO>())
             {
-                var info = context.TableSet.Where(o => o.ID > 0).Desc(o => new { o.ID, o.LoginCount }).Asc(o => o.GenderType).ToInfo();
+                var info = new UserPO();
+                //var info = context.TableSet.Where(o => o.ID > 0).Desc(o => new { o.ID, o.LoginCount }).Asc(o => o.GenderType).ToInfo();
                 info.PassWord = "77777";
                 context.TableSet.Where(o => o.ID == 1).Update(info);
 
@@ -27,9 +28,12 @@ namespace Farseer.Net.Core.Tests.Context
                 info.PassWord = "00000New";
                 context.TableSet.Insert(info);
 
-                var lst = context.TableSet.Where(o => o.ID > 0).Desc(o => new { o.ID, o.LoginCount }).Asc(o => o.GenderType).ToList();
 
-                context.SaveChanges();
+                //context.TableSet.Where(o => o.ID == 1).Append(o => o.LoginCount, 1).Append(o => o.LoginCount, 1).AddUp();
+
+                //var lst = context.TableSet.Where(o => o.ID > 0).Desc(o => new { o.ID, o.LoginCount }).Asc(o => o.GenderType).ToList();
+
+                //context.SaveChanges();
             }
         }
     }

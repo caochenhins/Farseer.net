@@ -7,7 +7,7 @@ namespace FS.Core.Client.SqlServer.Assemble
 {
     public class WhereAssemble  : SqlAssemble
     {
-        public WhereAssemble(IQuery queryProvider) : base(queryProvider) { }
+        public WhereAssemble(IQueryQueue queryQueue, DbProvider dbProvider, IList<DbParameter> lstParam) : base(queryQueue, dbProvider, lstParam) { }
 
         public string Execute(Expression exp, ref IList<DbParameter> param)
         {

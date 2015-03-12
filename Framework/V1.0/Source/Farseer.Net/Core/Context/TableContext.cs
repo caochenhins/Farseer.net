@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using FS.Configs;
 using FS.Core.Data;
 using FS.Core.Infrastructure;
@@ -46,10 +47,10 @@ namespace FS.Core.Context
         /// <summary>
         /// 数据库查询支持
         /// </summary>
-        internal protected IQuery QueryProvider { get; set; }
+        internal protected IQuery Query { get; set; }
 
         /// <summary>
-        /// 合并执行命令
+        /// true:启用合并执行命令、并延迟加载
         /// </summary>
         internal protected bool IsMergeCommand { get; protected set; }
 
@@ -62,10 +63,14 @@ namespace FS.Core.Context
         /// 保存修改
         /// IsMergeCommand=true时：只提交一次SQL到数据库
         /// </summary>
-        public int SaveChanges()
+        /// <param name="isOlation">默认启用事务操作</param>
+        public int SaveChanges(bool isOlation = true)
         {
-            if (QueryProvider.Param.Count > QueryProvider.DbProvider.ParamsMaxLength) { throw new Exception(string.Format("SQL参数过多，当前数据库类型，最多支持：{0}个，目前生成了{1}个", QueryProvider.DbProvider.ParamsMaxLength, QueryProvider.Param.Count)); }
-            return QueryProvider.Commit();
+            // 开启或关闭事务
+            if (isOlation) { Database.OpenTran(IsolationLevel.Serializable);}
+            else { Database.CloseTran(); }
+
+            return Query.Commit();
         }
 
         /// <summary>

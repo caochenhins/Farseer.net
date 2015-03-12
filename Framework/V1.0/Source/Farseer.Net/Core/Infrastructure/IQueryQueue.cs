@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
 namespace FS.Core.Infrastructure
 {
     /// <summary>
-    /// 持久化当前数据库查询
+    /// 每一次的数据库查询，将生成一个新的实例
     /// </summary>
     public interface IQueryQueue : IDisposable
     {
@@ -29,6 +28,10 @@ namespace FS.Core.Infrastructure
         /// </summary>
         Expression ExpWhere { get; set; }
         /// <summary>
+        /// 赋值字段的表达式树
+        /// </summary>
+        Expression ExpAssign { get; set; }
+        /// <summary>
         /// 当前生成的SQL
         /// </summary>
         StringBuilder Sql { get; set; }
@@ -38,9 +41,35 @@ namespace FS.Core.Infrastructure
         IList<DbParameter> Param { get; set; }
 
         /// <summary>
-        /// 非合并SQL下，立即执行
+        /// 当前队列立即交互数据库
         /// </summary>
-        /// <returns></returns>
         int Execute();
+
+        /// <summary>
+        /// 当前队列立即交互数据库（返回List<T>）
+        /// </summary>
+        List<T> ExecuteList<T>() where T : class, new();
+
+        /// <summary>
+        /// 当前队列立即交互数据库（返回Info）
+        /// </summary>
+        T ExecuteInfo<T>() where T : class, new();
+
+        /// <summary>
+        /// 当前队列立即交互数据库（返回T）
+        /// </summary>
+        T ExecuteQuery<T>();
+
+        /// <summary>
+        /// 延迟执行SQL生成
+        /// </summary>
+        Action LazyAct { get; set; }
+
+        /// <summary>
+        /// 将GroupQueryQueue提交到组中，并创建新的GroupQueryQueue
+        /// </summary>
+        void Append();
+
+        ISqlQuery SqlQuery { get; }
     }
 }

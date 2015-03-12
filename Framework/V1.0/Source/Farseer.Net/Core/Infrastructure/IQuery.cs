@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq.Expressions;
 using FS.Core.Context;
-using FS.Core.Data;
 
 namespace FS.Core.Infrastructure
 {
@@ -17,10 +14,12 @@ namespace FS.Core.Infrastructure
         /// </summary>
         TableContext TableContext { get; }
 
+        List<IQueryQueue> GroupQueryQueueList { get; set; }
+
         /// <summary>
         /// 当前组查询队列（支持批量提交SQL）
         /// </summary>
-        IQueryQueue QueryQueue { get; set; }
+        IQueryQueue QueryQueue { get; }
 
         /// <summary>
         /// 根据索引，返回IQueryQueue
@@ -34,19 +33,9 @@ namespace FS.Core.Infrastructure
         DbProvider DbProvider { get; set; }
 
         /// <summary>
-        /// SQL语句生成查询
-        /// </summary>
-        ISqlQuery SqlQuery { get; }
-
-        /// <summary>
         /// 返回所有组队列的参数Param
         /// </summary>
         IList<DbParameter> Param { get; }
-
-        /// <summary>
-        /// 将GroupQueryQueue提交到组中，并创建新的GroupQueryQueue
-        /// </summary>
-        void Append();
 
         /// <summary>
         /// 提交所有GetQueryQueue，完成数据库交互
@@ -57,5 +46,10 @@ namespace FS.Core.Infrastructure
         /// 清除当前队列
         /// </summary>
         void Clear();
+
+        /// <summary>
+        /// 将GroupQueryQueue提交到组中，并创建新的GroupQueryQueue
+        /// </summary>
+        void Append();
     }
 }
