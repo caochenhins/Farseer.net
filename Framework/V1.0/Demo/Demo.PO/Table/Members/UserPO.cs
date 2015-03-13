@@ -26,7 +26,7 @@ namespace Demo.PO.Table.Members
         /// <summary>
         /// 会员类型
         /// </summary>
-        public eumGenderType GenderType { get; set; }
+        public eumGenderType? GenderType { get; set; }
 
         /// <summary>
         /// 登陆次数

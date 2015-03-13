@@ -29,6 +29,7 @@ namespace FS.Extend
         private static readonly MethodInfo DataRecordGetDateTime = typeof(IDataRecord).GetMethod("GetDateTime");
         private static readonly MethodInfo DataRecordGetDecimal = typeof(IDataRecord).GetMethod("GetDecimal");
         private static readonly MethodInfo DataRecordGetDouble = typeof(IDataRecord).GetMethod("GetDouble");
+        private static readonly MethodInfo DataRecordGetByte = typeof(IDataRecord).GetMethod("GetByte");
         private static readonly MethodInfo DataRecordGetInt32 = typeof(IDataRecord).GetMethod("GetInt32");
         private static readonly MethodInfo DataRecordGetInt64 = typeof(IDataRecord).GetMethod("GetInt64");
         private static readonly MethodInfo DataRecordGetString = typeof(IDataRecord).GetMethod("GetString");
@@ -142,62 +143,81 @@ namespace FS.Extend
                 il.Emit(OpCodes.Stloc_S, item);
                 for (var i = 0; i < colIndices.Length; i++)
                 {
-                    if (IsCompatibleType(columnInfoes[i].Type, typeof(int)))
+                    var type = columnInfoes[i].Type;
+                    // 带?号的类型
+                    if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
                     {
-                        // item.%Property% = arg.GetInt32(%index%);
-                        ReadInt32(il, item, columnInfoes, colIndices, i);
-                    }
-                    else if (IsCompatibleType(columnInfoes[i].Type, typeof(int?)))
-                    {
+                        // 得到参数里的类型
+                        var argumentsType = type.GetGenericArguments()[0];
                         // item.%Property% = arg.IsDBNull ? default(int?) : (int?)arg.GetInt32(%index%);
-                        ReadNullableInt32(il, item, columnInfoes, colIndices, i);
-                    }
-                    else if (IsCompatibleType(columnInfoes[i].Type, typeof(long)))
-                    {
-                        // item.%Property% = arg.GetInt64(%index%);
-                        ReadInt64(il, item, columnInfoes, colIndices, i);
-                    }
-                    else if (IsCompatibleType(columnInfoes[i].Type, typeof(long?)))
-                    {
+                        if (IsCompatibleType(argumentsType, typeof(int))) { ReadNullableInt32(il, item, columnInfoes, colIndices, i); continue; }
                         // item.%Property% = arg.IsDBNull ? default(long?) : (long?)arg.GetInt64(%index%);
-                        ReadNullableInt64(il, item, columnInfoes, colIndices, i);
-                    }
-                    else if (IsCompatibleType(columnInfoes[i].Type, typeof(decimal)))
-                    {
-                        // item.%Property% = arg.GetDecimal(%index%);
-                        ReadDecimal(il, item, columnInfoes[i].SetMethod, colIndices[i]);
-                    }
-                    else if (columnInfoes[i].Type == typeof(decimal?))
-                    {
+                        if (IsCompatibleType(argumentsType, typeof(long))) { ReadNullableInt64(il, item, columnInfoes, colIndices, i); continue; }
                         // item.%Property% = arg.IsDBNull ? default(decimal?) : (int?)arg.GetDecimal(%index%);
-                        ReadNullableDecimal(il, item, columnInfoes[i].SetMethod, colIndices[i]);
-                    }
-                    else if (columnInfoes[i].Type == typeof(DateTime))
-                    {
-                        // item.%Property% = arg.GetDateTime(%index%);
-                        ReadDateTime(il, item, columnInfoes[i].SetMethod, colIndices[i]);
-                    }
-                    else if (columnInfoes[i].Type == typeof(DateTime?))
-                    {
+                        if (IsCompatibleType(argumentsType, typeof(decimal))) { ReadNullableDecimal(il, item, columnInfoes[i].SetMethod, colIndices[i]); continue; }
                         // item.%Property% = arg.IsDBNull ? default(DateTime?) : (int?)arg.GetDateTime(%index%);
-                        ReadNullableDateTime(il, item, columnInfoes[i].SetMethod, colIndices[i]);
+                        if (IsCompatibleType(argumentsType, typeof(DateTime))) { ReadNullableDateTime(il, item, columnInfoes[i].SetMethod, colIndices[i]); continue; }
+                        if (IsCompatibleType(argumentsType, typeof(Enum)))
+                        {
+                            var underlyingType = Enum.GetUnderlyingType(argumentsType);
+                            if (underlyingType == typeof(byte)) { ReadNullableByte(il, item, columnInfoes, colIndices, i); continue; }
+                            if (underlyingType == typeof(int)) { ReadNullableInt32(il, item, columnInfoes, colIndices, i); continue; }
+                            if (underlyingType == typeof(Int64)) { ReadNullableInt64(il, item, columnInfoes, colIndices, i); continue; }
+                        }
                     }
                     else
                     {
-                        // item.%Property% = (%PropertyType%)arg[%index%];
-                        ReadObject(il, item, columnInfoes, colIndices, i);
+                        // item.%Property% = arg.GetInt32(%index%);
+                        if (IsCompatibleType(type, typeof(int))) { ReadInt32(il, item, columnInfoes, colIndices, i); continue; }
+                        // item.%Property% = arg.GetInt64(%index%);
+                        if (IsCompatibleType(type, typeof(long))) { ReadInt64(il, item, columnInfoes, colIndices, i); continue; }
+                        // item.%Property% = arg.GetDecimal(%index%);
+                        if (IsCompatibleType(type, typeof(decimal))) { ReadDecimal(il, item, columnInfoes[i].SetMethod, colIndices[i]); continue; }
+                        // item.%Property% = arg.GetDateTime(%index%);
+                        if (type == typeof(DateTime)) { ReadDateTime(il, item, columnInfoes[i].SetMethod, colIndices[i]); continue; }
                     }
+
+                    // item.%Property% = (%PropertyType%)arg[%index%];
+                    ReadObject(il, item, columnInfoes, colIndices, i);
                 }
             }
 
+            /// <summary>
+            /// 判断两者类型是否相等
+            /// </summary>
+            /// <param name="t1">要判断的类型</param>
+            /// <param name="t2">目标类型</param>
             private static bool IsCompatibleType(Type t1, Type t2)
             {
                 if (t1 == t2) { return true; }
                 if (t1.IsEnum && Enum.GetUnderlyingType(t1) == t2) { return true; }
+                if (t1.IsEnum && t1.BaseType == t2) { return true; }
                 var u1 = Nullable.GetUnderlyingType(t1);
                 var u2 = Nullable.GetUnderlyingType(t2);
                 if (u1 != null && u2 != null) { return IsCompatibleType(u1, u2); }
                 return false;
+            }
+            private static void ReadNullableByte(ILGenerator il, LocalBuilder item, List<DbColumnInfo> columnInfoes, LocalBuilder[] colIndices, int i)
+            {
+                var local = il.DeclareLocal(columnInfoes[i].Type);
+                var intNull = il.DefineLabel();
+                var intCommon = il.DefineLabel();
+                il.Emit(OpCodes.Ldloca, local);
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Ldloc_S, colIndices[i]);
+                il.Emit(OpCodes.Callvirt, DataRecordIsDbNull);
+                il.Emit(OpCodes.Brtrue_S, intNull);
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Ldloc_S, colIndices[i]);
+                il.Emit(OpCodes.Callvirt, DataRecordGetByte);
+                il.Emit(OpCodes.Call, columnInfoes[i].Type.GetConstructor(new Type[] { Nullable.GetUnderlyingType(columnInfoes[i].Type) }));
+                il.Emit(OpCodes.Br_S, intCommon);
+                il.MarkLabel(intNull);
+                il.Emit(OpCodes.Initobj, columnInfoes[i].Type);
+                il.MarkLabel(intCommon);
+                il.Emit(OpCodes.Ldloc_S, item);
+                il.Emit(OpCodes.Ldloc, local);
+                il.Emit(OpCodes.Callvirt, columnInfoes[i].SetMethod);
             }
 
             private static void ReadInt32(ILGenerator il, LocalBuilder item, List<DbColumnInfo> columnInfoes, LocalBuilder[] colIndices, int i)
@@ -208,7 +228,6 @@ namespace FS.Extend
                 il.Emit(OpCodes.Callvirt, DataRecordGetInt32);
                 il.Emit(OpCodes.Callvirt, columnInfoes[i].SetMethod);
             }
-
             private static void ReadNullableInt32(ILGenerator il, LocalBuilder item, List<DbColumnInfo> columnInfoes, LocalBuilder[] colIndices, int i)
             {
                 var local = il.DeclareLocal(columnInfoes[i].Type);
@@ -232,6 +251,7 @@ namespace FS.Extend
                 il.Emit(OpCodes.Callvirt, columnInfoes[i].SetMethod);
             }
 
+
             private static void ReadInt64(ILGenerator il, LocalBuilder item, List<DbColumnInfo> columnInfoes, LocalBuilder[] colIndices, int i)
             {
                 il.Emit(OpCodes.Ldloc_S, item);
@@ -240,7 +260,6 @@ namespace FS.Extend
                 il.Emit(OpCodes.Callvirt, DataRecordGetInt64);
                 il.Emit(OpCodes.Callvirt, columnInfoes[i].SetMethod);
             }
-
             private static void ReadNullableInt64(ILGenerator il, LocalBuilder item, List<DbColumnInfo> columnInfoes, LocalBuilder[] colIndices, int i)
             {
                 var local = il.DeclareLocal(columnInfoes[i].Type);
@@ -264,6 +283,7 @@ namespace FS.Extend
                 il.Emit(OpCodes.Callvirt, columnInfoes[i].SetMethod);
             }
 
+
             private static void ReadDecimal(ILGenerator il, LocalBuilder item, MethodInfo setMethod, LocalBuilder colIndex)
             {
                 il.Emit(OpCodes.Ldloc_S, item);
@@ -272,7 +292,6 @@ namespace FS.Extend
                 il.Emit(OpCodes.Callvirt, DataRecordGetDecimal);
                 il.Emit(OpCodes.Callvirt, setMethod);
             }
-
             private static void ReadNullableDecimal(ILGenerator il, LocalBuilder item, MethodInfo setMethod, LocalBuilder colIndex)
             {
                 var local = il.DeclareLocal(typeof(decimal?));
@@ -296,6 +315,7 @@ namespace FS.Extend
                 il.Emit(OpCodes.Callvirt, setMethod);
             }
 
+
             private static void ReadDateTime(ILGenerator il, LocalBuilder item, MethodInfo setMethod, LocalBuilder colIndex)
             {
                 il.Emit(OpCodes.Ldloc_S, item);
@@ -304,7 +324,6 @@ namespace FS.Extend
                 il.Emit(OpCodes.Callvirt, DataRecordGetDateTime);
                 il.Emit(OpCodes.Callvirt, setMethod);
             }
-
             private static void ReadNullableDateTime(ILGenerator il, LocalBuilder item, MethodInfo setMethod, LocalBuilder colIndex)
             {
                 var local = il.DeclareLocal(typeof(DateTime?));
@@ -328,6 +347,29 @@ namespace FS.Extend
                 il.Emit(OpCodes.Callvirt, setMethod);
             }
 
+
+            //private static void ReadNullableEnum(ILGenerator il, LocalBuilder item, MethodInfo setMethod, LocalBuilder colIndex)
+            //{
+            //    var local = il.DeclareLocal(typeof(Nullable<Enum>));
+            //    var decimalNull = il.DefineLabel();
+            //    var decimalCommon = il.DefineLabel();
+            //    il.Emit(OpCodes.Ldloca, local);
+            //    il.Emit(OpCodes.Ldarg_0);
+            //    il.Emit(OpCodes.Ldloc_S, colIndex);
+            //    il.Emit(OpCodes.Callvirt, DataRecordIsDbNull);
+            //    il.Emit(OpCodes.Brtrue_S, decimalNull);
+            //    il.Emit(OpCodes.Ldarg_0);
+            //    il.Emit(OpCodes.Ldloc_S, colIndex);
+            //    il.Emit(OpCodes.Callvirt, DataRecordGetDecimal);
+            //    il.Emit(OpCodes.Call, typeof(decimal?).GetConstructor(new Type[] { typeof(decimal) }));
+            //    il.Emit(OpCodes.Br_S, decimalCommon);
+            //    il.MarkLabel(decimalNull);
+            //    il.Emit(OpCodes.Initobj, typeof(decimal?));
+            //    il.MarkLabel(decimalCommon);
+            //    il.Emit(OpCodes.Ldloc_S, item);
+            //    il.Emit(OpCodes.Ldloc, local);
+            //    il.Emit(OpCodes.Callvirt, setMethod);
+            //}
             private static void ReadObject(ILGenerator il, LocalBuilder item, IList<DbColumnInfo> columnInfoes, LocalBuilder[] colIndices, int i)
             {
                 var common = il.DefineLabel();

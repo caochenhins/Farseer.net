@@ -31,7 +31,7 @@ namespace FS.Core.Context
         /// <param name="select">字段选择器</param>
         public TableSet<TEntity> Select<T>(Expression<Func<TEntity, T>> select)
         {
-            //_tableContext.Query.QueryQueue.ExpSelect = _tableContext.Query.QueryQueue.ExpSelect == null ? _tableContext.Query.QueryQueue.ExpSelect = select : Expression.Add(_tableContext.Query.QueryQueue.ExpSelect, select);
+            _tableContext.Query.QueryQueue.ExpSelect = _tableContext.Query.QueryQueue.ExpSelect == null ? _tableContext.Query.QueryQueue.ExpSelect = select : Expression.Add(_tableContext.Query.QueryQueue.ExpSelect, select);
             return this;
         }
 

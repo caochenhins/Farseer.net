@@ -44,7 +44,7 @@ namespace FS.Core.Client.SqlServer
         public List<T> ExecuteList<T>() where T : class, new()
         {
             var param = Param == null ? null : ((List<DbParameter>)Param).ToArray();
-            List<T> lst;
+            List<T> lst ;
             using (var reader = _queryProvider.TableContext.Database.GetReader(CommandType.Text, Sql.ToString(), param))
             {
                 lst = reader.ToList<T>();
