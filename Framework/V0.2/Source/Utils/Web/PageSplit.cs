@@ -1,4 +1,5 @@
-﻿using FS.Extend;
+﻿using System.Text.RegularExpressions;
+using FS.Extend;
 using FS.UI;
 using FS.Utils.Common;
 
@@ -73,14 +74,14 @@ namespace FS.Utils.Web
         /// <returns></returns>
         private string Template(string template, int pageTotal, int pageCount, int pageNextIndex, int pagePreIndex, int pageSize, int pageIndex, string pageName = "", string pageParam = "")
         {
-            template = template.Replace("{PageSize}", pageSize.ToString())
-                .Replace("{PageIndex}", pageIndex.ToString())
-                .Replace("{PageNextIndex}", pageNextIndex.ToString())
-                .Replace("{PagePreIndex}", pagePreIndex.ToString())
-                .Replace("{PageCount}", pageCount.ToString())
-                .Replace("{PageTotal}", pageTotal.ToString())
-                .Replace("{PageName}", pageName.ToString())
-                .Replace("{PageParam}", pageParam);
+            template = template.Replace("{PageSize}", pageSize.ToString(), RegexOptions.IgnoreCase)
+                .Replace("{PageIndex}", pageIndex.ToString(), RegexOptions.IgnoreCase)
+                .Replace("{PageNextIndex}", pageNextIndex.ToString(), RegexOptions.IgnoreCase)
+                .Replace("{PagePreIndex}", pagePreIndex.ToString(), RegexOptions.IgnoreCase)
+                .Replace("{PageCount}", pageCount.ToString(), RegexOptions.IgnoreCase)
+                .Replace("{PageTotal}", pageTotal.ToString(), RegexOptions.IgnoreCase)
+                .Replace("{PageName}", pageName, RegexOptions.IgnoreCase)
+                .Replace("{PageParam}", pageParam, RegexOptions.IgnoreCase);
             return template;
         }
 
