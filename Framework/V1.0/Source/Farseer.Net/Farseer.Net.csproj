@@ -63,6 +63,7 @@
     <Compile Include="Core\Client\SqlServer\SqlServerQueryQueue.cs" />
     <Compile Include="Core\Client\SqlServer\SqlServerSqlQuery.cs" />
     <Compile Include="Core\Infrastructure\DbProvider.cs" />
+    <Compile Include="Core\Infrastructure\DbVisit.cs" />
     <Compile Include="Core\Infrastructure\IQueryQueue.cs" />
     <Compile Include="Core\Infrastructure\IQuery.cs" />
     <Compile Include="Core\Context\TableContext~1.cs" />

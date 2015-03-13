@@ -11,7 +11,7 @@ using FS.Mapping.Table;
 
 namespace FS.Core.Client.SqlServer
 {
-    public class SqlServerSqlQuery : ISqlQuery
+    public class SqlServerSqlQuery<TEntity> : ISqlQuery<TEntity> where TEntity : class,new()
     {
         private readonly IQueryQueue _queryQueue;
         private readonly DbProvider _dbProvider;
@@ -30,7 +30,7 @@ namespace FS.Core.Client.SqlServer
         {
             _queryQueue.Sql = new StringBuilder();
             IList<DbParameter> param = new List<DbParameter>();
-            var strSelectSql = new SelectAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
+            var strSelectSql = new SelectAssemble<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
             var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
             var strOrderBySql = new OrderByAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpOrderBy);
 
@@ -54,7 +54,7 @@ namespace FS.Core.Client.SqlServer
         public void ToList()
         {
             IList<DbParameter> param = new List<DbParameter>();
-            var strSelectSql = new SelectAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
+            var strSelectSql = new SelectAssemble<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
             var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
             var strOrderBySql = new OrderByAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpOrderBy);
 
@@ -96,7 +96,7 @@ namespace FS.Core.Client.SqlServer
         {
             _queryQueue.Sql = new StringBuilder();
             IList<DbParameter> param = new List<DbParameter>();
-            var strSelectSql = new SelectAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
+            var strSelectSql = new SelectAssemble<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
             var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
 
 
@@ -115,7 +115,7 @@ namespace FS.Core.Client.SqlServer
         {
             _queryQueue.Sql = new StringBuilder();
             IList<DbParameter> param = new List<DbParameter>();
-            var strSelectSql = new SelectAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
+            var strSelectSql = new SelectAssemble<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
             var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
 
 
@@ -134,7 +134,7 @@ namespace FS.Core.Client.SqlServer
         {
             _queryQueue.Sql = new StringBuilder();
             IList<DbParameter> param = new List<DbParameter>();
-            var strSelectSql = new SelectAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
+            var strSelectSql = new SelectAssemble<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
             var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
 
 
@@ -153,7 +153,7 @@ namespace FS.Core.Client.SqlServer
         {
             _queryQueue.Sql = new StringBuilder();
             IList<DbParameter> param = new List<DbParameter>();
-            var strSelectSql = new SelectAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
+            var strSelectSql = new SelectAssemble<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
             var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
             var strOrderBySql = new OrderByAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpOrderBy);
 
@@ -186,7 +186,7 @@ namespace FS.Core.Client.SqlServer
             _queryQueue.Param = param;
         }
 
-        public void Insert<TEntity>(TEntity entity) where TEntity : class, new()
+        public void Insert(TEntity entity)
         {
             _queryQueue.Sql = new StringBuilder();
             IList<DbParameter> param = new List<DbParameter>();
@@ -205,7 +205,7 @@ namespace FS.Core.Client.SqlServer
             _queryQueue.Param = param;
         }
 
-        public void InsertIdentity<TEntity>(TEntity entity) where TEntity : class, new()
+        public void InsertIdentity(TEntity entity)
         {
             _queryQueue.Sql = new StringBuilder();
             IList<DbParameter> param = new List<DbParameter>();
@@ -225,7 +225,7 @@ namespace FS.Core.Client.SqlServer
             _queryQueue.Param = param;
         }
 
-        public void Update<TEntity>(TEntity entity) where TEntity : class, new()
+        public void Update(TEntity entity)
         {
             _queryQueue.Sql = new StringBuilder();
             IList<DbParameter> param = new List<DbParameter>();
@@ -253,7 +253,7 @@ namespace FS.Core.Client.SqlServer
             _queryQueue.Param = param;
         }
 
-        public void BulkCopy<TEntity>(List<TEntity> lst) where TEntity : class, new()
+        public void BulkCopy(List<TEntity> lst)
         {
             throw new NotImplementedException();
         }

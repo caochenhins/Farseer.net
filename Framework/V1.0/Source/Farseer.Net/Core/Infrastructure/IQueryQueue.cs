@@ -70,6 +70,6 @@ namespace FS.Core.Infrastructure
         /// </summary>
         void Append();
 
-        ISqlQuery SqlQuery { get; }
+        ISqlQuery<TEntity> SqlQuery<TEntity>() where TEntity : class, new();
     }
 }

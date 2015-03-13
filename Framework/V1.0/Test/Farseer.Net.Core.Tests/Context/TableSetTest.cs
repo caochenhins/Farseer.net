@@ -13,7 +13,56 @@ namespace Farseer.Net.Core.Tests.Context
         [TestMethod]
         public void ToInfoTestMethod()
         {
-            var lst = TableContext<UserPO>.Data.ToList();
+            Expression<Func<UserPO, object>> select = o => new { o.ID, o.PassWord };
+            Expression<Func<UserPO, object>> select2 = o => new { o.LoginCount, o.LoginIP };
+
+            //var oo = select.Parameters[0];
+
+            //var a = Expression.Invoke(oo, ((NewExpression)select.Body).Arguments.ToList(), select2);
+            //var b = Expression.Invoke(select2, oo);
+
+            //var x = Expression.New(((NewExpression)select.Body).Constructor, a.Expression, b.Expression);
+
+            //var lstParams = ((NewExpression)select1.Body).Arguments.ToList();
+            //lstParams.AddRange(((NewExpression)select2.Body).Arguments.ToList());
+
+            //var last = Expression.MemberInit(select1, lstParams);
+
+            //Expression<Func<TSource, TResult>> selector = null;
+
+            ////(rec)
+            //ParameterExpression param = Expression.Parameter(typeof(TSource), "o");
+            ////new ParadigmSearchListData 
+            //var v0 = Expression.New(typeof(TResult));
+            ////Number
+            //var v1 = typeof(TResult).GetProperty("Number");
+            ////rec.NUMBER
+            //var v2 = Expression.Property(param, typeof(TSource).GetProperty(colNumber));
+            ////Name
+            //var v3 = typeof(TResult).GetProperty("Name");
+            ////rec.RES_NAME
+            //var v4 = Expression.Property(param, typeof(TSource).GetProperty(colName));
+
+            //Expression body = Expression.MemberInit(v0,
+            //    //{ Number = rec.NUMBER, Name = rec.RES_NAME }
+            //    new MemberBinding[] 
+            //    {
+            //        //Number = rec.NUMBER
+            //        Expression.Bind(v1, v2),
+            //        //Name = rec.RES_NAME
+            //        Expression.Bind(v3, v4)
+            //    });
+
+
+
+
+
+
+
+
+
+
+            var lst = TableContext<UserPO>.Data.Select(o => o.ID).ToList();
 
             var info = TableContext<UserPO>.Data.Select(o => o.ID).Select(o => o.LoginCount).Where(o => o.ID > 1).ToInfo();
             Assert.IsNotNull(info);
@@ -29,7 +78,6 @@ namespace Farseer.Net.Core.Tests.Context
 
 
 
-            Expression<Func<UserPO, object>> select = o => new { o.ID, o.PassWord };
             info = TableContext<UserPO>.Data.Select(select).ToInfo();
             Assert.IsNotNull(info);
             Assert.IsTrue(info.PassWord != null && info.GenderType == null && info.LoginIP == null && info.UserName == null && info.ID != null && info.LoginCount == null);
@@ -43,6 +91,38 @@ namespace Farseer.Net.Core.Tests.Context
             Assert.IsTrue(info.ID == lst[0].ID);
         }
 
+
+        private static Expression<Func<TSource, TResult>> CreateSelecter<TSource, TResult>(string colNumber, string colName)
+        {
+            Expression<Func<TSource, TResult>> selector = null;
+
+            //(rec)
+            ParameterExpression param = Expression.Parameter(typeof(TSource), "o");
+            //new ParadigmSearchListData 
+            var v0 = Expression.New(typeof(TResult));
+            //Number
+            var v1 = typeof(TResult).GetProperty("Number");
+            //rec.NUMBER
+            var v2 = Expression.Property(param, typeof(TSource).GetProperty(colNumber));
+            //Name
+            var v3 = typeof(TResult).GetProperty("Name");
+            //rec.RES_NAME
+            var v4 = Expression.Property(param, typeof(TSource).GetProperty(colName));
+
+            Expression body = Expression.MemberInit(v0,
+                //{ Number = rec.NUMBER, Name = rec.RES_NAME }
+                new MemberBinding[] 
+                {
+                    //Number = rec.NUMBER
+                    Expression.Bind(v1, v2),
+                    //Name = rec.RES_NAME
+                    Expression.Bind(v3, v4)
+                });
+
+            selector = (Expression<Func<TSource, TResult>>)Expression.Lambda(body, param);
+
+            return selector;
+        }
         [TestMethod]
         public void ToListTestMethod()
         {
@@ -95,5 +175,6 @@ namespace Farseer.Net.Core.Tests.Context
             Assert.IsTrue(UserPO.Data.Desc(o => o.ID).ToInfo().UserName == "bb");
 
         }
+
     }
 }

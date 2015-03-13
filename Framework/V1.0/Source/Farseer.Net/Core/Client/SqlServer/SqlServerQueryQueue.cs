@@ -19,7 +19,7 @@ namespace FS.Core.Client.SqlServer
         public Expression ExpAssign { get; set; }
         public StringBuilder Sql { get; set; }
         public IList<DbParameter> Param { get; set; }
-        
+
         public Action LazyAct { get; set; }
         public SqlServerQueryQueue(int index, IQuery queryProvider)
         {
@@ -27,8 +27,10 @@ namespace FS.Core.Client.SqlServer
             _queryProvider = queryProvider;
         }
 
-        private ISqlQuery _sqlQuery;
-        public ISqlQuery SqlQuery { get { return _sqlQuery ?? (_sqlQuery = new SqlServerSqlQuery(this, _queryProvider.DbProvider, Param, _queryProvider.TableContext.TableName)); } }
+        public ISqlQuery<TEntity> SqlQuery<TEntity>() where TEntity : class,new()
+        {
+            return new SqlServerSqlQuery<TEntity>(this, _queryProvider.DbProvider, Param, _queryProvider.TableContext.TableName);
+        }
 
         public void Append()
         {
@@ -36,7 +38,7 @@ namespace FS.Core.Client.SqlServer
         }
         public int Execute()
         {
-            var param = Param == null ? null : ((List<DbParameter>) Param).ToArray();
+            var param = Param == null ? null : ((List<DbParameter>)Param).ToArray();
             var result = Sql.Length < 1 ? 0 : _queryProvider.TableContext.Database.ExecuteNonQuery(CommandType.Text, Sql.ToString(), param);
             _queryProvider.Clear();
             return result;
@@ -44,7 +46,7 @@ namespace FS.Core.Client.SqlServer
         public List<T> ExecuteList<T>() where T : class, new()
         {
             var param = Param == null ? null : ((List<DbParameter>)Param).ToArray();
-            List<T> lst ;
+            List<T> lst;
             using (var reader = _queryProvider.TableContext.Database.GetReader(CommandType.Text, Sql.ToString(), param))
             {
                 lst = reader.ToList<T>();
@@ -69,13 +71,12 @@ namespace FS.Core.Client.SqlServer
         {
             var param = Param == null ? null : ((List<DbParameter>)Param).ToArray();
             var value = _queryProvider.TableContext.Database.ExecuteScalar(CommandType.Text, Sql.ToString(), param);
-            return (T)Convert.ChangeType(value, typeof (T));
+            return (T)Convert.ChangeType(value, typeof(T));
         }
 
         public void Dispose()
         {
             if (Sql != null) { Sql.Clear(); Sql = null; }
-            if (_sqlQuery != null) { _sqlQuery = null; }
 
             ExpOrderBy = null;
             ExpSelect = null;

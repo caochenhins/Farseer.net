@@ -7,7 +7,7 @@ namespace FS.Core.Infrastructure
     /// <summary>
     /// 数据库支持的SQL方法
     /// </summary>
-    public interface ISqlQuery
+    public interface ISqlQuery<TEntity> where TEntity : class,new()
     {
         /// <summary>
         /// 查询单条记录
@@ -24,15 +24,15 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 插入
         /// </summary>
-        void Insert<TEntity>(TEntity entity) where TEntity : class,new();
+        void Insert(TEntity entity);
         /// <summary>
         /// 插入
         /// </summary>
-        void InsertIdentity<TEntity>(TEntity entity) where TEntity : class, new();
+        void InsertIdentity(TEntity entity);
         /// <summary>
         /// 修改
         /// </summary>
-        void Update<TEntity>(TEntity entity) where TEntity : class,new();
+        void Update(TEntity entity);
         /// <summary>
         /// 查询数量
         /// </summary>
@@ -61,6 +61,6 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 使用数据库特性进行大批量插入操作
         /// </summary>
-        void BulkCopy<TEntity>(List<TEntity> lst) where TEntity : class,new();
+        void BulkCopy(List<TEntity> lst);
     }
 }

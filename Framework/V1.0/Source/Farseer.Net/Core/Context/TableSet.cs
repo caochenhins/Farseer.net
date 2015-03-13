@@ -72,7 +72,7 @@ namespace FS.Core.Context
         /// <returns></returns>
         public List<TEntity> ToList()
         {
-            _tableContext.Query.QueryQueue.SqlQuery.ToList();
+            _tableContext.Query.QueryQueue.SqlQuery<TEntity>().ToList();
             return _tableContext.Query.QueryQueue.ExecuteList<TEntity>();
         }
         /// <summary>
@@ -81,7 +81,7 @@ namespace FS.Core.Context
         /// <returns></returns>
         public TEntity ToInfo()
         {
-            _tableContext.Query.QueryQueue.SqlQuery.ToInfo();
+            _tableContext.Query.QueryQueue.SqlQuery<TEntity>().ToInfo();
             return _tableContext.Query.QueryQueue.ExecuteInfo<TEntity>();
         }
         /// <summary>
@@ -96,12 +96,12 @@ namespace FS.Core.Context
             //  判断是否启用合并提交
             if (_tableContext.IsMergeCommand)
             {
-                _tableContext.Query.QueryQueue.LazyAct = () => _tableContext.Query.QueryQueue.SqlQuery.Update(entity);
+                _tableContext.Query.QueryQueue.LazyAct = () => _tableContext.Query.QueryQueue.SqlQuery<TEntity>().Update(entity);
                 _tableContext.Query.Append();
             }
             else
             {
-                _tableContext.Query.QueryQueue.SqlQuery.Update(entity);
+                _tableContext.Query.QueryQueue.SqlQuery<TEntity>().Update(entity);
                 _tableContext.Query.QueryQueue.Execute();
             }
             return entity;
@@ -116,12 +116,12 @@ namespace FS.Core.Context
             //  判断是否启用合并提交
             if (_tableContext.IsMergeCommand)
             {
-                _tableContext.Query.QueryQueue.LazyAct = () => _tableContext.Query.QueryQueue.SqlQuery.Insert(entity);
+                _tableContext.Query.QueryQueue.LazyAct = () => _tableContext.Query.QueryQueue.SqlQuery<TEntity>().Insert(entity);
                 _tableContext.Query.Append();
             }
             else
             {
-                _tableContext.Query.QueryQueue.SqlQuery.Insert(entity);
+                _tableContext.Query.QueryQueue.SqlQuery<TEntity>().Insert(entity);
                 _tableContext.Query.QueryQueue.Execute();
             }
             return entity;
@@ -137,16 +137,16 @@ namespace FS.Core.Context
             if (_tableContext.IsMergeCommand)
             {
                 // 如果是MSSQLSER，则启用BulkCopy
-                if (_tableContext.Database.DataType == Data.DataBaseType.SqlServer) { _tableContext.Query.QueryQueue.LazyAct = () => _tableContext.Query.QueryQueue.SqlQuery.BulkCopy(lst); }
-                else { _tableContext.Query.QueryQueue.LazyAct = () => _tableContext.Query.QueryQueue.SqlQuery.Insert(lst); }
+                if (_tableContext.Database.DataType == Data.DataBaseType.SqlServer) { _tableContext.Query.QueryQueue.LazyAct = () => _tableContext.Query.QueryQueue.SqlQuery<TEntity>().BulkCopy(lst); }
+                //else { _tableContext.Query.QueryQueue.LazyAct = () => _tableContext.Query.QueryQueue.SqlQuery<TEntity>().Insert(lst); }
 
                 _tableContext.Query.Append();
             }
             else
             {
                 // 如果是MSSQLSER，则启用BulkCopy
-                if (_tableContext.Database.DataType == Data.DataBaseType.SqlServer) { _tableContext.Query.QueryQueue.SqlQuery.BulkCopy(lst); }
-                else { _tableContext.Query.QueryQueue.SqlQuery.Insert(lst); }
+                if (_tableContext.Database.DataType == Data.DataBaseType.SqlServer) { _tableContext.Query.QueryQueue.SqlQuery<TEntity>().BulkCopy(lst); }
+                //else { _tableContext.Query.QueryQueue.SqlQuery<TEntity>().Insert(lst); }
 
                 _tableContext.Query.QueryQueue.Execute();
             }
@@ -160,12 +160,12 @@ namespace FS.Core.Context
             //  判断是否启用合并提交
             if (_tableContext.IsMergeCommand)
             {
-                _tableContext.Query.QueryQueue.LazyAct = () => _tableContext.Query.QueryQueue.SqlQuery.Delete();
+                _tableContext.Query.QueryQueue.LazyAct = () => _tableContext.Query.QueryQueue.SqlQuery<TEntity>().Delete();
                 _tableContext.Query.Append();
             }
             else
             {
-                _tableContext.Query.QueryQueue.SqlQuery.Delete();
+                _tableContext.Query.QueryQueue.SqlQuery<TEntity>().Delete();
                 _tableContext.Query.QueryQueue.Execute();
             }
         }
@@ -174,7 +174,7 @@ namespace FS.Core.Context
         /// </summary>
         public int Count()
         {
-            _tableContext.Query.QueryQueue.SqlQuery.Count();
+            _tableContext.Query.QueryQueue.SqlQuery<TEntity>().Count();
             return _tableContext.Query.QueryQueue.ExecuteQuery<int>();
         }
         /// <summary>
@@ -185,7 +185,7 @@ namespace FS.Core.Context
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Sum操作时，fieldName参数不能为空！"); }
             _tableContext.Query.QueryQueue.ExpSelect = fieldName;
 
-            _tableContext.Query.QueryQueue.SqlQuery.Sum();
+            _tableContext.Query.QueryQueue.SqlQuery<TEntity>().Sum();
             return _tableContext.Query.QueryQueue.ExecuteQuery<T>();
         }
         /// <summary>
@@ -196,7 +196,7 @@ namespace FS.Core.Context
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Max操作时，fieldName参数不能为空！"); }
             _tableContext.Query.QueryQueue.ExpSelect = fieldName;
 
-            _tableContext.Query.QueryQueue.SqlQuery.Max();
+            _tableContext.Query.QueryQueue.SqlQuery<TEntity>().Max();
             return _tableContext.Query.QueryQueue.ExecuteQuery<T>();
         }
         /// <summary>
@@ -207,7 +207,7 @@ namespace FS.Core.Context
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Min操作时，fieldName参数不能为空！"); }
             _tableContext.Query.QueryQueue.ExpSelect = fieldName;
 
-            _tableContext.Query.QueryQueue.SqlQuery.Min();
+            _tableContext.Query.QueryQueue.SqlQuery<TEntity>().Min();
             return _tableContext.Query.QueryQueue.ExecuteQuery<T>();
         }
         /// <summary>
@@ -218,7 +218,7 @@ namespace FS.Core.Context
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Value操作时，fieldName参数不能为空！"); }
             _tableContext.Query.QueryQueue.ExpSelect = fieldName;
 
-            _tableContext.Query.QueryQueue.SqlQuery.Value();
+            _tableContext.Query.QueryQueue.SqlQuery<TEntity>().Value();
             return _tableContext.Query.QueryQueue.ExecuteQuery<T>();
         }
         /// <summary>
@@ -240,12 +240,12 @@ namespace FS.Core.Context
             //  判断是否启用合并提交
             if (_tableContext.IsMergeCommand)
             {
-                _tableContext.Query.QueryQueue.LazyAct = () => _tableContext.Query.QueryQueue.SqlQuery.AddUp();
+                _tableContext.Query.QueryQueue.LazyAct = () => _tableContext.Query.QueryQueue.SqlQuery<TEntity>().AddUp();
                 _tableContext.Query.Append();
             }
             else
             {
-                _tableContext.Query.QueryQueue.SqlQuery.AddUp();
+                _tableContext.Query.QueryQueue.SqlQuery<TEntity>().AddUp();
                 _tableContext.Query.QueryQueue.Execute();
             }
         }
@@ -259,12 +259,12 @@ namespace FS.Core.Context
             //  判断是否启用合并提交
             if (_tableContext.IsMergeCommand)
             {
-                _tableContext.Query.QueryQueue.LazyAct = () => _tableContext.Query.QueryQueue.SqlQuery.BulkCopy(lst);
+                _tableContext.Query.QueryQueue.LazyAct = () => _tableContext.Query.QueryQueue.SqlQuery<TEntity>().BulkCopy(lst);
                 _tableContext.Query.Append();
             }
             else
             {
-                _tableContext.Query.QueryQueue.SqlQuery.BulkCopy(lst);
+                _tableContext.Query.QueryQueue.SqlQuery<TEntity>().BulkCopy(lst);
                 _tableContext.Query.QueryQueue.Execute();
             }
         }
