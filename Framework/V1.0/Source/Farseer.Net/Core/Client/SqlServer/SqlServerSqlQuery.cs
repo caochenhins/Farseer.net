@@ -4,7 +4,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using FS.Core.Client.SqlServer.Assemble;
+using FS.Core.Client.SqlServer.Visit;
 using FS.Core.Infrastructure;
 using FS.Extend;
 using FS.Mapping.Table;
@@ -30,9 +30,9 @@ namespace FS.Core.Client.SqlServer
         {
             _queryQueue.Sql = new StringBuilder();
             IList<DbParameter> param = new List<DbParameter>();
-            var strSelectSql = new SelectAssemble<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
-            var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
-            var strOrderBySql = new OrderByAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpOrderBy);
+            var strSelectSql = new SelectVisit<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
+            var strWhereSql = new WhereVisit<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
+            var strOrderBySql = new OrderByVisit<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpOrderBy);
 
 
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "*"; }
@@ -54,9 +54,9 @@ namespace FS.Core.Client.SqlServer
         public void ToList()
         {
             IList<DbParameter> param = new List<DbParameter>();
-            var strSelectSql = new SelectAssemble<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
-            var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
-            var strOrderBySql = new OrderByAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpOrderBy);
+            var strSelectSql = new SelectVisit<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
+            var strWhereSql = new WhereVisit<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
+            var strOrderBySql = new OrderByVisit<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpOrderBy);
 
             _queryQueue.Sql = new StringBuilder();
 
@@ -80,7 +80,7 @@ namespace FS.Core.Client.SqlServer
         {
             _queryQueue.Sql = new StringBuilder();
             IList<DbParameter> param = new List<DbParameter>();
-            var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
+            var strWhereSql = new WhereVisit<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
 
             _queryQueue.Sql.Append(string.Format("SELECT Count(0) "));
 
@@ -96,8 +96,8 @@ namespace FS.Core.Client.SqlServer
         {
             _queryQueue.Sql = new StringBuilder();
             IList<DbParameter> param = new List<DbParameter>();
-            var strSelectSql = new SelectAssemble<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
-            var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
+            var strSelectSql = new SelectVisit<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
+            var strWhereSql = new WhereVisit<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
 
 
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "0"; }
@@ -115,8 +115,8 @@ namespace FS.Core.Client.SqlServer
         {
             _queryQueue.Sql = new StringBuilder();
             IList<DbParameter> param = new List<DbParameter>();
-            var strSelectSql = new SelectAssemble<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
-            var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
+            var strSelectSql = new SelectVisit<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
+            var strWhereSql = new WhereVisit<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
 
 
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "0"; }
@@ -134,8 +134,8 @@ namespace FS.Core.Client.SqlServer
         {
             _queryQueue.Sql = new StringBuilder();
             IList<DbParameter> param = new List<DbParameter>();
-            var strSelectSql = new SelectAssemble<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
-            var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
+            var strSelectSql = new SelectVisit<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
+            var strWhereSql = new WhereVisit<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
 
 
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "0"; }
@@ -153,9 +153,9 @@ namespace FS.Core.Client.SqlServer
         {
             _queryQueue.Sql = new StringBuilder();
             IList<DbParameter> param = new List<DbParameter>();
-            var strSelectSql = new SelectAssemble<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
-            var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
-            var strOrderBySql = new OrderByAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpOrderBy);
+            var strSelectSql = new SelectVisit<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpSelect);
+            var strWhereSql = new WhereVisit<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
+            var strOrderBySql = new OrderByVisit<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpOrderBy);
 
 
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "*"; }
@@ -178,7 +178,7 @@ namespace FS.Core.Client.SqlServer
         {
             _queryQueue.Sql = new StringBuilder();
             IList<DbParameter> param = new List<DbParameter>();
-            var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
+            var strWhereSql = new WhereVisit<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
 
             _queryQueue.Sql.AppendFormat("DELETE FROM {0} ", _dbProvider.KeywordAegis(_tableName));
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { _queryQueue.Sql.Append(string.Format("WHERE {0} ", strWhereSql)); }
@@ -190,7 +190,7 @@ namespace FS.Core.Client.SqlServer
         {
             _queryQueue.Sql = new StringBuilder();
             IList<DbParameter> param = new List<DbParameter>();
-            var strinsertAssemble = new InsertAssemble(_queryQueue, _dbProvider, _lstParam).Execute(entity, ref param);
+            var strinsertAssemble = new InsertVisit(_queryQueue, _dbProvider, _lstParam).Execute(entity, ref param);
 
             var map = TableMapCache.GetMap(entity);
 
@@ -209,7 +209,7 @@ namespace FS.Core.Client.SqlServer
         {
             _queryQueue.Sql = new StringBuilder();
             IList<DbParameter> param = new List<DbParameter>();
-            var strinsertAssemble = new InsertAssemble(_queryQueue, _dbProvider, _lstParam).Execute(entity, ref param);
+            var strinsertAssemble = new InsertVisit(_queryQueue, _dbProvider, _lstParam).Execute(entity, ref param);
 
             var map = TableMapCache.GetMap(entity);
 
@@ -229,8 +229,8 @@ namespace FS.Core.Client.SqlServer
         {
             _queryQueue.Sql = new StringBuilder();
             IList<DbParameter> param = new List<DbParameter>();
-            var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
-            var strAssemble = new AssignAssemble(_queryQueue, _dbProvider, _lstParam).Execute(entity, ref param);
+            var strWhereSql = new WhereVisit<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
+            var strAssemble = new AssignVisit(_queryQueue, _dbProvider, _lstParam).Execute(entity, ref param);
 
             _queryQueue.Sql.AppendFormat("UPDATE {0} SET ", _dbProvider.KeywordAegis(_tableName));
             _queryQueue.Sql.Append(strAssemble);
@@ -243,8 +243,8 @@ namespace FS.Core.Client.SqlServer
         {
             _queryQueue.Sql = new StringBuilder();
             IList<DbParameter> param = new List<DbParameter>();
-            var strWhereSql = new WhereAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
-            var strAssemble = new AssignAssemble(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpAssign, ref param);
+            var strWhereSql = new WhereVisit<TEntity>(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpWhere, ref param);
+            var strAssemble = new AssignVisit(_queryQueue, _dbProvider, _lstParam).Execute(_queryQueue.ExpAssign, ref param);
 
             _queryQueue.Sql.AppendFormat("UPDATE {0} SET ", _dbProvider.KeywordAegis(_tableName));
             _queryQueue.Sql.Append(strAssemble);

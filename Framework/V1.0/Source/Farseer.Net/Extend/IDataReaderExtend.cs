@@ -10,13 +10,13 @@ using FS.Mapping.Table;
 
 namespace FS.Extend
 {
-    public static class IDataReaderExtend
+    public static class IDataReaderExtend2
     {
-        public static List<T> ToList<T>(this IDataReader reader) where T : class, new()
+        public static List<T> ToList2<T>(this IDataReader reader) where T : class, new()
         {
             return EntityConverter<T>.ToList(reader);
         }
-        public static T ToInfo<T>(this IDataReader reader) where T : class, new()
+        public static T ToInfo2<T>(this IDataReader reader) where T : class, new()
         {
             return EntityConverter<T>.ToList(reader).FirstOrDefault();
         }
@@ -24,6 +24,7 @@ namespace FS.Extend
         #region Static Readonly Fields
         private static readonly MethodInfo DataRecordItemGetterInt = typeof(IDataRecord).GetMethod("get_Item", new Type[] { typeof(int) });
         private static readonly MethodInfo DataRecordGetOrdinal = typeof(IDataRecord).GetMethod("GetOrdinal");
+        private static readonly MethodInfo DataRecordHaveName = typeof(IDataReaderExtend).GetMethod("HaveName");
         private static readonly MethodInfo DataReaderRead = typeof(IDataReader).GetMethod("Read");
         private static readonly MethodInfo ConvertIsDbNull = typeof(Convert).GetMethod("IsDBNull");
         private static readonly MethodInfo DataRecordGetDateTime = typeof(IDataRecord).GetMethod("GetDateTime");
@@ -88,6 +89,11 @@ namespace FS.Extend
             }
             #region Init Methods
 
+            /// <summary>
+            /// 实例List，并添加Item
+            /// </summary>
+            /// <param name="columnInfoes"></param>
+            /// <returns></returns>
             private static Converter<IDataReader, List<T>> CreateBatchDataLoader(List<DbColumnInfo> columnInfoes)
             {
                 var dm = new DynamicMethod(String.Empty, typeof(List<T>), new Type[] { typeof(IDataReader) }, typeof(EntityConverter<T>));
@@ -121,6 +127,12 @@ namespace FS.Extend
                 return (Converter<IDataReader, List<T>>)dm.CreateDelegate(typeof(Converter<IDataReader, List<T>>));
             }
 
+            /// <summary>
+            /// 找到对应字段映射
+            /// </summary>
+            /// <param name="il"></param>
+            /// <param name="columnInfoes"></param>
+            /// <returns></returns>
             private static LocalBuilder[] GetColumnIndices(ILGenerator il, IList<DbColumnInfo> columnInfoes)
             {
                 var colIndices = new LocalBuilder[columnInfoes.Count];
@@ -130,7 +142,8 @@ namespace FS.Extend
                     colIndices[i] = il.DeclareLocal(typeof(int));
                     il.Emit(OpCodes.Ldarg_0);
                     il.Emit(OpCodes.Ldstr, columnInfoes[i].ColumnName);
-                    il.Emit(OpCodes.Callvirt, DataRecordGetOrdinal);
+                    //il.Emit(OpCodes.Stloc_S, colIndices);
+                    il.Emit(OpCodes.Callvirt, DataRecordHaveName);
                     il.Emit(OpCodes.Stloc_S, colIndices[i]);
                 }
                 return colIndices;
@@ -347,29 +360,6 @@ namespace FS.Extend
                 il.Emit(OpCodes.Callvirt, setMethod);
             }
 
-
-            //private static void ReadNullableEnum(ILGenerator il, LocalBuilder item, MethodInfo setMethod, LocalBuilder colIndex)
-            //{
-            //    var local = il.DeclareLocal(typeof(Nullable<Enum>));
-            //    var decimalNull = il.DefineLabel();
-            //    var decimalCommon = il.DefineLabel();
-            //    il.Emit(OpCodes.Ldloca, local);
-            //    il.Emit(OpCodes.Ldarg_0);
-            //    il.Emit(OpCodes.Ldloc_S, colIndex);
-            //    il.Emit(OpCodes.Callvirt, DataRecordIsDbNull);
-            //    il.Emit(OpCodes.Brtrue_S, decimalNull);
-            //    il.Emit(OpCodes.Ldarg_0);
-            //    il.Emit(OpCodes.Ldloc_S, colIndex);
-            //    il.Emit(OpCodes.Callvirt, DataRecordGetDecimal);
-            //    il.Emit(OpCodes.Call, typeof(decimal?).GetConstructor(new Type[] { typeof(decimal) }));
-            //    il.Emit(OpCodes.Br_S, decimalCommon);
-            //    il.MarkLabel(decimalNull);
-            //    il.Emit(OpCodes.Initobj, typeof(decimal?));
-            //    il.MarkLabel(decimalCommon);
-            //    il.Emit(OpCodes.Ldloc_S, item);
-            //    il.Emit(OpCodes.Ldloc, local);
-            //    il.Emit(OpCodes.Callvirt, setMethod);
-            //}
             private static void ReadObject(ILGenerator il, LocalBuilder item, IList<DbColumnInfo> columnInfoes, LocalBuilder[] colIndices, int i)
             {
                 var common = il.DefineLabel();
@@ -388,6 +378,94 @@ namespace FS.Extend
             }
 
             #endregion
+        }
+    }
+
+    /// <summary>
+    ///     IDataReader扩展工具
+    /// </summary>
+    public static class IDataReaderExtend
+    {
+        /// <summary>
+        ///     IDataReader转换为实体类
+        /// </summary>
+        /// <param name="reader">源IDataReader</param>
+        /// <typeparam name="T">实体类</typeparam>
+        public static List<T> ToList<T>(this IDataReader reader) where T : class, new()
+        {
+            var list = new List<T>();
+            var Map = TableMapCache.GetMap<T>();
+            T t;
+
+            while (reader.Read())
+            {
+                t = (T)Activator.CreateInstance(typeof(T));
+
+                //赋值字段
+                foreach (var kic in Map.ModelList)
+                {
+                    if (reader.HaveName(kic.Value.Column.Name))
+                    {
+                        if (!kic.Key.CanWrite) { continue; }
+                        var type = kic.Key.PropertyType;
+                        if (kic.Key.PropertyType.IsGenericType && kic.Key.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                        {
+                            type = kic.Key.PropertyType.GetGenericArguments()[0];
+                        }
+                        kic.Key.SetValue(t, Convert.ChangeType(reader[kic.Value.Column.Name], type), null);
+                    }
+                }
+
+                list.Add(t);
+            }
+            reader.Close();
+            reader.Dispose();
+            return list;
+        }
+
+        /// <summary>
+        ///     数据填充
+        /// </summary>
+        /// <param name="reader">源IDataReader</param>
+        /// <typeparam name="T">实体类</typeparam>
+        public static T ToInfo<T>(this IDataReader reader) where T : class, new()
+        {
+            var map = TableMapCache.GetMap<T>();
+
+            var t = (T)Activator.CreateInstance(typeof(T));
+            var isHaveValue = false;
+
+            if (reader.Read())
+            {
+                //赋值字段
+                foreach (var kic in map.ModelList)
+                {
+                    if (reader.HaveName(kic.Value.Column.Name))
+                    {
+                        if (!kic.Key.CanWrite) { continue; }
+                        kic.Key.SetValue(t, Convert.ChangeType(reader[kic.Value.Column.Name], kic.Key.PropertyType), null);
+                        isHaveValue = true;
+                    }
+                }
+            }
+            reader.Close();
+            reader.Dispose();
+            return isHaveValue ? t : null;
+        }
+
+        /// <summary>
+        ///     判断IDataReader是否存在某列
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static bool HaveName(this IDataReader reader, string name)
+        {
+            for (var i = 0; i < reader.FieldCount; i++)
+            {
+                if (reader.GetName(i).Equals(name)) { return true; }
+            }
+            return false;
         }
     }
 }

@@ -7,14 +7,14 @@ using FS.Core.Context;
 using FS.Core.Infrastructure;
 using FS.Mapping.Table;
 
-namespace FS.Core.Client.SqlServer.Assemble
+namespace FS.Core.Client.SqlServer.Visit
 {
     /// <summary>
     /// 组装赋值SQL
     /// </summary>
-    public class AssignAssemble : SqlAssemble
+    public class AssignVisit : SqlAssemble
     {
-        public AssignAssemble(IQueryQueue queryQueue, DbProvider dbProvider, IList<DbParameter> lstParam) : base(queryQueue, dbProvider, lstParam) { }
+        public AssignVisit(IQueryQueue queryQueue, DbProvider dbProvider, IList<DbParameter> lstParam) : base(queryQueue, dbProvider, lstParam) { }
 
         public string Execute<TEntity>(TEntity entity, ref IList<DbParameter> param) where TEntity : class,new()
         {

@@ -13,13 +13,13 @@ namespace FS.Core.Infrastructure
     /// <summary>
     ///     数据库表达式树解析器
     /// </summary>
-    /// <typeparam name="TInfo"></typeparam>
-    public abstract class DbVisit<TInfo> where TInfo : class, new()
+    /// <typeparam name="TEntity"></typeparam>
+    public abstract class DbVisit<TEntity> where TEntity : class, new()
     {
         /// <summary>
         ///     实体类映射
         /// </summary>
-        internal TableMap Map = typeof(TInfo);
+        internal TableMap Map = typeof(TEntity);
 
         /// <summary>
         ///     条件堆栈

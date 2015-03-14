@@ -7,11 +7,11 @@ using System.Linq.Expressions;
 using System.Text;
 using FS.Core.Infrastructure;
 
-namespace FS.Core.Client.SqlServer.Assemble
+namespace FS.Core.Client.SqlServer.Visit
 {
-    public class SelectAssemble<TInfo> : DbVisit<TInfo> where TInfo : class, new()
+    public class SelectVisit<TEntity> : DbVisit<TEntity> where TEntity : class, new()
     {
-        public SelectAssemble(IQueryQueue queryQueue, DbProvider dbProvider, IList<DbParameter> lstParam) : base(queryQueue, dbProvider, lstParam) { }
+        public SelectVisit(IQueryQueue queryQueue, DbProvider dbProvider, IList<DbParameter> lstParam) : base(queryQueue, dbProvider, lstParam) { }
 
         public string Execute(Expression exp)
         {
@@ -63,6 +63,7 @@ namespace FS.Core.Client.SqlServer.Assemble
             VisitExpressionList(nex.Arguments);
             return nex;
         }
+
         private Expression VisitLambda(LambdaExpression lambda)
         {
             return Visit(lambda.Body);

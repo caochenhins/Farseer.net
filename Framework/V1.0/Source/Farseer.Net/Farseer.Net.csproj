@@ -53,11 +53,11 @@
     <Compile Include="Configs\GeneralConfigs.cs" />
     <Compile Include="Configs\RewriterConfigs.cs" />
     <Compile Include="Configs\SystemConfigs.cs" />
-    <Compile Include="Core\Client\SqlServer\Assemble\InsertAssemble.cs" />
-    <Compile Include="Core\Client\SqlServer\Assemble\OrderByAssemble.cs" />
-    <Compile Include="Core\Client\SqlServer\Assemble\AssignAssemble.cs" />
-    <Compile Include="Core\Client\SqlServer\Assemble\WhereAssemble.cs" />
-    <Compile Include="Core\Client\SqlServer\Assemble\SelectAssemble.cs" />
+    <Compile Include="Core\Client\SqlServer\Visit\InsertVisit.cs" />
+    <Compile Include="Core\Client\SqlServer\Visit\OrderByVisit.cs" />
+    <Compile Include="Core\Client\SqlServer\Visit\AssignVisit.cs" />
+    <Compile Include="Core\Client\SqlServer\Visit\WhereVisit.cs" />
+    <Compile Include="Core\Client\SqlServer\Visit\SelectVisit.cs" />
     <Compile Include="Core\Client\SqlServer\SqlServerProvider.cs" />
     <Compile Include="Core\Client\SqlServer\SqlServerQuery.cs" />
     <Compile Include="Core\Client\SqlServer\SqlServerQueryQueue.cs" />

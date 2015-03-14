@@ -62,7 +62,7 @@ namespace Farseer.Net.Core.Tests.Context
 
 
 
-            var lst = TableContext<UserPO>.Data.Select(o => o.ID).ToList();
+            var lst = TableContext<UserPO>.Data.Select(o => o.ID).Where(o => o.ID > 0).Asc(o => o.ID).ToList();
 
             var info = TableContext<UserPO>.Data.Select(o => o.ID).Select(o => o.LoginCount).Where(o => o.ID > 1).ToInfo();
             Assert.IsNotNull(info);
