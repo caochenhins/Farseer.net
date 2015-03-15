@@ -175,18 +175,19 @@ namespace FS.Core.Infrastructure
         /// <param name="lstIsJoinParam">已加入的参数</param>
         /// <param name="lstNewParam">当前加入的参数</param>
         /// <param name="index">当前列表索引</param>
-        public DbParameter CreateDbParam(string name, object valu, List<DbParameter> lstIsJoinParam, IList<DbParameter> lstNewParam)
+        public DbParameter CreateDbParam(string name, object valu, List<DbParameter> lstIsJoinParam, List<DbParameter> lstNewParam)
         {
             int len;
             var type = GetDbType(valu, out len);
             var newValu = ParamConvertValue(valu, type);
 
             //  查找组中是否存在已有的参数，有则直接取出
-            var newParam = (lstIsJoinParam == null ? null : lstIsJoinParam.Find(o => o.DbType == type && o.Value.GetType() == newValu.GetType() && o.Value.ToString() == newValu.ToString())) ?? lstNewParam.ToList().Find(o => o.Value == valu && o.DbType == type);
+            var newParam = (lstIsJoinParam == null ? null : lstIsJoinParam.Find(o => o.DbType == type && o.Value.GetType() == newValu.GetType() && o.Value.ToString() == newValu.ToString()));// ?? lstNewParam.ToList().Find(o => o.Value == valu && o.DbType == type);
             if (newParam == null)
             {
                 newParam = CreateDbParam(name, valu, type, len);
                 newParam.ParameterName = ParamsPrefix + name;
+                if (lstNewParam == null) { lstNewParam = new List<DbParameter>(); }
                 lstNewParam.Add(newParam);
             }
             return newParam;

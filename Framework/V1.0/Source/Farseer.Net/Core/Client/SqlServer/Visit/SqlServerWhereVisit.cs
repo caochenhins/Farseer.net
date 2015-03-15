@@ -57,7 +57,7 @@ namespace FS.Core.Client.SqlServer.Visit
                         if (paramType != null && (!paramType.IsGenericType || paramType.GetGenericTypeDefinition() == typeof(Nullable<>)))
                         {
                             #region 搜索值串的处理
-                            var param = ParamsList.Find(o => o.ParameterName == paramName);
+                            var param = QueryQueue.Param.Find(o => o.ParameterName == paramName);
                             if (param != null && Regex.IsMatch(param.Value.ToString(), @"[\d]+") && (Type.GetTypeCode(fieldType) == TypeCode.Int16 || Type.GetTypeCode(fieldType) == TypeCode.Int32 || Type.GetTypeCode(fieldType) == TypeCode.Decimal || Type.GetTypeCode(fieldType) == TypeCode.Double || Type.GetTypeCode(fieldType) == TypeCode.Int64 || Type.GetTypeCode(fieldType) == TypeCode.UInt16 || Type.GetTypeCode(fieldType) == TypeCode.UInt32 || Type.GetTypeCode(fieldType) == TypeCode.UInt64))
                             {
                                 param.Value = "," + param.Value + ",";
@@ -76,7 +76,7 @@ namespace FS.Core.Client.SqlServer.Visit
                             var notValue = "";
                             if (SqlList.First().Equals("Not")) { notValue = SqlList.Pop(); }
 
-                            if (Type.GetTypeCode(fieldType) == TypeCode.String) { base.ParamsList.Last().Value = "'" + base.ParamsList.Last().Value.ToString().Replace(",", "','") + "'"; }
+                            if (Type.GetTypeCode(fieldType) == TypeCode.String) { CurrentDbParameter.Value = "'" + CurrentDbParameter.Value.ToString().Replace(",", "','") + "'"; }
                             SqlList.Push(String.Format("{0} {1} IN ({2})", fieldName, notValue, paramName));
                         }
 
@@ -98,7 +98,7 @@ namespace FS.Core.Client.SqlServer.Visit
                         if (SqlList.First().Equals("Not")) { notValue = SqlList.Pop(); }
 
                         SqlList.Push(String.Format("{0} {1} LIKE {2}", fieldName, notValue, paramName));
-                        ParamsList.Last().Value = string.Format("%{0}", ParamsList.Last().Value);
+                        CurrentDbParameter.Value = string.Format("%{0}", CurrentDbParameter.Value);
                         break;
                     }
                 case "ISEQUALS":

@@ -5,7 +5,6 @@ using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.InteropServices;
 using System.Text;
 using FS.Core.Infrastructure;
 using FS.Mapping.Table;
@@ -31,17 +30,18 @@ namespace FS.Core.Visit
 
         protected readonly IQueryQueue QueryQueue;
         protected readonly IQuery Query;
-        protected List<DbParameter> ParamsList;
         private string currentFieldName;
+        protected DbParameter CurrentDbParameter;
+
         public DbWhereVisit(IQuery query, IQueryQueue queryQueue)
         {
             QueryQueue = queryQueue;
             Query = query;
+            if (QueryQueue.Param == null) { QueryQueue.Param = new List<DbParameter>(); }
         }
 
-        public string Execute(Expression exp, ref List<DbParameter> param)
+        public string Execute(Expression exp)
         {
-            ParamsList = param ?? new List<DbParameter>();
             Visit(exp);
 
             var sb = new StringBuilder();
@@ -49,7 +49,7 @@ namespace FS.Core.Visit
             return sb.Length > 0 ? sb.Remove(sb.Length - 1, 1).ToString() : sb.ToString();
         }
 
-        protected virtual Expression Visit(Expression exp)
+        protected Expression Visit(Expression exp)
         {
             if (exp == null) { return null; }
             switch (exp.NodeType)
@@ -97,50 +97,7 @@ namespace FS.Core.Visit
                 case ExpressionType.NegateChecked:
                 case ExpressionType.Not:
                 case ExpressionType.Quote:
-                case ExpressionType.TypeAs:
-                    return VisitUnary((UnaryExpression)exp);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                case ExpressionType.Conditional:
-                    return VisitConditional((ConditionalExpression)exp);
-
-
-                case ExpressionType.Invoke:
-                    return VisitInvocation((InvocationExpression)exp);
-
-
-                case ExpressionType.ListInit:
-                    return VisitListInit((ListInitExpression)exp);
-
-
-                case ExpressionType.MemberInit:
-                    return VisitMemberInit((MemberInitExpression)exp);
-
-                case ExpressionType.New:
-                    return VisitNew((NewExpression)exp);
-
-                case ExpressionType.NewArrayInit:
-                case ExpressionType.NewArrayBounds:
-                    return VisitNewArray((NewArrayExpression)exp);
-
-                case ExpressionType.Parameter:
-                    return VisitParameter((ParameterExpression)exp);
-
-                case ExpressionType.TypeIs:
-                    return VisitTypeIs((TypeBinaryExpression)exp);
+                case ExpressionType.TypeAs: return VisitUnary((UnaryExpression)exp);
             }
             throw new Exception(string.Format("类型：(ExpressionType){0}，不存在。", exp.NodeType));
         }
@@ -224,7 +181,8 @@ namespace FS.Core.Visit
             {
                 m_ParamsCount++;
                 //  查找组中是否存在已有的参数，有则直接取出
-                var newParam = Query.DbProvider.CreateDbParam(QueryQueue.Index + ">" + m_ParamsCount + ">" + currentFieldName, cexp.Value, Query.Param, ParamsList);
+                var newParam = Query.DbProvider.CreateDbParam(QueryQueue.Index + "_" + m_ParamsCount + "_" + currentFieldName, cexp.Value, Query.Param, QueryQueue.Param);
+                CurrentDbParameter = newParam;
                 SqlList.Push(newParam.ParameterName);
             }
             currentFieldName = string.Empty;
@@ -266,15 +224,6 @@ namespace FS.Core.Visit
                         return m;
                     }
             }
-        }
-
-        /// <summary>
-        ///     数组值
-        /// </summary>
-        protected Expression VisitNewArray(NewArrayExpression na)
-        {
-            foreach (var ex in na.Expressions) { Visit(ex); }
-            return null;
         }
 
         /// <summary>
@@ -404,15 +353,6 @@ namespace FS.Core.Visit
             return original;
         }
 
-        protected virtual Expression VisitConditional(ConditionalExpression c)
-        {
-            var test = Visit(c.Test);
-            var ifTrue = Visit(c.IfTrue);
-            var ifFalse = Visit(c.IfFalse);
-            if (((test == c.Test) && (ifTrue == c.IfTrue)) && (ifFalse == c.IfFalse)) { return c; }
-            return Expression.Condition(test, ifTrue, ifFalse);
-        }
-
         protected virtual ElementInit VisitElementInitializer(ElementInit initializer)
         {
             var arguments = VisitExpressionList(initializer.Arguments);
@@ -479,70 +419,16 @@ namespace FS.Core.Visit
             return original;
         }
 
-        protected virtual Expression VisitInvocation(InvocationExpression iv)
-        {
-            IEnumerable<Expression> arguments = VisitExpressionList(iv.Arguments);
-            var expression = Visit(iv.Expression);
-            if ((arguments == iv.Arguments) && (expression == iv.Expression))
-            {
-                return iv;
-            }
-            return Expression.Invoke(expression, arguments);
-        }
-
         protected virtual Expression VisitLambda(LambdaExpression lambda)
         {
-            var body = Visit(lambda.Body);
-
-
-
-
-
-
-
-
-
-
-            if (body != lambda.Body)
-            {
-                try
-                {
-                    return Expression.Lambda(lambda.Type, Expression.Convert(body, typeof(object)), lambda.Parameters);
-                }
-                catch
-                {
-                    return lambda.Body;
-                }
-            }
+            Visit(lambda.Body);
             return lambda;
-        }
-
-        protected virtual Expression VisitListInit(ListInitExpression init)
-        {
-            var newExpression = VisitNew(init.NewExpression);
-            var initializers = VisitElementInitializerList(init.Initializers);
-            if ((newExpression == init.NewExpression) && (initializers == init.Initializers))
-            {
-                return init;
-            }
-            return Expression.ListInit(newExpression, initializers);
         }
 
         protected virtual MemberAssignment VisitMemberAssignment(MemberAssignment assignment)
         {
             var expression = Visit(assignment.Expression);
             return expression != assignment.Expression ? Expression.Bind(assignment.Member, expression) : assignment;
-        }
-
-        protected virtual Expression VisitMemberInit(MemberInitExpression init)
-        {
-            var newExpression = VisitNew(init.NewExpression);
-            var bindings = VisitBindingList(init.Bindings);
-            if ((newExpression == init.NewExpression) && (bindings == init.Bindings))
-            {
-                return init;
-            }
-            return Expression.MemberInit(newExpression, bindings);
         }
 
         protected virtual MemberListBinding VisitMemberListBinding(MemberListBinding binding)
@@ -557,35 +443,14 @@ namespace FS.Core.Visit
             return bindings != binding.Bindings ? Expression.MemberBind(binding.Member, bindings) : binding;
         }
 
-        protected virtual NewExpression VisitNew(NewExpression nex)
-        {
-            IEnumerable<Expression> arguments = VisitExpressionList(nex.Arguments);
-            if (arguments == nex.Arguments)
-            {
-                return nex;
-            }
-            return nex.Members != null ? Expression.New(nex.Constructor, arguments, nex.Members) : Expression.New(nex.Constructor, arguments);
-        }
-
-        protected virtual Expression VisitParameter(ParameterExpression p)
-        {
-            return p;
-        }
-
-        protected virtual Expression VisitTypeIs(TypeBinaryExpression b)
-        {
-            var expression = Visit(b.Expression);
-            return expression != b.Expression ? Expression.TypeIs(expression, b.TypeOperand) : b;
-        }
-
         /// <summary>
         ///     清除值为空的条件，并给与1!=1的SQL
         /// </summary>
         protected virtual bool ClearCallSql()
         {
-            if (ParamsList != null && ParamsList.Count > 0 && string.IsNullOrWhiteSpace(ParamsList.Last().Value.ToString()))
+            if (QueryQueue.Param != null && QueryQueue.Param.Count > 0 && string.IsNullOrWhiteSpace(QueryQueue.Param.Last().Value.ToString()))
             {
-                ParamsList.RemoveAt(ParamsList.Count - 1);
+                QueryQueue.Param.RemoveAt(QueryQueue.Param.Count - 1);
                 SqlList.Pop();
                 SqlList.Pop();
                 SqlList.Push("1<>1");
@@ -599,72 +464,14 @@ namespace FS.Core.Visit
         /// </summary>
         protected virtual string SqlTrue(string sql)
         {
-            var dbParam = ParamsList.FirstOrDefault(o => o.ParameterName == sql);
+            var dbParam = QueryQueue.Param.FirstOrDefault(o => o.ParameterName == sql);
             if (dbParam != null)
             {
                 var result = dbParam.Value.ToString().Equals("true");
-                ParamsList.RemoveAll(o => o.ParameterName == sql);
+                QueryQueue.Param.RemoveAll(o => o.ParameterName == sql);
                 return result ? "1=1" : "1<>1";
             }
             return sql;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        protected struct Buffer<TElement>
-        {
-            internal TElement[] items;
-            internal int count;
-
-            internal Buffer(IEnumerable<TElement> source)
-            {
-                TElement[] array = null;
-                var length = 0;
-                var is2 = source as ICollection<TElement>;
-                if (is2 != null)
-                {
-                    length = is2.Count;
-                    if (length > 0)
-                    {
-                        array = new TElement[length];
-                        is2.CopyTo(array, 0);
-                    }
-                }
-                else
-                {
-                    foreach (var local in source)
-                    {
-                        if (array == null)
-                        {
-                            array = new TElement[4];
-                        }
-                        else if (array.Length == length)
-                        {
-                            var destinationArray = new TElement[length * 2];
-                            Array.Copy(array, 0, destinationArray, 0, length);
-                            array = destinationArray;
-                        }
-                        array[length] = local;
-                        length++;
-                    }
-                }
-                items = array;
-                count = length;
-            }
-
-            internal TElement[] ToArray()
-            {
-                if (count == 0)
-                {
-                    return new TElement[0];
-                }
-                if (items.Length == count)
-                {
-                    return items;
-                }
-                var destinationArray = new TElement[count];
-                Array.Copy(items, 0, destinationArray, 0, count);
-                return destinationArray;
-            }
         }
     }
 }

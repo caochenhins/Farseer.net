@@ -23,7 +23,7 @@ namespace FS.Core.Visit
             Query = query;
         }
 
-        public string Execute<TEntity>(TEntity entity, ref List<DbParameter> param) where TEntity : class,new()
+        public string Execute<TEntity>(TEntity entity) where TEntity : class,new()
         {
             var map = TableMapCache.GetMap(entity);
             var sb = new StringBuilder();
@@ -37,7 +37,7 @@ namespace FS.Core.Visit
                 if (obj == null || obj is TableSet<TEntity>) { continue; }
 
                 //  查找组中是否存在已有的参数，有则直接取出
-                var newParam = Query.DbProvider.CreateDbParam(QueryQueue.Index + ">" + kic.Value.Column.Name, obj, Query.Param, param);
+                var newParam = Query.DbProvider.CreateDbParam(QueryQueue.Index + "_" + kic.Value.Column.Name, obj, Query.Param, QueryQueue.Param);
 
                 //  添加参数到列表
                 sb.AppendFormat("{0} = {1} ,", Query.DbProvider.KeywordAegis(kic.Key.Name), newParam.ParameterName);
