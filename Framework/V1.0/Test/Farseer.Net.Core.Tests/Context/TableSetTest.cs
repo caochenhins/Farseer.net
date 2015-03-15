@@ -60,7 +60,7 @@ namespace Farseer.Net.Core.Tests.Context
             var ID = lst[0].ID.GetValueOrDefault();
 
 
-            lst = TableContext<UserPO>.Data.Select(o => new { o.ID, o.PassWord }).Where(o => o.ID == ID).Desc(o => new { o.LoginCount, o.GenderType }).Asc(o => o.ID).ToList();
+            lst = TableContext<UserPO>.Data.Select(o => new { o.ID, o.PassWord, o.GetDate }).Where(o => o.ID == ID).Desc(o => new { o.LoginCount, o.GenderType }).Asc(o => o.ID).Desc(o => o.GetDate).ToList();
             var info = lst[0];
             Assert.IsNotNull(lst);
             Assert.IsTrue(lst.Count == 1);

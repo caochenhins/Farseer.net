@@ -37,5 +37,12 @@ namespace Demo.PO.Table.Members
         /// 登陆IP
         /// </summary>
         public string LoginIP { get; set; }
+
+
+        /// <summary>
+        /// 登陆IP
+        /// </summary>
+        [Column(Name = "getdate()")]
+        public string GetDate { get; set; }
     }
 }
