@@ -12,9 +12,9 @@ namespace FS.Core.Client.SqlServer
     public class SqlServerQueryQueue : IQueryQueue
     {
         private readonly IQuery _query;
-        public Expression ExpOrderBy { get; set; }
+        public Dictionary<Expression, bool> ExpOrderBy { get; set; }
         public int Index { get; set; }
-        public Expression ExpSelect { get; set; }
+        public List<Expression> ExpSelect { get; set; }
         public Expression ExpWhere { get; set; }
         public Expression ExpAssign { get; set; }
         public StringBuilder Sql { get; set; }

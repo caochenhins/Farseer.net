@@ -59,7 +59,7 @@ namespace Farseer.Net.Core.Tests.Context
 
 
             var lstIDs = new List<int> { 1, 2, 3, 4, 5, 6 };
-            TableContext<UserPO>.Data.Select(o => o.ID).Where(o => o.ID > 0 && (o.UserName.Contains("aa") || lstIDs.Contains(o.ID.GetValueOrDefault())) && o.ID != 1 && o.PassWord.Length >= 2 && !lstIDs.Contains(o.ID.GetValueOrDefault())).Asc(o => o.ID).ToList();
+            TableContext<UserPO>.Data.Select(o => o.ID).Select(o => o.PassWord).Where(o => o.ID > 0 && (o.UserName.Contains("aa") || lstIDs.Contains(o.ID.GetValueOrDefault())) && o.ID != 1 && o.PassWord.Length >= 2 && !lstIDs.Contains(o.ID.GetValueOrDefault())).Asc(o => new { o.ID, o.PassWord }).Asc(o => o.LoginCount).Desc(o => o.LoginIP).ToList();
             return;
             var lst = TableContext<UserPO>.Data.Select(o => o.ID).Where(o => o.ID > 0).Asc(o => o.ID).ToList();
 

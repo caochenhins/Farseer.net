@@ -18,11 +18,11 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 查询字段的表达式树
         /// </summary>
-        Expression ExpSelect { get; set; }
+        List<Expression> ExpSelect { get; set; }
         /// <summary>
-        /// 排序字段的表达式树
+        /// 排序字段的表达式树(true:正序；false：倒序）
         /// </summary>
-        Expression ExpOrderBy { get; set; }
+        Dictionary<Expression, bool> ExpOrderBy { get; set; }
         /// <summary>
         /// 条件字段的表达式树
         /// </summary>

@@ -30,9 +30,9 @@ namespace FS.Core.Visit
             Query = query;
         }
 
-        public string Execute(Expression exp)
+        public string Execute(List<Expression> lstExp)
         {
-            Visit(exp);
+            lstExp.ForEach(exp => Visit(exp));
 
             var sb = new StringBuilder();
             SqlList.Reverse().ToList().ForEach(o => sb.Append(o + ","));
@@ -47,20 +47,19 @@ namespace FS.Core.Visit
             {
                 case ExpressionType.Lambda: return VisitLambda((LambdaExpression)exp);
                 case ExpressionType.New: return VisitNew((NewExpression)exp);
-                case ExpressionType.MemberAccess: return VisitMemberAccess((MemberExpression)exp);
+                case ExpressionType.MemberAccess: return CreateFieldName((MemberExpression)exp);
             }
             throw new Exception(string.Format("类型：(ExpressionType){0}，不存在。", exp.NodeType));
         }
 
-        protected virtual Expression VisitMemberAccess(MemberExpression m)
+        protected virtual Expression CreateFieldName(MemberExpression m)
         {
             if (m == null) return null;
 
             var keyValue = Map.GetModelInfo(m.Member.Name);
-            if (keyValue.Key == null) { return VisitMemberAccess((MemberExpression)m.Expression); }
+            if (keyValue.Key == null) { return CreateFieldName((MemberExpression)m.Expression); }
 
             // 加入Sql队列
-
             string filedName;
             if (!Query.DbProvider.IsField(keyValue.Value.Column.Name)) { filedName = keyValue.Value.Column.Name + " as " + keyValue.Key.Name; }
             else { filedName = Query.DbProvider.KeywordAegis(keyValue.Value.Column.Name); }

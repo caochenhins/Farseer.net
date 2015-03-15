@@ -19,7 +19,8 @@ namespace FS.Core.Context
         /// </summary>
         private TableSet() { }
 
-        internal TableSet(TableContext<TEntity> tableContext): this()
+        internal TableSet(TableContext<TEntity> tableContext)
+            : this()
         {
             _tableContext = tableContext;
             _tableContext.Query = DbFactory.CreateQuery(_tableContext);
@@ -33,7 +34,8 @@ namespace FS.Core.Context
         /// <param name="select">字段选择器</param>
         public TableSet<TEntity> Select<T>(Expression<Func<TEntity, T>> select)
         {
-            QueryQueue.ExpSelect = QueryQueue.ExpSelect == null ? QueryQueue.ExpSelect = select : Expression.Add(QueryQueue.ExpSelect, select);
+            if (QueryQueue.ExpSelect == null) { QueryQueue.ExpSelect = new List<Expression>(); }
+            if (select != null) { QueryQueue.ExpSelect.Add(select); }
             return this;
         }
 
@@ -49,19 +51,21 @@ namespace FS.Core.Context
 
         public TableSet<TEntity> Desc<TKey>(Expression<Func<TEntity, TKey>> desc)
         {
-            QueryQueue.ExpOrderBy = QueryQueue.ExpOrderBy == null ? QueryQueue.ExpOrderBy = desc : Expression.Add(QueryQueue.ExpOrderBy, desc);
+            if (QueryQueue.ExpOrderBy == null) { QueryQueue.ExpOrderBy = new Dictionary<Expression, bool>(); }
+            if (desc != null) { QueryQueue.ExpOrderBy.Add(desc, false); }
             return this;
         }
 
         public TableSet<TEntity> Asc<TKey>(Expression<Func<TEntity, TKey>> asc)
         {
-            QueryQueue.ExpOrderBy = QueryQueue.ExpOrderBy == null ? QueryQueue.ExpOrderBy = asc : Expression.Add(QueryQueue.ExpOrderBy, asc);
+            if (QueryQueue.ExpOrderBy == null) { QueryQueue.ExpOrderBy = new Dictionary<Expression, bool>(); }
+            if (asc != null) { QueryQueue.ExpOrderBy.Add(asc, true); }
             return this;
         }
 
         public TableSet<TEntity> Append(Expression<Func<TEntity, object>> fieldName, object fieldValue)
         {
-           // QueryQueue.ExpAssign = QueryQueue.ExpAssign == null ? QueryQueue.ExpAssign = asc : Expression.Add(QueryQueue.ExpAssign, asc);
+            // QueryQueue.ExpAssign = QueryQueue.ExpAssign == null ? QueryQueue.ExpAssign = asc : Expression.Add(QueryQueue.ExpAssign, asc);
             return this;
         }
 
@@ -185,7 +189,7 @@ namespace FS.Core.Context
         public T Sum<T>(Expression<Func<TEntity, object>> fieldName)
         {
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Sum操作时，fieldName参数不能为空！"); }
-            QueryQueue.ExpSelect = fieldName;
+            Select(fieldName);
 
             QueryQueue.SqlQuery<TEntity>().Sum();
             return QueryQueue.ExecuteQuery<T>();
@@ -196,7 +200,7 @@ namespace FS.Core.Context
         public T Max<T>(Expression<Func<TEntity, object>> fieldName)
         {
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Max操作时，fieldName参数不能为空！"); }
-            QueryQueue.ExpSelect = fieldName;
+            Select(fieldName);
 
             QueryQueue.SqlQuery<TEntity>().Max();
             return QueryQueue.ExecuteQuery<T>();
@@ -207,7 +211,7 @@ namespace FS.Core.Context
         public T Min<T>(Expression<Func<TEntity, object>> fieldName)
         {
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Min操作时，fieldName参数不能为空！"); }
-            QueryQueue.ExpSelect = fieldName;
+            Select(fieldName);
 
             QueryQueue.SqlQuery<TEntity>().Min();
             return QueryQueue.ExecuteQuery<T>();
@@ -218,7 +222,7 @@ namespace FS.Core.Context
         public T Value<T>(Expression<Func<TEntity, object>> fieldName)
         {
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Value操作时，fieldName参数不能为空！"); }
-            QueryQueue.ExpSelect = fieldName;
+            Select(fieldName);
 
             QueryQueue.SqlQuery<TEntity>().Value();
             return QueryQueue.ExecuteQuery<T>();

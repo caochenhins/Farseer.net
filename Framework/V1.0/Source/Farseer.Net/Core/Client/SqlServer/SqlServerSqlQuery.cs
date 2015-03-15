@@ -69,7 +69,7 @@ namespace FS.Core.Client.SqlServer
 
             if (!string.IsNullOrWhiteSpace(strOrderBySql))
             {
-                //_queryQueue.Sql.Append(string.Format("ORDERBY {0} ", strOrderBySql));
+                _queryQueue.Sql.Append(string.Format("ORDER BY {0} ", strOrderBySql));
             }
         }
 
