@@ -19,48 +19,10 @@ namespace Farseer.Net.Core.Tests.Context
             Expression<Func<UserPO, object>> select = o => new { o.ID, o.PassWord };
             Expression<Func<UserPO, object>> select2 = o => new { o.LoginCount, o.LoginIP };
 
-            //var oo = select.Parameters[0];
 
-            //var a = Expression.Invoke(oo, ((NewExpression)select.Body).Arguments.ToList(), select2);
-            //var b = Expression.Invoke(select2, oo);
-
-            //var x = Expression.New(((NewExpression)select.Body).Constructor, a.Expression, b.Expression);
-
-            //var lstParams = ((NewExpression)select1.Body).Arguments.ToList();
-            //lstParams.AddRange(((NewExpression)select2.Body).Arguments.ToList());
-
-            //var last = Expression.MemberInit(select1, lstParams);
-
-            //Expression<Func<TSource, TResult>> selector = null;
-
-            ////(rec)
-            //ParameterExpression param = Expression.Parameter(typeof(TSource), "o");
-            ////new ParadigmSearchListData 
-            //var v0 = Expression.New(typeof(TResult));
-            ////Number
-            //var v1 = typeof(TResult).GetProperty("Number");
-            ////rec.NUMBER
-            //var v2 = Expression.Property(param, typeof(TSource).GetProperty(colNumber));
-            ////Name
-            //var v3 = typeof(TResult).GetProperty("Name");
-            ////rec.RES_NAME
-            //var v4 = Expression.Property(param, typeof(TSource).GetProperty(colName));
-
-            //Expression body = Expression.MemberInit(v0,
-            //    //{ Number = rec.NUMBER, Name = rec.RES_NAME }
-            //    new MemberBinding[] 
-            //    {
-            //        //Number = rec.NUMBER
-            //        Expression.Bind(v1, v2),
-            //        //Name = rec.RES_NAME
-            //        Expression.Bind(v3, v4)
-            //    });
-
-
-
-            var lstIDs = new List<int> { 1, 2, 3, 4, 5, 6 };
-            TableContext<UserPO>.Data.Select(o => o.ID).Select(o => o.PassWord).Where(o => o.ID > 0 && (o.UserName.Contains("aa") || lstIDs.Contains(o.ID.GetValueOrDefault())) && o.ID != 1 && o.PassWord.Length >= 2 && !lstIDs.Contains(o.ID.GetValueOrDefault())).Asc(o => new { o.ID, o.PassWord }).Asc(o => o.LoginCount).Desc(o => o.LoginIP).ToList();
-            return;
+            //var lstIDs = new List<int> { 1, 2, 3, 4, 5, 6 };
+            //TableContext<UserPO>.Data.Select(o => o.ID).Select(o => o.PassWord).Where(o => o.ID > 0 && (o.UserName.Contains("aa") || lstIDs.Contains(o.ID.GetValueOrDefault())) && o.ID != 1 && o.PassWord.Length >= 2 && !lstIDs.Contains(o.ID.GetValueOrDefault())).Asc(o => new { o.ID, o.PassWord }).Asc(o => o.LoginCount).Desc(o => o.LoginIP).ToList();
+            //return;
             var lst = TableContext<UserPO>.Data.Select(o => o.ID).Where(o => o.ID > 0).Asc(o => o.ID).ToList();
 
             var info = TableContext<UserPO>.Data.Select(o => o.ID).Select(o => o.LoginCount).Where(o => o.ID > 1).ToInfo();
@@ -90,38 +52,6 @@ namespace Farseer.Net.Core.Tests.Context
             Assert.IsTrue(info.ID == lst[0].ID);
         }
 
-
-        private static Expression<Func<TSource, TResult>> CreateSelecter<TSource, TResult>(string colNumber, string colName)
-        {
-            Expression<Func<TSource, TResult>> selector = null;
-
-            //(rec)
-            ParameterExpression param = Expression.Parameter(typeof(TSource), "o");
-            //new ParadigmSearchListData 
-            var v0 = Expression.New(typeof(TResult));
-            //Number
-            var v1 = typeof(TResult).GetProperty("Number");
-            //rec.NUMBER
-            var v2 = Expression.Property(param, typeof(TSource).GetProperty(colNumber));
-            //Name
-            var v3 = typeof(TResult).GetProperty("Name");
-            //rec.RES_NAME
-            var v4 = Expression.Property(param, typeof(TSource).GetProperty(colName));
-
-            Expression body = Expression.MemberInit(v0,
-                //{ Number = rec.NUMBER, Name = rec.RES_NAME }
-                new MemberBinding[] 
-                {
-                    //Number = rec.NUMBER
-                    Expression.Bind(v1, v2),
-                    //Name = rec.RES_NAME
-                    Expression.Bind(v3, v4)
-                });
-
-            selector = (Expression<Func<TSource, TResult>>)Expression.Lambda(body, param);
-
-            return selector;
-        }
         [TestMethod]
         public void ToListTestMethod()
         {
@@ -142,17 +72,28 @@ namespace Farseer.Net.Core.Tests.Context
         public void InsertTestMethod()
         {
             var count = UserPO.Data.Count();
+            var currentCount = 0;
+            UserPO info;
             using (var table = new TableContext<UserPO>())
             {
                 table.TableSet.Insert(new UserPO() { UserName = "xx" });
                 table.SaveChanges();
-                Assert.IsTrue(table.TableSet.Desc(o => o.ID).ToInfo().UserName == "xx");
+
+                info = table.TableSet.Desc(o => o.ID).ToInfo();
+                Assert.IsTrue(info.UserName == "xx");
+
+                currentCount = table.TableSet.Count();
+                Assert.IsTrue(currentCount == count + 1);
             }
 
             TableContext<UserPO>.Data.Insert(new UserPO() { UserName = "yy" });
-            Assert.IsTrue(UserPO.Data.Desc(o => o.ID).ToInfo().UserName == "yy");
 
-            Assert.IsTrue(UserPO.Data.Count() == count + 2);
+
+            info = UserPO.Data.Desc(o => o.ID).ToInfo();
+            Assert.IsTrue(info.UserName == "yy");
+
+            currentCount = UserPO.Data.Count();
+            Assert.IsTrue(currentCount == count + 2);
 
 
         }
@@ -174,6 +115,5 @@ namespace Farseer.Net.Core.Tests.Context
             Assert.IsTrue(UserPO.Data.Desc(o => o.ID).ToInfo().UserName == "bb");
 
         }
-
     }
 }

@@ -174,8 +174,7 @@ namespace FS.Core.Infrastructure
         /// <param name="valu">参数值</param>
         /// <param name="lstIsJoinParam">已加入的参数</param>
         /// <param name="lstNewParam">当前加入的参数</param>
-        /// <param name="index">当前列表索引</param>
-        public DbParameter CreateDbParam(string name, object valu, List<DbParameter> lstIsJoinParam, List<DbParameter> lstNewParam)
+        public DbParameter CreateDbParam(string name, object valu, List<DbParameter> lstIsJoinParam,  List<DbParameter> lstNewParam)
         {
             int len;
             var type = GetDbType(valu, out len);
@@ -187,7 +186,6 @@ namespace FS.Core.Infrastructure
             {
                 newParam = CreateDbParam(name, valu, type, len);
                 newParam.ParameterName = ParamsPrefix + name;
-                if (lstNewParam == null) { lstNewParam = new List<DbParameter>(); }
                 lstNewParam.Add(newParam);
             }
             return newParam;

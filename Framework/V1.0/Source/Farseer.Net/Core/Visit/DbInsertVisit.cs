@@ -20,6 +20,7 @@ namespace FS.Core.Visit
         {
             QueryQueue = queryQueue;
             Query = query;
+            if (QueryQueue.Param == null) { QueryQueue.Param = new List<DbParameter>(); }
         }
 
         public string Execute<TEntity>(TEntity entity) where TEntity : class,new()
@@ -30,6 +31,8 @@ namespace FS.Core.Visit
             //  值
             var strValues = new StringBuilder();
 
+            //var lstParam = QueryQueue.Param;
+
             //  迭代实体赋值情况
             foreach (var kic in map.ModelList.Where(o => o.Value.IsDbField))
             {
@@ -37,13 +40,14 @@ namespace FS.Core.Visit
                 if (obj == null || obj is TableSet<TEntity>) { continue; }
 
                 //  查找组中是否存在已有的参数，有则直接取出
+
                 var newParam = Query.DbProvider.CreateDbParam(QueryQueue.Index + "_" + kic.Value.Column.Name, obj, Query.Param, QueryQueue.Param);
 
                 //  添加参数到列表
                 strFields.AppendFormat("{0},", Query.DbProvider.KeywordAegis(kic.Key.Name));
                 strValues.AppendFormat("{0},", newParam.ParameterName);
             }
-
+            //QueryQueue.Param = lstParam;
             return "(" + strFields.Remove(strFields.Length - 1, 1) + ") VALUES (" + strValues.Remove(strValues.Length - 1, 1) + ")";
         }
     }

@@ -12,6 +12,10 @@ namespace FS.Core.Infrastructure
     public interface IQueryQueue : IDisposable
     {
         /// <summary>
+        /// 当前队列的ID
+        /// </summary>
+        Guid ID { get; set; }
+        /// <summary>
         /// 当前组索引
         /// </summary>
         int Index { get; set; }
@@ -63,7 +67,7 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 延迟执行SQL生成
         /// </summary>
-        Action LazyAct { get; set; }
+        Action<IQueryQueue> LazyAct { get; set; }
 
         /// <summary>
         /// 将GroupQueryQueue提交到组中，并创建新的GroupQueryQueue

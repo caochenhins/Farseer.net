@@ -34,6 +34,7 @@ namespace FS.Core.Visit
         }
         public string Execute(Dictionary<Expression, bool> lstExp)
         {
+            if (lstExp == null || lstExp.Count == 0) { return null; }
             var sb = new StringBuilder();
             foreach (var keyValue in lstExp)
             {

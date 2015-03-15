@@ -32,6 +32,7 @@ namespace FS.Core.Visit
 
         public string Execute(List<Expression> lstExp)
         {
+            if (lstExp == null || lstExp.Count == 0) { return null; }
             lstExp.ForEach(exp => Visit(exp));
 
             var sb = new StringBuilder();

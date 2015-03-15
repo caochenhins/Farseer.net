@@ -56,7 +56,7 @@ namespace FS.Core.Client.SqlServer
             foreach (var queryQueue in GroupQueryQueueList)
             {
                 // 查看是否延迟加载
-                if (queryQueue.LazyAct != null) { queryQueue.LazyAct(); }
+                if (queryQueue.LazyAct != null) { queryQueue.LazyAct(queryQueue); }
                 if (queryQueue.Sql != null) { sb.AppendLine(queryQueue.Sql + ";"); }
             }
 

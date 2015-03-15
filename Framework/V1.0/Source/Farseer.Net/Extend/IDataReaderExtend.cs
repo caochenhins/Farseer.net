@@ -407,12 +407,7 @@ namespace FS.Extend
                     if (reader.HaveName(kic.Value.Column.Name))
                     {
                         if (!kic.Key.CanWrite) { continue; }
-                        var type = kic.Key.PropertyType;
-                        if (kic.Key.PropertyType.IsGenericType && kic.Key.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
-                        {
-                            type = kic.Key.PropertyType.GetGenericArguments()[0];
-                        }
-                        kic.Key.SetValue(t, Convert.ChangeType(reader[kic.Value.Column.Name], type), null);
+                        kic.Key.SetValue(t, reader[kic.Value.Column.Name].ConvertType(kic.Key.PropertyType), null);
                     }
                 }
 
@@ -443,7 +438,7 @@ namespace FS.Extend
                     if (reader.HaveName(kic.Value.Column.Name))
                     {
                         if (!kic.Key.CanWrite) { continue; }
-                        kic.Key.SetValue(t, Convert.ChangeType(reader[kic.Value.Column.Name], kic.Key.PropertyType), null);
+                        kic.Key.SetValue(t, reader[kic.Value.Column.Name].ConvertType(kic.Key.PropertyType), null);
                         isHaveValue = true;
                     }
                 }

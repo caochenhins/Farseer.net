@@ -78,6 +78,8 @@
     <Compile Include="Core\DbFactory.cs" />
     <Compile Include="Core\Infrastructure\ISqlQuery.cs" />
     <Compile Include="Extend\IDataReaderExtend.cs" />
+    <Compile Include="Extend\ObjectExtend.cs" />
+    <Compile Include="Extend\StringExtend.cs" />
     <Compile Include="Mapping\Table\DBAttribute.cs" />
     <Compile Include="Mapping\Table\FieldMapState.cs" />
     <Compile Include="Mapping\Table\TableMap.cs" />

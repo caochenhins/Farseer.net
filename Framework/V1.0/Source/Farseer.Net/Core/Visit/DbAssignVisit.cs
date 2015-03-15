@@ -21,13 +21,14 @@ namespace FS.Core.Visit
         {
             QueryQueue = queryQueue;
             Query = query;
+            if (QueryQueue.Param == null) { QueryQueue.Param = new List<DbParameter>(); }
         }
 
         public string Execute<TEntity>(TEntity entity) where TEntity : class,new()
         {
             var map = TableMapCache.GetMap(entity);
             var sb = new StringBuilder();
-
+             
             //  迭代实体赋值情况
             foreach (var kic in map.ModelList.Where(o => o.Value.IsDbField))
             {
@@ -45,7 +46,7 @@ namespace FS.Core.Visit
 
             return sb.Length > 0 ? sb.Remove(sb.Length - 1, 1).ToString() : sb.ToString();
         }
-        public string Execute(Expression expAssign, ref List<DbParameter> param)
+        public string Execute(Expression expAssign)
         {
             var sb = new StringBuilder();
             return sb.ToString();

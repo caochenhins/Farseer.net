@@ -13,15 +13,17 @@ namespace FS.Core.Client.SqlServer
     {
         private readonly IQuery _query;
         public Dictionary<Expression, bool> ExpOrderBy { get; set; }
+        public Guid ID { get; set; }
         public int Index { get; set; }
         public List<Expression> ExpSelect { get; set; }
         public Expression ExpWhere { get; set; }
         public Expression ExpAssign { get; set; }
         public StringBuilder Sql { get; set; }
         public List<DbParameter> Param { get; set; }
-        public Action LazyAct { get; set; }
+        public Action<IQueryQueue> LazyAct { get; set; }
         public SqlServerQueryQueue(int index, IQuery queryProvider)
         {
+            ID = Guid.NewGuid();
             Index = index;
             _query = queryProvider;
         }

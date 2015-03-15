@@ -67,10 +67,17 @@ namespace FS.Core.Context
         public int SaveChanges(bool isOlation = true)
         {
             // 开启或关闭事务
-            if (isOlation) { Database.OpenTran(IsolationLevel.Serializable);}
+            if (isOlation) { Database.OpenTran(IsolationLevel.Serializable); }
             else { Database.CloseTran(); }
 
-            return Query.Commit();
+            var result = Query.Commit();
+            // 如果开启了事务，则关闭
+            if (isOlation)
+            {
+                Database.Commit();
+                Database.CloseTran();
+            }
+            return result;
         }
 
         /// <summary>

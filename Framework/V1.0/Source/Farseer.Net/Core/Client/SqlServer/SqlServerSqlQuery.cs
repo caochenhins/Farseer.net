@@ -45,7 +45,7 @@ namespace FS.Core.Client.SqlServer
 
             if (!string.IsNullOrWhiteSpace(strOrderBySql))
             {
-                _queryQueue.Sql.Append(string.Format("ORDERBY {0} ", strOrderBySql));
+                _queryQueue.Sql.Append(string.Format("ORDER BY {0} ", strOrderBySql));
             }
         }
 
@@ -162,26 +162,22 @@ namespace FS.Core.Client.SqlServer
 
             if (!string.IsNullOrWhiteSpace(strOrderBySql))
             {
-                _queryQueue.Sql.Append(string.Format("ORDERBY {0} ", strOrderBySql));
+                _queryQueue.Sql.Append(string.Format("ORDER BY {0} ", strOrderBySql));
             }
         }
 
         public void Delete()
         {
             _queryQueue.Sql = new StringBuilder();
-            var param = new List<DbParameter>();
             var strWhereSql = new SqlServerWhereVisit<TEntity>(_query, _queryQueue).Execute(_queryQueue.ExpWhere);
 
             _queryQueue.Sql.AppendFormat("DELETE FROM {0} ", _query.DbProvider.KeywordAegis(_tableName));
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { _queryQueue.Sql.Append(string.Format("WHERE {0} ", strWhereSql)); }
-
-            _queryQueue.Param = param;
         }
 
         public void Insert(TEntity entity)
         {
             _queryQueue.Sql = new StringBuilder();
-            var param = new List<DbParameter>();
             var strinsertAssemble = new SqlServerInsertVisit(_query, _queryQueue).Execute(entity);
 
             var map = TableMapCache.GetMap(entity);
@@ -193,14 +189,11 @@ namespace FS.Core.Client.SqlServer
             _queryQueue.Sql.Append(strinsertAssemble);
 
             if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { _queryQueue.Sql.AppendFormat("; SET IDENTITY_INSERT {0} OFF ", _tableName); }
-
-            _queryQueue.Param = param;
         }
 
         public void InsertIdentity(TEntity entity)
         {
             _queryQueue.Sql = new StringBuilder();
-            var param = new List<DbParameter>();
             var strinsertAssemble = new SqlServerInsertVisit(_query, _queryQueue).Execute(entity);
 
             var map = TableMapCache.GetMap(entity);
@@ -214,35 +207,28 @@ namespace FS.Core.Client.SqlServer
             if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { _queryQueue.Sql.AppendFormat("; SET IDENTITY_INSERT {0} OFF; ", _tableName); }
 
             _queryQueue.Sql.AppendFormat("SELECT @@IDENTITY;");
-            _queryQueue.Param = param;
         }
 
         public void Update(TEntity entity)
         {
             _queryQueue.Sql = new StringBuilder();
-            var param = new List<DbParameter>();
             var strWhereSql = new SqlServerWhereVisit<TEntity>(_query, _queryQueue).Execute(_queryQueue.ExpWhere);
             var strAssemble = new SqlServerAssignVisit(_query, _queryQueue).Execute(entity);
 
             _queryQueue.Sql.AppendFormat("UPDATE {0} SET ", _query.DbProvider.KeywordAegis(_tableName));
             _queryQueue.Sql.Append(strAssemble);
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { _queryQueue.Sql.Append(string.Format(" WHERE {0} ", strWhereSql)); }
-
-            _queryQueue.Param = param;
         }
 
         public void AddUp()
         {
             _queryQueue.Sql = new StringBuilder();
-            var param = new List<DbParameter>();
             var strWhereSql = new SqlServerWhereVisit<TEntity>(_query, _queryQueue).Execute(_queryQueue.ExpWhere);
-            var strAssemble = new SqlServerAssignVisit(_query, _queryQueue).Execute(_queryQueue.ExpAssign, ref param);
+            var strAssemble = new SqlServerAssignVisit(_query, _queryQueue).Execute(_queryQueue.ExpAssign);
 
             _queryQueue.Sql.AppendFormat("UPDATE {0} SET ", _query.DbProvider.KeywordAegis(_tableName));
             _queryQueue.Sql.Append(strAssemble);
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { _queryQueue.Sql.Append(string.Format(" WHERE {0} ", strWhereSql)); }
-
-            _queryQueue.Param = param;
         }
 
         public void BulkCopy(List<TEntity> lst)

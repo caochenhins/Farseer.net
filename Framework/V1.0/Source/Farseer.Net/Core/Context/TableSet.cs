@@ -102,7 +102,7 @@ namespace FS.Core.Context
             //  判断是否启用合并提交
             if (_tableContext.IsMergeCommand)
             {
-                QueryQueue.LazyAct = () => QueryQueue.SqlQuery<TEntity>().Update(entity);
+                QueryQueue.LazyAct = (queryQueue) => queryQueue.SqlQuery<TEntity>().Update(entity);
                 Query.Append();
             }
             else
@@ -122,7 +122,7 @@ namespace FS.Core.Context
             //  判断是否启用合并提交
             if (_tableContext.IsMergeCommand)
             {
-                QueryQueue.LazyAct = () => QueryQueue.SqlQuery<TEntity>().Insert(entity);
+                QueryQueue.LazyAct = (queryQueue) => queryQueue.SqlQuery<TEntity>().Insert(entity);
                 Query.Append();
             }
             else
@@ -143,7 +143,7 @@ namespace FS.Core.Context
             if (_tableContext.IsMergeCommand)
             {
                 // 如果是MSSQLSER，则启用BulkCopy
-                if (_tableContext.Database.DataType == Data.DataBaseType.SqlServer) { QueryQueue.LazyAct = () => QueryQueue.SqlQuery<TEntity>().BulkCopy(lst); }
+                if (_tableContext.Database.DataType == Data.DataBaseType.SqlServer) { QueryQueue.LazyAct = (queryQueue) => queryQueue.SqlQuery<TEntity>().BulkCopy(lst); }
                 //else { QueryQueue.LazyAct = () => QueryQueue.SqlQuery<TEntity>().Insert(lst); }
 
                 Query.Append();
@@ -166,7 +166,7 @@ namespace FS.Core.Context
             //  判断是否启用合并提交
             if (_tableContext.IsMergeCommand)
             {
-                QueryQueue.LazyAct = () => QueryQueue.SqlQuery<TEntity>().Delete();
+                QueryQueue.LazyAct = (queryQueue) => queryQueue.SqlQuery<TEntity>().Delete();
                 Query.Append();
             }
             else
@@ -246,7 +246,7 @@ namespace FS.Core.Context
             //  判断是否启用合并提交
             if (_tableContext.IsMergeCommand)
             {
-                QueryQueue.LazyAct = () => QueryQueue.SqlQuery<TEntity>().AddUp();
+                QueryQueue.LazyAct = (queryQueue) => queryQueue.SqlQuery<TEntity>().AddUp();
                 Query.Append();
             }
             else
@@ -265,7 +265,7 @@ namespace FS.Core.Context
             //  判断是否启用合并提交
             if (_tableContext.IsMergeCommand)
             {
-                QueryQueue.LazyAct = () => QueryQueue.SqlQuery<TEntity>().BulkCopy(lst);
+                QueryQueue.LazyAct = (queryQueue) => queryQueue.SqlQuery<TEntity>().BulkCopy(lst);
                 Query.Append();
             }
             else
