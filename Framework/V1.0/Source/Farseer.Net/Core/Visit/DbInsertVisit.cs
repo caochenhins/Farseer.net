@@ -6,19 +6,25 @@ using FS.Core.Context;
 using FS.Core.Infrastructure;
 using FS.Mapping.Table;
 
-namespace FS.Core.Client.SqlServer.Visit
+namespace FS.Core.Visit
 {
     /// <summary>
     /// 组装赋值SQL
     /// </summary>
-    public class InsertVisit : SqlAssemble
+    public abstract class DbInsertVisit
     {
-        public InsertVisit(IQueryQueue queryQueue, DbProvider dbProvider, IList<DbParameter> lstParam) : base(queryQueue, dbProvider, lstParam) { }
+        protected readonly IQueryQueue QueryQueue;
+        protected readonly IQuery Query;
 
-        public string Execute<TEntity>(TEntity entity, ref IList<DbParameter> param) where TEntity : class,new()
+        public DbInsertVisit(IQuery query, IQueryQueue queryQueue)
+        {
+            QueryQueue = queryQueue;
+            Query = query;
+        }
+
+        public string Execute<TEntity>(TEntity entity, ref List<DbParameter> param) where TEntity : class,new()
         {
             var map = TableMapCache.GetMap(entity);
-            var lstParam = (List<DbParameter>)LstParam;
             //  字段
             var strFields = new StringBuilder();
             //  值
@@ -31,10 +37,10 @@ namespace FS.Core.Client.SqlServer.Visit
                 if (obj == null || obj is TableSet<TEntity>) { continue; }
 
                 //  查找组中是否存在已有的参数，有则直接取出
-                var newParam = DbProvider.CreateDbParam(kic.Value.Column.Name, obj, lstParam, param, QueryQueue.Index);
+                var newParam = Query.DbProvider.CreateDbParam(QueryQueue.Index + ">" + kic.Value.Column.Name, obj, Query.Param, param);
 
                 //  添加参数到列表
-                strFields.AppendFormat("{0},", DbProvider.KeywordAegis(kic.Key.Name));
+                strFields.AppendFormat("{0},", Query.DbProvider.KeywordAegis(kic.Key.Name));
                 strValues.AppendFormat("{0},", newParam.ParameterName);
             }
 

@@ -170,25 +170,24 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 从已有的参数列表中取出参数，如果不存在则创建。
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="valu"></param>
-        /// <param name="lstParam"></param>
-        /// <param name="param"></param>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public DbParameter CreateDbParam(string name, object valu, List<DbParameter> lstParam, IList<DbParameter> param, int index)
+        /// <param name="name">参数名称</param>
+        /// <param name="valu">参数值</param>
+        /// <param name="lstIsJoinParam">已加入的参数</param>
+        /// <param name="lstNewParam">当前加入的参数</param>
+        /// <param name="index">当前列表索引</param>
+        public DbParameter CreateDbParam(string name, object valu, List<DbParameter> lstIsJoinParam, IList<DbParameter> lstNewParam)
         {
             int len;
             var type = GetDbType(valu, out len);
             var newValu = ParamConvertValue(valu, type);
 
             //  查找组中是否存在已有的参数，有则直接取出
-            var newParam = (lstParam == null ? null : lstParam.Find(o => o.DbType == type && o.Value.GetType() == newValu.GetType() && o.Value.ToString() == newValu.ToString())) ?? param.ToList().Find(o => o.Value == valu && o.DbType == type);
+            var newParam = (lstIsJoinParam == null ? null : lstIsJoinParam.Find(o => o.DbType == type && o.Value.GetType() == newValu.GetType() && o.Value.ToString() == newValu.ToString())) ?? lstNewParam.ToList().Find(o => o.Value == valu && o.DbType == type);
             if (newParam == null)
             {
                 newParam = CreateDbParam(name, valu, type, len);
-                newParam.ParameterName = ParamsPrefix + index + "_" + name;
-                param.Add(newParam);
+                newParam.ParameterName = ParamsPrefix + name;
+                lstNewParam.Add(newParam);
             }
             return newParam;
         }

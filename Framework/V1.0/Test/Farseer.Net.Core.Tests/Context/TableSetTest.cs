@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Demo.PO.Table.Members;
+using FS.Core.Client.SqlServer;
+using FS.Core.Client.SqlServer.Visit;
 using FS.Core.Context;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
@@ -55,13 +58,9 @@ namespace Farseer.Net.Core.Tests.Context
 
 
 
-
-
-
-
-
-
-
+            var lstIDs = new List<int> { 1, 2, 3, 4, 5, 6 };
+            TableContext<UserPO>.Data.Select(o => o.ID).Where(o => o.ID > 0 && (o.UserName.Contains("aa") || lstIDs.Contains(o.ID.GetValueOrDefault())) && o.ID != 1 && o.PassWord.Length >= 2 && !lstIDs.Contains(o.ID.GetValueOrDefault())).Asc(o => o.ID).ToList();
+            return;
             var lst = TableContext<UserPO>.Data.Select(o => o.ID).Where(o => o.ID > 0).Asc(o => o.ID).ToList();
 
             var info = TableContext<UserPO>.Data.Select(o => o.ID).Select(o => o.LoginCount).Where(o => o.ID > 1).ToInfo();

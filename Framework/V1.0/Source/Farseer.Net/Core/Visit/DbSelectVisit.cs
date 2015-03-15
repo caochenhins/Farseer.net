@@ -1,17 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using FS.Core.Infrastructure;
+using FS.Mapping.Table;
 
-namespace FS.Core.Client.SqlServer.Visit
+namespace FS.Core.Visit
 {
-    public class SelectVisit<TEntity> : DbVisit<TEntity> where TEntity : class, new()
+    public abstract class DbSelectVisit<TEntity> where TEntity : class, new()
     {
-        public SelectVisit(IQueryQueue queryQueue, DbProvider dbProvider, IList<DbParameter> lstParam) : base(queryQueue, dbProvider, lstParam) { }
+        /// <summary>
+        ///     实体类映射
+        /// </summary>
+        protected readonly TableMap Map = typeof(TEntity);
+
+        /// <summary>
+        ///     条件堆栈
+        /// </summary>
+        protected readonly Stack<string> SqlList = new Stack<string>();
+
+        protected readonly IQueryQueue QueryQueue;
+        protected readonly IQuery Query;
+
+        public DbSelectVisit(IQuery query, IQueryQueue queryQueue)
+        {
+            QueryQueue = queryQueue;
+            Query = query;
+        }
 
         public string Execute(Expression exp)
         {
@@ -22,7 +39,7 @@ namespace FS.Core.Client.SqlServer.Visit
             return sb.Length > 0 ? sb.Remove(sb.Length - 1, 1).ToString() : sb.ToString();
         }
 
-        protected override Expression Visit(Expression exp)
+        protected virtual Expression Visit(Expression exp)
         {
             if (exp == null) { return null; }
 
@@ -35,7 +52,7 @@ namespace FS.Core.Client.SqlServer.Visit
             throw new Exception(string.Format("类型：(ExpressionType){0}，不存在。", exp.NodeType));
         }
 
-        private Expression VisitMemberAccess(MemberExpression m)
+        protected virtual Expression VisitMemberAccess(MemberExpression m)
         {
             if (m == null) return null;
 
@@ -45,26 +62,26 @@ namespace FS.Core.Client.SqlServer.Visit
             // 加入Sql队列
 
             string filedName;
-            if (!DbProvider.IsField(keyValue.Value.Column.Name)) { filedName = keyValue.Value.Column.Name + " as " + keyValue.Key.Name; }
-            else { filedName = DbProvider.KeywordAegis(keyValue.Value.Column.Name); }
+            if (!Query.DbProvider.IsField(keyValue.Value.Column.Name)) { filedName = keyValue.Value.Column.Name + " as " + keyValue.Key.Name; }
+            else { filedName = Query.DbProvider.KeywordAegis(keyValue.Value.Column.Name); }
             SqlList.Push(filedName);
             return m;
         }
 
-        private void VisitExpressionList(ReadOnlyCollection<Expression> original)
+        protected virtual void VisitExpressionList(ReadOnlyCollection<Expression> original)
         {
             var num = 0;
             var count = original.Count;
             while (num < count) { Visit(original[num]); num++; }
         }
 
-        private NewExpression VisitNew(NewExpression nex)
+        protected virtual NewExpression VisitNew(NewExpression nex)
         {
             VisitExpressionList(nex.Arguments);
             return nex;
         }
 
-        private Expression VisitLambda(LambdaExpression lambda)
+        protected virtual Expression VisitLambda(LambdaExpression lambda)
         {
             return Visit(lambda.Body);
         }

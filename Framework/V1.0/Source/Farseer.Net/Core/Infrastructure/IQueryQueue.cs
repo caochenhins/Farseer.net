@@ -38,7 +38,7 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 当前生成的参数
         /// </summary>
-        IList<DbParameter> Param { get; set; }
+        List<DbParameter> Param { get; set; }
 
         /// <summary>
         /// 当前队列立即交互数据库

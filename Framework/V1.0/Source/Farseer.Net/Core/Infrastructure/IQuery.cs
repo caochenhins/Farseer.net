@@ -14,18 +14,21 @@ namespace FS.Core.Infrastructure
         /// </summary>
         TableContext TableContext { get; }
 
-        List<IQueryQueue> GroupQueryQueueList { get; set; }
-
         /// <summary>
-        /// 当前组查询队列（支持批量提交SQL）
+        /// 当前所有持久化列表
         /// </summary>
-        IQueryQueue QueryQueue { get; }
+        //List<IQueryQueue> GroupQueryQueueList { get; set; }
 
         /// <summary>
         /// 根据索引，返回IQueryQueue
         /// </summary>
         /// <param name="index"></param>
-        IQueryQueue GetQueryQueue(int index);
+        //IQueryQueue GetQueryQueue(int index);
+
+        /// <summary>
+        /// 当前组查询队列（支持批量提交SQL）
+        /// </summary>
+        IQueryQueue QueryQueue { get; }
 
         /// <summary>
         /// 数据库提供者
@@ -35,7 +38,7 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 返回所有组队列的参数Param
         /// </summary>
-        IList<DbParameter> Param { get; }
+        List<DbParameter> Param { get; }
 
         /// <summary>
         /// 提交所有GetQueryQueue，完成数据库交互

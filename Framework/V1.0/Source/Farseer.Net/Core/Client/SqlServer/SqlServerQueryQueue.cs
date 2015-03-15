@@ -11,66 +11,65 @@ namespace FS.Core.Client.SqlServer
 {
     public class SqlServerQueryQueue : IQueryQueue
     {
-        private readonly IQuery _queryProvider;
+        private readonly IQuery _query;
         public Expression ExpOrderBy { get; set; }
         public int Index { get; set; }
         public Expression ExpSelect { get; set; }
         public Expression ExpWhere { get; set; }
         public Expression ExpAssign { get; set; }
         public StringBuilder Sql { get; set; }
-        public IList<DbParameter> Param { get; set; }
-
+        public List<DbParameter> Param { get; set; }
         public Action LazyAct { get; set; }
         public SqlServerQueryQueue(int index, IQuery queryProvider)
         {
             Index = index;
-            _queryProvider = queryProvider;
+            _query = queryProvider;
         }
 
         public ISqlQuery<TEntity> SqlQuery<TEntity>() where TEntity : class,new()
         {
-            return new SqlServerSqlQuery<TEntity>(this, _queryProvider.DbProvider, Param, _queryProvider.TableContext.TableName);
+            return new SqlServerSqlQuery<TEntity>(_query, this, _query.TableContext.TableName);
         }
 
         public void Append()
         {
-            _queryProvider.Append();
+            _query.Append();
         }
         public int Execute()
         {
-            var param = Param == null ? null : ((List<DbParameter>)Param).ToArray();
-            var result = Sql.Length < 1 ? 0 : _queryProvider.TableContext.Database.ExecuteNonQuery(CommandType.Text, Sql.ToString(), param);
-            _queryProvider.Clear();
+            var param = Param == null ? null : Param.ToArray();
+            var result = Sql.Length < 1 ? 0 : _query.TableContext.Database.ExecuteNonQuery(CommandType.Text, Sql.ToString(), param);
+            _query.Clear();
             return result;
         }
         public List<T> ExecuteList<T>() where T : class, new()
         {
-            var param = Param == null ? null : ((List<DbParameter>)Param).ToArray();
+            var param = Param == null ? null : Param.ToArray();
             List<T> lst;
-            using (var reader = _queryProvider.TableContext.Database.GetReader(CommandType.Text, Sql.ToString(), param))
+            using (var reader = _query.TableContext.Database.GetReader(CommandType.Text, Sql.ToString(), param))
             {
                 lst = reader.ToList<T>();
                 reader.Close();
             }
-            _queryProvider.Clear();
+            _query.Clear();
             return lst;
         }
         public T ExecuteInfo<T>() where T : class, new()
         {
-            var param = Param == null ? null : ((List<DbParameter>)Param).ToArray();
+            var param = Param == null ? null : Param.ToArray();
             T t;
-            using (var reader = _queryProvider.TableContext.Database.GetReader(CommandType.Text, Sql.ToString(), param))
+            using (var reader = _query.TableContext.Database.GetReader(CommandType.Text, Sql.ToString(), param))
             {
                 t = reader.ToInfo<T>();
                 reader.Close();
             }
-            _queryProvider.Clear();
+            _query.Clear();
             return t;
         }
         public T ExecuteQuery<T>()
         {
-            var param = Param == null ? null : ((List<DbParameter>)Param).ToArray();
-            var value = _queryProvider.TableContext.Database.ExecuteScalar(CommandType.Text, Sql.ToString(), param);
+            var param = Param == null ? null : Param.ToArray();
+            var value = _query.TableContext.Database.ExecuteScalar(CommandType.Text, Sql.ToString(), param);
             return (T)Convert.ChangeType(value, typeof(T));
         }
 

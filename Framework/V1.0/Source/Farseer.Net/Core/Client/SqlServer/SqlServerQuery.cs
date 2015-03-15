@@ -33,12 +33,12 @@ namespace FS.Core.Client.SqlServer
             return GroupQueryQueueList[index];
         }
 
-        public IList<DbParameter> Param
+        public List<DbParameter> Param
         {
             get
             {
-                if (GroupQueryQueueList.Count == 0) { return null; }
                 var lst = new List<DbParameter>();
+                //if (GroupQueryQueueList.Count == 0) { return null; }
                 GroupQueryQueueList.Where(o => o.Param != null).Select(o => o.Param).ToList().ForEach(lst.AddRange);
                 return lst;
             }
@@ -61,7 +61,7 @@ namespace FS.Core.Client.SqlServer
             }
 
             if (Param.Count > DbProvider.ParamsMaxLength) { throw new Exception(string.Format("SQL参数过多，当前数据库类型，最多支持：{0}个，目前生成了{1}个", DbProvider.ParamsMaxLength, Param.Count)); }
-            var result = TableContext.Database.ExecuteNonQuery(CommandType.Text, sb.ToString(), Param == null ? null : ((List<DbParameter>)Param).ToArray());
+            var result = TableContext.Database.ExecuteNonQuery(CommandType.Text, sb.ToString(), Param == null ? null : Param.ToArray());
 
             // 清除队列
             GroupQueryQueueList.ForEach(o => o.Dispose());
