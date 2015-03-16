@@ -24,6 +24,10 @@ namespace FS.Core.Infrastructure
 
         protected readonly IQueryQueue QueryQueue;
         protected readonly IQuery Query;
+        /// <summary>
+        /// 是否是字段筛选
+        /// </summary>
+        protected bool IsSelect;
 
         public DbExpressionNewProvider(IQuery query, IQueryQueue queryQueue)
         {
@@ -31,9 +35,17 @@ namespace FS.Core.Infrastructure
             Query = query;
         }
 
-        public virtual Expression Visit(Expression exp)
+        /// <summary>
+        /// 清除当前所有数据
+        /// </summary>
+        public void Clear()
+        {
+            SqlList.Clear();
+        }
+        public virtual Expression Visit(Expression exp, bool? isSelect = null)
         {
             if (exp == null) { return null; }
+            if (isSelect != null) { IsSelect = isSelect.GetValueOrDefault(); }
 
             switch (exp.NodeType)
             {
@@ -53,7 +65,10 @@ namespace FS.Core.Infrastructure
 
             // 加入Sql队列
             string filedName;
-            if (!Query.DbProvider.IsField(keyValue.Value.Column.Name)) { filedName = keyValue.Value.Column.Name + " as " + keyValue.Key.Name; }
+            if (!Query.DbProvider.IsField(keyValue.Value.Column.Name))
+            {
+                filedName = IsSelect ? keyValue.Value.Column.Name + " as " + keyValue.Key.Name : keyValue.Value.Column.Name;
+            }
             else { filedName = Query.DbProvider.KeywordAegis(keyValue.Value.Column.Name); }
             SqlList.Push(filedName);
             return m;

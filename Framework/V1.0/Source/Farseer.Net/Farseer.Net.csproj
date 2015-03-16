@@ -53,14 +53,14 @@
     <Compile Include="Configs\GeneralConfigs.cs" />
     <Compile Include="Configs\RewriterConfigs.cs" />
     <Compile Include="Configs\SystemConfigs.cs" />
-    <Compile Include="Core\Client\SqlServer\SqlServerExpressionNew.cs" />
     <Compile Include="Core\Client\SqlServer\SqlServerExpressionBool.cs" />
     <Compile Include="Core\Client\ExpressionVisit.cs" />
+    <Compile Include="Core\Client\SqlServer\SqlServerExpressionNew.cs" />
     <Compile Include="Core\Infrastructure\DbExpressionBoolProvider.cs" />
     <Compile Include="Core\Infrastructure\DbExpressionNewProvider.cs" />
     <Compile Include="Core\Client\SqlServer\SqlServerProvider.cs" />
-    <Compile Include="Core\Client\SqlServer\SqlServerQuery.cs" />
-    <Compile Include="Core\Client\SqlServer\SqlServerQueryQueue.cs" />
+    <Compile Include="Core\Client\DbQuery.cs" />
+    <Compile Include="Core\Client\DbQueryQueue.cs" />
     <Compile Include="Core\Client\SqlServer\SqlServerSqlQuery.cs" />
     <Compile Include="Core\Infrastructure\DbProvider.cs" />
     <Compile Include="Core\Infrastructure\IQueryQueue.cs" />

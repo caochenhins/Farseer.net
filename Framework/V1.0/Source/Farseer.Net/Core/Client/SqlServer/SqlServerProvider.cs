@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
+﻿using System.Data.Common;
 using FS.Core.Infrastructure;
 
 namespace FS.Core.Client.SqlServer
@@ -29,5 +25,14 @@ namespace FS.Core.Client.SqlServer
             return string.Format("[{0}]", fieldName);
         }
 
+        public override IQueryQueue CreateQueryQueue(int index, IQuery query)
+        {
+            return new DbQueryQueue(index, query);
+        }
+
+        public override ISqlQuery<TEntity> CreateSqlQuery<TEntity>(IQuery query, IQueryQueue queryQueue, string tableName)
+        {
+            return new SqlServerSqlQuery<TEntity>(query, queryQueue, tableName);
+        }
     }
 }

@@ -46,6 +46,7 @@ namespace FS.Core.Infrastructure
             return new Regex("^[a-z0-9_-]+$", RegexOptions.IgnoreCase).IsMatch(fieldName.Replace("(", "\\(").Replace(")", "\\)"));
         }
 
+        #region 创建参数
         /// <summary>
         /// 将C#值转成数据库能存储的值
         /// </summary>
@@ -174,7 +175,7 @@ namespace FS.Core.Infrastructure
         /// <param name="valu">参数值</param>
         /// <param name="lstIsJoinParam">已加入的参数</param>
         /// <param name="lstNewParam">当前加入的参数</param>
-        public DbParameter CreateDbParam(string name, object valu, List<DbParameter> lstIsJoinParam,  List<DbParameter> lstNewParam)
+        public DbParameter CreateDbParam(string name, object valu, List<DbParameter> lstIsJoinParam, List<DbParameter> lstNewParam)
         {
             int len;
             var type = GetDbType(valu, out len);
@@ -190,5 +191,24 @@ namespace FS.Core.Infrastructure
             }
             return newParam;
         }
+        #endregion
+
+        /// <summary>
+        /// 创建队列
+        /// </summary>
+        /// <param name="index">索引</param>
+        /// <param name="query">数据库持久化</param>
+        /// <returns></returns>
+        public abstract IQueryQueue CreateQueryQueue(int index, IQuery query);
+
+        /// <summary>
+        /// 创建SQL查询
+        /// </summary>
+        /// <typeparam name="TEntity">实体类</typeparam>
+        /// <param name="query">数据库持久化</param>
+        /// <param name="queryQueue">当前队列</param>
+        /// <param name="tableName">表名</param>
+        /// <returns></returns>
+        public abstract ISqlQuery<TEntity> CreateSqlQuery<TEntity>(IQuery query, IQueryQueue queryQueue, string tableName) where TEntity : class,new();
     }
 }

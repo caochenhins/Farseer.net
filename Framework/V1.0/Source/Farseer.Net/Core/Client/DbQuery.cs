@@ -2,32 +2,31 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
 using System.Text;
 using FS.Core.Context;
 using FS.Core.Infrastructure;
-using System.Linq;
 
-namespace FS.Core.Client.SqlServer
+namespace FS.Core.Client
 {
-    public class SqlServerQuery : IQuery
+    public class DbQuery : IQuery
     {
         public DbProvider DbProvider { get; set; }
         public TableContext TableContext { get; private set; }
-        public SqlServerQuery(TableContext tableContext)
+        public DbQuery(TableContext tableContext, DbProvider dbProvider)
         {
             TableContext = tableContext;
             GroupQueryQueueList = new List<IQueryQueue>();
-            DbProvider = new SqlServerProvider();
-
+            DbProvider = dbProvider;
             Clear();
         }
 
         /// <summary>
         /// 组列表
         /// </summary>
-        public List<IQueryQueue> GroupQueryQueueList { get; set; }
+        private List<IQueryQueue> GroupQueryQueueList { get; set; }
         private IQueryQueue _queryQueue;
-        public IQueryQueue QueryQueue { get { return _queryQueue ?? (_queryQueue = new SqlServerQueryQueue(GroupQueryQueueList.Count, this)); } }
+        public IQueryQueue QueryQueue { get { return _queryQueue ?? (_queryQueue = DbProvider.CreateQueryQueue(GroupQueryQueueList.Count, this)); } }
         public IQueryQueue GetQueryQueue(int index)
         {
             return GroupQueryQueueList[index];

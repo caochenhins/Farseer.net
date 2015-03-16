@@ -37,6 +37,7 @@ namespace FS.Core.Context
             Database = database;
             TableName = tableName;
             IsMergeCommand = true;
+            Query = DbFactory.CreateQuery(this);
         }
 
         /// <summary>

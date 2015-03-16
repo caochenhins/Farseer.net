@@ -42,6 +42,17 @@ namespace FS.Core.Infrastructure
             if (QueryQueue.Param == null) { QueryQueue.Param = new List<DbParameter>(); }
         }
 
+        /// <summary>
+        /// 清除当前所有数据
+        /// </summary>
+        public void Clear()
+        {
+            CurrentDbParameter = null;
+            currentFieldName = null;
+            m_ParamsCount = 0;
+            SqlList.Clear();
+        }
+
         public Expression Visit(Expression exp)
         {
             if (exp == null) { return null; }

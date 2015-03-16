@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using System.Web;
 using FS.Configs;
+using FS.Core.Client;
 using FS.Core.Client.SqlServer;
 using FS.Core.Context;
 using FS.Core.Data;
@@ -19,12 +20,12 @@ namespace FS.Core
         {
             switch (tableContext.Database.DataType)
             {
-                case DataBaseType.OleDb: return new SqlServerQuery(tableContext);
-                case DataBaseType.MySql: return new SqlServerQuery(tableContext);
-                case DataBaseType.Xml: return new SqlServerQuery(tableContext);
-                case DataBaseType.SQLite: return new SqlServerQuery(tableContext);
-                case DataBaseType.Oracle: return new SqlServerQuery(tableContext);
-                default: return new SqlServerQuery(tableContext);
+                case DataBaseType.OleDb: return new DbQuery(tableContext, new SqlServerProvider());
+                case DataBaseType.MySql: return new DbQuery(tableContext, new SqlServerProvider());
+                case DataBaseType.Xml: return new DbQuery(tableContext, new SqlServerProvider());
+                case DataBaseType.SQLite: return new DbQuery(tableContext, new SqlServerProvider());
+                case DataBaseType.Oracle: return new DbQuery(tableContext, new SqlServerProvider());
+                default: return new DbQuery(tableContext, new SqlServerProvider());
             }
         }
 

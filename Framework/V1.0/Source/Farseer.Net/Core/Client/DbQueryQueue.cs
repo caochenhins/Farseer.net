@@ -4,12 +4,13 @@ using System.Data;
 using System.Data.Common;
 using System.Linq.Expressions;
 using System.Text;
+using FS.Core.Client.SqlServer;
 using FS.Core.Infrastructure;
 using FS.Extend;
 
-namespace FS.Core.Client.SqlServer
+namespace FS.Core.Client
 {
-    public class SqlServerQueryQueue : IQueryQueue
+    public class DbQueryQueue : IQueryQueue
     {
         private readonly IQuery _query;
         public Dictionary<Expression, bool> ExpOrderBy { get; set; }
@@ -21,7 +22,7 @@ namespace FS.Core.Client.SqlServer
         public StringBuilder Sql { get; set; }
         public List<DbParameter> Param { get; set; }
         public Action<IQueryQueue> LazyAct { get; set; }
-        public SqlServerQueryQueue(int index, IQuery queryProvider)
+        public DbQueryQueue(int index, IQuery queryProvider)
         {
             ID = Guid.NewGuid();
             Index = index;
@@ -30,7 +31,7 @@ namespace FS.Core.Client.SqlServer
 
         public ISqlQuery<TEntity> SqlQuery<TEntity>() where TEntity : class,new()
         {
-            return new SqlServerSqlQuery<TEntity>(_query, this, _query.TableContext.TableName);
+            return _query.DbProvider.CreateSqlQuery<TEntity>(_query, this, _query.TableContext.TableName);
         }
 
         public void Append()

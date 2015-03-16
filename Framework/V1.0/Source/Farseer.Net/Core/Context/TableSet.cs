@@ -23,7 +23,7 @@ namespace FS.Core.Context
             : this()
         {
             _tableContext = tableContext;
-            _tableContext.Query = DbFactory.CreateQuery(_tableContext);
+            //_tableContext.Query = DbFactory.CreateQuery(_tableContext);
         }
 
         #region 条件

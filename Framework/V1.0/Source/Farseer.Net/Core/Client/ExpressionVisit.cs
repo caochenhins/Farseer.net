@@ -47,6 +47,8 @@ namespace FS.Core.Client
         /// <param name="entity">实体类</param>
         public string Assign(TEntity entity)
         {
+            Clear();
+
             var map = TableMapCache.GetMap(entity);
             var sb = new StringBuilder();
 
@@ -73,6 +75,8 @@ namespace FS.Core.Client
         /// <param name="expAssign">单个字段的赋值</param>
         public string Assign(Dictionary<Expression, object> expAssign)
         {
+            Clear();
+
             var sb = new StringBuilder();
             return sb.ToString();
 
@@ -104,6 +108,8 @@ namespace FS.Core.Client
         /// <param name="entity">实体类</param>
         public string Insert(TEntity entity)
         {
+            Clear();
+
             var map = TableMapCache.GetMap(entity);
             //  字段
             var strFields = new StringBuilder();
@@ -140,9 +146,9 @@ namespace FS.Core.Client
             var sb = new StringBuilder();
             foreach (var keyValue in lstExp)
             {
-                _expFields.Visit(keyValue.Key);
+                Clear();
+                _expFields.Visit(keyValue.Key, false);
                 _expFields.SqlList.Reverse().ToList().ForEach(o => sb.Append(o + ","));
-                _expFields.SqlList.Clear();
                 if (sb.Length <= 0) continue;
                 sb = sb.Remove(sb.Length - 1, 1); sb.Append(string.Format(" {0}", keyValue.Value ? "ASC," : "DESC,"));
             }
@@ -156,8 +162,9 @@ namespace FS.Core.Client
         /// <returns></returns>
         public string Select(List<Expression> lstExp)
         {
+            Clear();
             if (lstExp == null || lstExp.Count == 0) { return null; }
-            lstExp.ForEach(exp => _expFields.Visit(exp));
+            lstExp.ForEach(exp => _expFields.Visit(exp, true));
 
             var sb = new StringBuilder();
             _expFields.SqlList.Reverse().ToList().ForEach(o => sb.Append(o + ","));
@@ -175,6 +182,12 @@ namespace FS.Core.Client
             var sb = new StringBuilder();
             _expWhere.SqlList.Reverse().ToList().ForEach(o => sb.Append(o + ","));
             return sb.Length > 0 ? sb.Remove(sb.Length - 1, 1).ToString() : sb.ToString();
+        }
+
+        private void Clear()
+        {
+            _expFields.Clear();
+            _expWhere.Clear();
         }
     }
 }
