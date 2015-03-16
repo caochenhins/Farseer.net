@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{91113E61-664D-4C77-B3FF-F6C19DC09A25}</ProjectGuid>
+    <ProjectGuid>{710B2B72-A713-499E-BD88-D225606107BC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FS.Extend</RootNamespace>
-    <AssemblyName>Farseer.Net.Extend</AssemblyName>
+    <RootNamespace>FS.Utils.WinForm</RootNamespace>
+    <AssemblyName>Farseer.Net.Utils.WinForm</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,10 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,21 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BoolExtend.cs" />
-    <Compile Include="ControlExtend.cs" />
-    <Compile Include="DataTableExtend.cs" />
-    <Compile Include="DateTimeExtend.cs" />
-    <Compile Include="EnumExtend.cs" />
-    <Compile Include="ExpressionExtend.cs" />
-    <Compile Include="Extend.cs" />
-    <Compile Include="IDataReader.cs" />
-    <Compile Include="IOrderedQueryable.cs" />
-    <Compile Include="ListExtend.cs" />
-    <Compile Include="ModelExtend.cs" />
-    <Compile Include="ObjectExtend.cs" />
+    <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StringExtend.cs" />
-    <Compile Include="StructExtend.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Farseer.Net\Farseer.Net.csproj">

@@ -1,16 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using FS.Core.Data;
-using FS.Interface;
-using FS.Mapping.Table;
-using FS.Mapping.Verify;
-using FS.Utils.Common;
-using FS.Utils.Web;
 
 namespace FS.Extend
 {

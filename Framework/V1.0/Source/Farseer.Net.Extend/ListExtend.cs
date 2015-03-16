@@ -4,12 +4,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
-using System.Web.UI.WebControls;
-using FS.Interface;
-using FS.Mapping.Table;
-using FS.Utils.Common;
-using Repeater = FS.UI.Repeater;
-using FS.Extend;
 
 namespace FS.Extend
 {

@@ -94,6 +94,12 @@
     <Compile Include="Web\VeriCode.cs" />
     <Compile Include="Web\WebCache.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Farseer.Net\Farseer.Net.csproj">
+      <Project>{4f393e31-dfcd-434a-a350-53d635a99317}</Project>
+      <Name>Farseer.Net</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
