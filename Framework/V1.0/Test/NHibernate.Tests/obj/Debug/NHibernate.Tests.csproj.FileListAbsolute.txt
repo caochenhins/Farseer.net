@@ -1,0 +1,11 @@
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Test\NHibernate.Tests\bin\Debug\NHibernate.Tests.dll
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Test\NHibernate.Tests\bin\Debug\NHibernate.Tests.pdb
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Test\NHibernate.Tests\bin\Debug\Demo.Common.dll
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Test\NHibernate.Tests\bin\Debug\Demo.PO.dll
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Test\NHibernate.Tests\bin\Debug\Farseer.Net.dll
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Test\NHibernate.Tests\bin\Debug\Demo.Common.pdb
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Test\NHibernate.Tests\bin\Debug\Demo.PO.pdb
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Test\NHibernate.Tests\bin\Debug\Farseer.Net.pdb
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Test\NHibernate.Tests\obj\Debug\NHibernate.Tests.csprojResolveAssemblyReference.cache
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Test\NHibernate.Tests\obj\Debug\NHibernate.Tests.dll
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Test\NHibernate.Tests\obj\Debug\NHibernate.Tests.pdb

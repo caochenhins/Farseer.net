@@ -17,7 +17,7 @@ namespace FS.Core.Client.SqlServer
         public int Index { get; set; }
         public List<Expression> ExpSelect { get; set; }
         public Expression ExpWhere { get; set; }
-        public Expression ExpAssign { get; set; }
+        public Dictionary<Expression, object> ExpAssign { get; set; }
         public StringBuilder Sql { get; set; }
         public List<DbParameter> Param { get; set; }
         public Action<IQueryQueue> LazyAct { get; set; }

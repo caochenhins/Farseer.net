@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Text.RegularExpressions;
 using FS.Core.Infrastructure;
-using FS.Core.Visit;
 
-namespace FS.Core.Client.SqlServer.Visit
+namespace FS.Core.Client.SqlServer
 {
-    public class SqlServerWhereVisit<TEntity> : DbWhereVisit<TEntity> where TEntity : class, new()
+    public class SqlServerExpressionBool<TEntity> : DbExpressionBoolProvider<TEntity> where TEntity : class, new()
     {
-        public SqlServerWhereVisit(IQuery query, IQueryQueue queryQueue) : base(query, queryQueue) { }
+        public SqlServerExpressionBool(IQuery query, IQueryQueue queryQueue) : base(query, queryQueue) { }
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {

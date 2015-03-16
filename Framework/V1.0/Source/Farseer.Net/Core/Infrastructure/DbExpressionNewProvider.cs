@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data.Common;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.InteropServices;
-using System.Text;
-using FS.Core.Infrastructure;
 using FS.Mapping.Table;
 
-namespace FS.Core.Visit
+namespace FS.Core.Infrastructure
 {
-    public abstract class DbOrderByVisit<TEntity> where TEntity : class, new()
+    /// <summary>
+    /// 提供ExpressionNew表达式树的解析
+    /// </summary>
+    /// <typeparam name="TEntity">实体类</typeparam>
+    public abstract class DbExpressionNewProvider<TEntity> where TEntity : class, new()
     {
         /// <summary>
         ///     实体类映射
@@ -22,33 +20,18 @@ namespace FS.Core.Visit
         /// <summary>
         ///     条件堆栈
         /// </summary>
-        protected readonly Stack<string> SqlList = new Stack<string>();
+        public readonly Stack<string> SqlList = new Stack<string>();
 
         protected readonly IQueryQueue QueryQueue;
         protected readonly IQuery Query;
 
-        public DbOrderByVisit(IQuery query, IQueryQueue queryQueue)
+        public DbExpressionNewProvider(IQuery query, IQueryQueue queryQueue)
         {
             QueryQueue = queryQueue;
             Query = query;
         }
-        public string Execute(Dictionary<Expression, bool> lstExp)
-        {
-            if (lstExp == null || lstExp.Count == 0) { return null; }
-            var sb = new StringBuilder();
-            foreach (var keyValue in lstExp)
-            {
-                Visit(keyValue.Key);
-                SqlList.Reverse().ToList().ForEach(o => sb.Append(o + ","));
-                SqlList.Clear();
-                if (sb.Length <= 0) continue;
-                sb = sb.Remove(sb.Length - 1, 1); sb.Append(string.Format(" {0}", keyValue.Value ? "ASC," : "DESC,"));
-            }
 
-            return sb.Length > 0 ? sb.Remove(sb.Length - 1, 1).ToString() : sb.ToString();
-        }
-
-        protected virtual Expression Visit(Expression exp)
+        public virtual Expression Visit(Expression exp)
         {
             if (exp == null) { return null; }
 
@@ -70,7 +53,7 @@ namespace FS.Core.Visit
 
             // 加入Sql队列
             string filedName;
-            if (!Query.DbProvider.IsField(keyValue.Value.Column.Name)) { filedName = keyValue.Value.Column.Name; }
+            if (!Query.DbProvider.IsField(keyValue.Value.Column.Name)) { filedName = keyValue.Value.Column.Name + " as " + keyValue.Key.Name; }
             else { filedName = Query.DbProvider.KeywordAegis(keyValue.Value.Column.Name); }
             SqlList.Push(filedName);
             return m;

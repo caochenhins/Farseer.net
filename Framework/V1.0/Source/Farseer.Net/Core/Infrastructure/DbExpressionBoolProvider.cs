@@ -5,13 +5,15 @@ using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using FS.Core.Infrastructure;
 using FS.Mapping.Table;
 
-namespace FS.Core.Visit
+namespace FS.Core.Infrastructure
 {
-    public abstract class DbWhereVisit<TEntity> where TEntity : class, new()
+    /// <summary>
+    /// 提供ExpressionBinary表达式树的解析
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
+    public abstract class DbExpressionBoolProvider<TEntity> where TEntity : class, new()
     {
         /// <summary>
         ///     实体类映射
@@ -21,7 +23,7 @@ namespace FS.Core.Visit
         /// <summary>
         ///     条件堆栈
         /// </summary>
-        protected readonly Stack<string> SqlList = new Stack<string>();
+        public readonly Stack<string> SqlList = new Stack<string>();
 
         /// <summary>
         ///     参数个数（标识）
@@ -33,23 +35,14 @@ namespace FS.Core.Visit
         private string currentFieldName;
         protected DbParameter CurrentDbParameter;
 
-        public DbWhereVisit(IQuery query, IQueryQueue queryQueue)
+        public DbExpressionBoolProvider(IQuery query, IQueryQueue queryQueue)
         {
             QueryQueue = queryQueue;
             Query = query;
             if (QueryQueue.Param == null) { QueryQueue.Param = new List<DbParameter>(); }
         }
 
-        public string Execute(Expression exp)
-        {
-            Visit(exp);
-
-            var sb = new StringBuilder();
-            SqlList.Reverse().ToList().ForEach(o => sb.Append(o + ","));
-            return sb.Length > 0 ? sb.Remove(sb.Length - 1, 1).ToString() : sb.ToString();
-        }
-
-        protected Expression Visit(Expression exp)
+        public Expression Visit(Expression exp)
         {
             if (exp == null) { return null; }
             switch (exp.NodeType)

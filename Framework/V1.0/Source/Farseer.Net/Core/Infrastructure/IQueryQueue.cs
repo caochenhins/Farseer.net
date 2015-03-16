@@ -34,7 +34,7 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 赋值字段的表达式树
         /// </summary>
-        Expression ExpAssign { get; set; }
+        Dictionary<Expression, object> ExpAssign { get; set; }
         /// <summary>
         /// 当前生成的SQL
         /// </summary>
@@ -72,7 +72,7 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 将GroupQueryQueue提交到组中，并创建新的GroupQueryQueue
         /// </summary>
-        void Append();
+        //void Append();
 
         ISqlQuery<TEntity> SqlQuery<TEntity>() where TEntity : class, new();
     }

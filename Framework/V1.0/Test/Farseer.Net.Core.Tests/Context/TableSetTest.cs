@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Demo.PO.Table.Members;
 using FS.Core.Client.SqlServer;
-using FS.Core.Client.SqlServer.Visit;
 using FS.Core.Context;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
@@ -16,13 +15,6 @@ namespace Farseer.Net.Core.Tests.Context
         [TestMethod]
         public void ToInfoTestMethod()
         {
-            Expression<Func<UserPO, object>> select = o => new { o.ID, o.PassWord };
-            Expression<Func<UserPO, object>> select2 = o => new { o.LoginCount, o.LoginIP };
-
-
-            //var lstIDs = new List<int> { 1, 2, 3, 4, 5, 6 };
-            //TableContext<UserPO>.Data.Select(o => o.ID).Select(o => o.PassWord).Where(o => o.ID > 0 && (o.UserName.Contains("aa") || lstIDs.Contains(o.ID.GetValueOrDefault())) && o.ID != 1 && o.PassWord.Length >= 2 && !lstIDs.Contains(o.ID.GetValueOrDefault())).Asc(o => new { o.ID, o.PassWord }).Asc(o => o.LoginCount).Desc(o => o.LoginIP).ToList();
-            //return;
             var lst = TableContext<UserPO>.Data.Select(o => o.ID).Where(o => o.ID > 0).Asc(o => o.ID).ToList();
 
             var info = TableContext<UserPO>.Data.Select(o => o.ID).Select(o => o.LoginCount).Where(o => o.ID > 1).ToInfo();
@@ -39,6 +31,7 @@ namespace Farseer.Net.Core.Tests.Context
 
 
 
+            Expression<Func<UserPO, object>> select = o => new { o.ID, o.PassWord };
             info = TableContext<UserPO>.Data.Select(select).ToInfo();
             Assert.IsNotNull(info);
             Assert.IsTrue(info.PassWord != null && info.GenderType == null && info.LoginIP == null && info.UserName == null && info.ID != null && info.LoginCount == null);
@@ -58,7 +51,6 @@ namespace Farseer.Net.Core.Tests.Context
             var lst = TableContext<UserPO>.Data.ToList();
             Assert.IsTrue(lst != null && lst.Count > 0);
             var ID = lst[0].ID.GetValueOrDefault();
-
 
             lst = TableContext<UserPO>.Data.Select(o => new { o.ID, o.PassWord, o.GetDate }).Where(o => o.ID == ID).Desc(o => new { o.LoginCount, o.GenderType }).Asc(o => o.ID).Desc(o => o.GetDate).ToList();
             var info = lst[0];

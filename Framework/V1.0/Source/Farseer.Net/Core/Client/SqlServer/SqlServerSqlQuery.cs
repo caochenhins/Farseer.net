@@ -4,9 +4,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using FS.Core.Client.SqlServer.Visit;
 using FS.Core.Infrastructure;
-using FS.Core.Visit;
 using FS.Extend;
 using FS.Mapping.Table;
 
@@ -17,20 +15,22 @@ namespace FS.Core.Client.SqlServer
         private readonly IQueryQueue _queryQueue;
         private readonly string _tableName;
         private readonly IQuery _query;
+        private readonly ExpressionVisit<TEntity> _visit;
 
         public SqlServerSqlQuery(IQuery query, IQueryQueue queryQueue, string tableName)
         {
             _query = query;
             _queryQueue = queryQueue;
             _tableName = tableName;
+            _visit = new ExpressionVisit<TEntity>(query, queryQueue, new SqlServerExpressionNew<TEntity>(query, queryQueue), new SqlServerExpressionBool<TEntity>(query, queryQueue));
         }
 
         public void ToInfo()
         {
             _queryQueue.Sql = new StringBuilder();
-            var strSelectSql = new SqlServerSelectVisit<TEntity>(_query, _queryQueue).Execute(_queryQueue.ExpSelect);
-            var strWhereSql = new SqlServerWhereVisit<TEntity>(_query, _queryQueue).Execute(_queryQueue.ExpWhere);
-            var strOrderBySql = new SqlServerOrderByVisit<TEntity>(_query, _queryQueue).Execute(_queryQueue.ExpOrderBy);
+            var strSelectSql = _visit.Select(_queryQueue.ExpSelect);
+            var strWhereSql = _visit.Where(_queryQueue.ExpWhere);
+            var strOrderBySql = _visit.OrderBy(_queryQueue.ExpOrderBy);
 
 
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "*"; }
@@ -51,9 +51,9 @@ namespace FS.Core.Client.SqlServer
 
         public void ToList()
         {
-            var strSelectSql = new SqlServerSelectVisit<TEntity>(_query, _queryQueue).Execute(_queryQueue.ExpSelect);
-            var strWhereSql = new SqlServerWhereVisit<TEntity>(_query, _queryQueue).Execute(_queryQueue.ExpWhere);
-            var strOrderBySql = new SqlServerOrderByVisit<TEntity>(_query, _queryQueue).Execute(_queryQueue.ExpOrderBy);
+            var strSelectSql = _visit.Select(_queryQueue.ExpSelect);
+            var strWhereSql = _visit.Where(_queryQueue.ExpWhere);
+            var strOrderBySql = _visit.OrderBy(_queryQueue.ExpOrderBy);
 
             _queryQueue.Sql = new StringBuilder();
 
@@ -76,7 +76,7 @@ namespace FS.Core.Client.SqlServer
         public void Count()
         {
             _queryQueue.Sql = new StringBuilder();
-            var strWhereSql = new SqlServerWhereVisit<TEntity>(_query, _queryQueue).Execute(_queryQueue.ExpWhere);
+            var strWhereSql = _visit.Where(_queryQueue.ExpWhere);
 
             _queryQueue.Sql.Append(string.Format("SELECT Count(0) "));
 
@@ -91,8 +91,8 @@ namespace FS.Core.Client.SqlServer
         public void Sum()
         {
             _queryQueue.Sql = new StringBuilder();
-            var strSelectSql = new SqlServerSelectVisit<TEntity>(_query, _queryQueue).Execute(_queryQueue.ExpSelect);
-            var strWhereSql = new SqlServerWhereVisit<TEntity>(_query, _queryQueue).Execute(_queryQueue.ExpWhere);
+            var strSelectSql = _visit.Select(_queryQueue.ExpSelect);
+            var strWhereSql = _visit.Where(_queryQueue.ExpWhere);
 
 
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "0"; }
@@ -109,8 +109,8 @@ namespace FS.Core.Client.SqlServer
         public void Max()
         {
             _queryQueue.Sql = new StringBuilder();
-            var strSelectSql = new SqlServerSelectVisit<TEntity>(_query, _queryQueue).Execute(_queryQueue.ExpSelect);
-            var strWhereSql = new SqlServerWhereVisit<TEntity>(_query, _queryQueue).Execute(_queryQueue.ExpWhere);
+            var strSelectSql = _visit.Select(_queryQueue.ExpSelect);
+            var strWhereSql = _visit.Where(_queryQueue.ExpWhere);
 
 
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "0"; }
@@ -127,8 +127,8 @@ namespace FS.Core.Client.SqlServer
         public void Min()
         {
             _queryQueue.Sql = new StringBuilder();
-            var strSelectSql = new SqlServerSelectVisit<TEntity>(_query, _queryQueue).Execute(_queryQueue.ExpSelect);
-            var strWhereSql = new SqlServerWhereVisit<TEntity>(_query, _queryQueue).Execute(_queryQueue.ExpWhere);
+            var strSelectSql = _visit.Select(_queryQueue.ExpSelect);
+            var strWhereSql = _visit.Where(_queryQueue.ExpWhere);
 
 
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "0"; }
@@ -145,9 +145,9 @@ namespace FS.Core.Client.SqlServer
         public void Value()
         {
             _queryQueue.Sql = new StringBuilder();
-            var strSelectSql = new SqlServerSelectVisit<TEntity>(_query, _queryQueue).Execute(_queryQueue.ExpSelect);
-            var strWhereSql = new SqlServerWhereVisit<TEntity>(_query, _queryQueue).Execute(_queryQueue.ExpWhere);
-            var strOrderBySql = new SqlServerOrderByVisit<TEntity>(_query, _queryQueue).Execute(_queryQueue.ExpOrderBy);
+            var strSelectSql = _visit.Select(_queryQueue.ExpSelect);
+            var strWhereSql = _visit.Where(_queryQueue.ExpWhere);
+            var strOrderBySql = _visit.OrderBy(_queryQueue.ExpOrderBy);
 
 
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "*"; }
@@ -169,7 +169,7 @@ namespace FS.Core.Client.SqlServer
         public void Delete()
         {
             _queryQueue.Sql = new StringBuilder();
-            var strWhereSql = new SqlServerWhereVisit<TEntity>(_query, _queryQueue).Execute(_queryQueue.ExpWhere);
+            var strWhereSql = _visit.Where(_queryQueue.ExpWhere);
 
             _queryQueue.Sql.AppendFormat("DELETE FROM {0} ", _query.DbProvider.KeywordAegis(_tableName));
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { _queryQueue.Sql.Append(string.Format("WHERE {0} ", strWhereSql)); }
@@ -178,7 +178,7 @@ namespace FS.Core.Client.SqlServer
         public void Insert(TEntity entity)
         {
             _queryQueue.Sql = new StringBuilder();
-            var strinsertAssemble = new SqlServerInsertVisit(_query, _queryQueue).Execute(entity);
+            var strinsertAssemble = _visit.Insert(entity);
 
             var map = TableMapCache.GetMap(entity);
 
@@ -194,7 +194,7 @@ namespace FS.Core.Client.SqlServer
         public void InsertIdentity(TEntity entity)
         {
             _queryQueue.Sql = new StringBuilder();
-            var strinsertAssemble = new SqlServerInsertVisit(_query, _queryQueue).Execute(entity);
+            var strinsertAssemble = _visit.Insert(entity);
 
             var map = TableMapCache.GetMap(entity);
 
@@ -212,8 +212,8 @@ namespace FS.Core.Client.SqlServer
         public void Update(TEntity entity)
         {
             _queryQueue.Sql = new StringBuilder();
-            var strWhereSql = new SqlServerWhereVisit<TEntity>(_query, _queryQueue).Execute(_queryQueue.ExpWhere);
-            var strAssemble = new SqlServerAssignVisit(_query, _queryQueue).Execute(entity);
+            var strWhereSql = _visit.Where(_queryQueue.ExpWhere);
+            var strAssemble = _visit.Assign(entity);
 
             _queryQueue.Sql.AppendFormat("UPDATE {0} SET ", _query.DbProvider.KeywordAegis(_tableName));
             _queryQueue.Sql.Append(strAssemble);
@@ -223,8 +223,8 @@ namespace FS.Core.Client.SqlServer
         public void AddUp()
         {
             _queryQueue.Sql = new StringBuilder();
-            var strWhereSql = new SqlServerWhereVisit<TEntity>(_query, _queryQueue).Execute(_queryQueue.ExpWhere);
-            var strAssemble = new SqlServerAssignVisit(_query, _queryQueue).Execute(_queryQueue.ExpAssign);
+            var strWhereSql = _visit.Where(_queryQueue.ExpWhere);
+            var strAssemble = _visit.Assign(_queryQueue.ExpAssign);
 
             _queryQueue.Sql.AppendFormat("UPDATE {0} SET ", _query.DbProvider.KeywordAegis(_tableName));
             _queryQueue.Sql.Append(strAssemble);
