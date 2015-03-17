@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using FS.Extend;
 
-namespace FS.Utils.Common
+namespace FS.Utils
 {
     /// <summary>
     ///     解释字符串

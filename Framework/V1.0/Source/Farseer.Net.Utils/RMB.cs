@@ -1,7 +1,7 @@
 ﻿using System;
 using FS.Extend;
 
-namespace FS.Utils.Common
+namespace FS.Utils
 {
     /// <summary>
     ///     人民币

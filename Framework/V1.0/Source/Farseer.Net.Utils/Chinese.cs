@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using Microsoft.VisualBasic;
 
-namespace FS.Utils.Common
+namespace FS.Utils
 {
     /// <summary>
     ///     语言工具

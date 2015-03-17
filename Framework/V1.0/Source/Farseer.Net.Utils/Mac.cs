@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Management;
 
-namespace FS.Utils.Common
+namespace FS.Utils
 {
     /// <summary>
     /// 机器硬件信息

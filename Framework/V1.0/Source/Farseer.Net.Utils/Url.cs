@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Text.RegularExpressions;
 using FS.Extend;
 
@@ -8,7 +7,7 @@ namespace FS.Utils
     /// <summary>
     ///     解释Url
     /// </summary>
-    public abstract class Url
+    public partial class Url
     {
         /// <summary>
         ///     检测是否是正确的Url

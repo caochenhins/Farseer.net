@@ -2,9 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using FS.Extend;
 
-namespace FS.Utils.Common
+namespace FS.Utils
 {
     /// <summary>
     ///     继承IComparer接口，实现同一自定义类型　对象比较

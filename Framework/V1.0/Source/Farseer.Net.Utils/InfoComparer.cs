@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FS.Utils.Common
+namespace FS.Utils
 {
     /// <summary>
     ///     对象比较的实现

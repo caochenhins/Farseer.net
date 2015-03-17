@@ -2,7 +2,7 @@
 using System.Linq;
 using FS.Extend;
 
-namespace FS.Utils.Common
+namespace FS.Utils
 {
     /// <summary>
     /// 行政区划代码

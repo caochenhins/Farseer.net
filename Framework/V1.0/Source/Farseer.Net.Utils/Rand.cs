@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FS.Utils.Common
+namespace FS.Utils
 {
     /// <summary>
     ///     随机数工具

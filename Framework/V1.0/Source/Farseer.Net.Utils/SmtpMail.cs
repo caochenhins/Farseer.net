@@ -4,9 +4,8 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 using FS.Configs;
-using FS.Extend;
 
-namespace FS.Utils.Common
+namespace FS.Utils
 {
     /// <summary>
     ///     E-Mail工具

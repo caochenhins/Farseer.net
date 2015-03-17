@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Text;
 using FS.Core.Infrastructure;
-using FS.Extend;
 using FS.Mapping.Table;
 
 namespace FS.Core.Client.SqlServer

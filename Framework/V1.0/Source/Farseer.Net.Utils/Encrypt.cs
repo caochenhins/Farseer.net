@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using FS.Extend;
 
-namespace FS.Utils.Common
+namespace FS.Utils
 {
     /// <summary>
     ///     º”√‹π§æﬂ

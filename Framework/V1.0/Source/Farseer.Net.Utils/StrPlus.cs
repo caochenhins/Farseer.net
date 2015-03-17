@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace FS.Utils.Common
+namespace FS.Utils
 {
     /// <summary>
     ///     对StringBuilder再封装

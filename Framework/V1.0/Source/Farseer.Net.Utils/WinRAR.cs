@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
 
-namespace FS.Utils.Common
+namespace FS.Utils
 {
     /// <summary>
     ///     解压缩文件

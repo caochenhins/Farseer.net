@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using Microsoft.Win32;
 
-namespace FS.Utils.Common
+namespace FS.Utils
 {
     /// <summary>
     /// Process管理

@@ -1,8 +1,7 @@
 ﻿using System.Linq;
 using System.Text.RegularExpressions;
-using FS.Extend;
 
-namespace FS.Utils.Common
+namespace FS.Utils
 {
     /// <summary>
     ///     判断类型

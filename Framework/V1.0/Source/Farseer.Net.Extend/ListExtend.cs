@@ -3,9 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using FS.Core.Infrastructure;
-using FS.Extend.Infrastructure;
 using FS.Mapping.Table;
 
 namespace FS.Extend

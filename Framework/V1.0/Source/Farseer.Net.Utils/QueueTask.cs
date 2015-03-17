@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FS.Utils.Common
+namespace FS.Utils
 {
     /// <summary>
     /// 队列执行

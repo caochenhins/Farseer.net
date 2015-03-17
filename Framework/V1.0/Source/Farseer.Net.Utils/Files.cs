@@ -4,16 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web;
-using FS.Configs;
 using FS.Extend;
 
-namespace FS.Utils.Common
+namespace FS.Utils
 {
     /// <summary>
     ///     文件工具
     /// </summary>
-    public abstract class Files
+    public partial class Files
     {
 
         /// <summary>

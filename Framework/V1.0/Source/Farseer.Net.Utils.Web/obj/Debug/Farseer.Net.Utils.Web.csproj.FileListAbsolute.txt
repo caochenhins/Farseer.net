@@ -1,0 +1,7 @@
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Source\Farseer.Net.Utils.Web\obj\Debug\Farseer.Net.Utils.Web.csprojResolveAssemblyReference.cache
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Source\Farseer.Net.Utils.Web\obj\Debug\Farseer.Net.Utils.WebForm.dll
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Source\Farseer.Net.Utils.Web\obj\Debug\Farseer.Net.Utils.WebForm.pdb
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Source\Farseer.Net.Utils.Web\bin\Debug\Farseer.Net.Utils.WebForm.dll
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Source\Farseer.Net.Utils.Web\bin\Debug\Farseer.Net.Utils.WebForm.pdb
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Source\Farseer.Net.Utils.Web\bin\Debug\Farseer.Net.dll
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Source\Farseer.Net.Utils.Web\bin\Debug\Farseer.Net.pdb

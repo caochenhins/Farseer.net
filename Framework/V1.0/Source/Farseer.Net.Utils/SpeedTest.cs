@@ -4,16 +4,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Web;
-using FS.Extend;
 
-namespace FS.Utils.Common
+namespace FS.Utils
 {
     /// <summary>
     ///     测试效率的工具
     ///     用于做平均效率测试
     /// </summary>
-    public class SpeedTest : IDisposable
+    public partial class SpeedTest : IDisposable
     {
         /// <summary>
         ///     锁定

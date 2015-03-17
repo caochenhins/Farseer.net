@@ -11,7 +11,7 @@ namespace FS.Utils
     /// <summary>
     ///     下载文件
     /// </summary>
-    public abstract class Net
+    public partial class Net
     {
         /// <summary>
         ///     下载文件到服务器

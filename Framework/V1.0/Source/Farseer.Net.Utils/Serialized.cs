@@ -1,7 +1,7 @@
 using System.IO;
 using System.Xml.Serialization;
 
-namespace FS.Utils.Common
+namespace FS.Utils
 {
     /// <summary>
     ///     SerializationHelper 的摘要说明。

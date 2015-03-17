@@ -6,7 +6,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 
-namespace FS.Utils.Common
+namespace FS.Utils
 {
     /// <summary>
     /// Json包

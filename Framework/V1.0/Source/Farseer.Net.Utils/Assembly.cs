@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace FS.Utils.Common
+namespace FS.Utils
 {
     /// <summary>
     ///     获取版本信息

@@ -5,7 +5,6 @@ using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
 using FS.Mapping.Table;
 
 namespace FS.Extend
@@ -106,7 +105,7 @@ namespace FS.Extend
                 il.Emit(OpCodes.Newobj, typeof(List<T>).GetConstructor(Type.EmptyTypes));
                 il.Emit(OpCodes.Stloc_S, list);
                 // [ int %index% = arg.GetOrdinal(%ColumnName%); ]
-                LocalBuilder[] colIndices = GetColumnIndices(il, columnInfoes);
+                var colIndices = GetColumnIndices(il, columnInfoes);
                 // while (arg.Read()) {
                 il.MarkLabel(loop);
                 il.Emit(OpCodes.Ldarg_0);
@@ -340,8 +339,8 @@ namespace FS.Extend
             private static void ReadNullableDateTime(ILGenerator il, LocalBuilder item, MethodInfo setMethod, LocalBuilder colIndex)
             {
                 var local = il.DeclareLocal(typeof(DateTime?));
-                Label dtNull = il.DefineLabel();
-                Label dtCommon = il.DefineLabel();
+                var dtNull = il.DefineLabel();
+                var dtCommon = il.DefineLabel();
                 il.Emit(OpCodes.Ldloca, local);
                 il.Emit(OpCodes.Ldarg_0);
                 il.Emit(OpCodes.Ldloc_S, colIndex);
@@ -473,7 +472,7 @@ namespace FS.Extend
             unchecked
             {
                 int colCount = reader.FieldCount, hash = colCount;
-                for (int i = 0; i < colCount; i++)
+                for (var i = 0; i < colCount; i++)
                 {   // binding code is only interested in names - not types
                     object tmp = reader.GetName(i);
                     hash = (hash * 31) + (tmp == null ? 0 : tmp.GetHashCode());

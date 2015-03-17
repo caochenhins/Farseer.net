@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace FS.Utils.Common
+namespace FS.Utils
 {
     /// <summary>
     /// 用于Console的输出

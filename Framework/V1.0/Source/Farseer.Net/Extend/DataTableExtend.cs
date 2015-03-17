@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using FS.Core;
-using FS.Core.Infrastructure;
 using FS.Mapping.Table;
 
 namespace FS.Extend
