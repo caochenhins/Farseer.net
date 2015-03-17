@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6C186A1A-AC64-46E3-89DF-70154565A19E}</ProjectGuid>
+    <ProjectGuid>{F6345D1B-C5DC-464C-A417-C02D7CD37E52}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Farseer.Net</RootNamespace>
+    <RootNamespace>FS</RootNamespace>
     <AssemblyName>Farseer.Net</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -203,11 +203,6 @@
     <Compile Include="Utils\Web\WebCache.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Farseer.Net.sln.ide\edb.chk" />
-    <None Include="Farseer.Net.sln.ide\edb.log" />
-    <None Include="Farseer.Net.sln.ide\edbres00001.jrs" />
-    <None Include="Farseer.Net.sln.ide\edbres00002.jrs" />
-    <None Include="Farseer.Net.sln.ide\storage.ide" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
