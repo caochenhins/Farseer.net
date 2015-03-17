@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using FS.Mapping.Verify;
 
 namespace FS.Extend
 {
@@ -9,140 +10,12 @@ namespace FS.Extend
     public static class ModelExtend
     {
         /// <summary>
-        ///     将实体类填充到控件中
-        /// </summary>
-        /// <param name="page">当前页</param>
-        /// <param name="info">要填入数据的实体类</param>
-        /// <param name="contentPlaceHolderID">母版页面版ID</param>
-        /// <param name="prefix">控件前缀</param>
-        public static void Fill<TInfo>(this TInfo info, Page page, string contentPlaceHolderID, string prefix = "hl") where TInfo : class
-        {
-            if (info == null)
-            {
-                return;
-            }
-
-            var masterControl = page.FindControl(contentPlaceHolderID);
-            if (masterControl == null)
-            {
-                return;
-            }
-
-            Fill(masterControl.Controls, info, prefix);
-        }
-
-        /// <summary>
-        ///     将实体类填充到控件中
-        /// </summary>
-        /// <param name="page">当前页</param>
-        /// <param name="prefix">控件前缀</param>
-        /// <param name="info">要填充的值</param>
-        public static void Fill<TInfo>(this TInfo info, Page page, string prefix = "hl") where TInfo : class
-        {
-            if (info == null) { return; }
-            Fill(page.Controls, info, prefix);
-        }
-
-        /// <summary>
-        ///     将实体类填充到控件中
-        /// </summary>
-        /// <param name="controls">页面控件集合</param>
-        /// <param name="infoValue">所属实体类的值</param>
-        /// <param name="prefix">前缀</param>
-        private static void Fill<TInfo>(ControlCollection controls, TInfo infoValue, string prefix = "hl") where TInfo : class
-        {
-            //if (infoValue == null || controls == null)
-            //{
-            //    return;
-            //}
-            //var map = TableMapCache.GetMap(infoValue);
-            //foreach (var kic in map.ModelList)
-            //{
-            //    // 当前成员的值
-            //    var value = kic.Key.GetValue(infoValue, null);
-            //    if (value == null) { continue; }
-
-            //    var type = value.GetType();
-
-            //    // 当前成员，是一个类
-            //    if (value is ModelInfo)
-            //    {
-            //        foreach (var item in type.GetProperties()) { Fill(controls, (ModelInfo)value, prefix); }
-            //        continue;
-            //    }
-
-            //    foreach (Control item in controls)
-            //    {
-            //        var control = item.FindControl(prefix + kic.Key.Name);
-            //        if (control == null) { continue; }
-
-            //        if (control is HiddenField)
-            //        {
-            //            ((HiddenField)control).Value = value.ToString();
-            //            break;
-            //        }
-            //        if (control is CheckBox) { ((CheckBox)control).Checked = value.ConvertType(false); break; }
-            //        if (control is CheckBoxList)
-            //        {
-            //            // 数据保存的是数字以逗号分隔的数据，并且是ListControl的控件，则可以直接填充数据
-            //            if (value is string)
-            //            {
-            //                var lstIDs = value.ToString().ToList(0);
-            //                ((CheckBoxList)control).SetValue(lstIDs);
-            //                break;
-            //            }
-
-            //            // 枚举为二进制时
-            //            var types = kic.Key.PropertyType.GetGenericArguments();
-            //            if (types != null && types.Length > 0 && types[0].IsEnum)
-            //            {
-            //                var att = types[0].GetCustomAttributes(typeof(FlagsAttribute), false);
-
-            //                if (att != null && att.Length > 0)
-            //                {
-            //                    foreach (ListItem listItem in ((CheckBoxList)control).Items)
-            //                    {
-            //                        var itemValue = listItem.Value.ConvertType(0);
-            //                        listItem.Selected = (value.ConvertType(0) & itemValue) == itemValue;
-            //                    }
-            //                    break;
-            //                }
-            //            }
-
-            //        }
-            //        if (control is ListControl)
-            //        {
-            //            ((ListControl)control).SelectedItems(value);
-            //            break;
-
-            //        }
-
-            //        if (value is Enum) { value = ((Enum)value).GetName(); }
-            //        if (value is IList) { value = ((IList)value).ToString(","); }
-            //        if (value is bool) { value = ((bool)value) ? "是" : "否"; }
-
-            //        if (control is TextBox) { ((TextBox)control).Text = value.ToString(); break; }
-            //        if (control is Label) { ((Label)control).Text = value.ToString(); break; }
-            //        if (control is Literal) { ((Literal)control).Text = value.ToString(); break; }
-            //        if (control is Image) { ((Image)control).ImageUrl = value.ToString(); break; }
-            //        if (control is HyperLink) { ((HyperLink)control).NavigateUrl = value.ToString(); break; }
-            //    }
-            //}
-        }
-
-        /// <summary>
         ///     检测实体类值状况
         /// </summary>
         public static bool Check<TInfo>(this TInfo info, Action<string, string> tip = null, string url = "") where TInfo : IVerification
         {
-            if (info == null)
-            {
-                return false;
-            }
-            if (tip == null)
-            {
-                tip = new Terminator().Alert;
-            }
+            if (info == null) { return false; }
+            //if (tip == null) { tip = new Terminator().Alert; }
             //返回错误
             Dictionary<string, List<string>> dicError;
             var result = info.Check(out dicError);
@@ -150,10 +23,7 @@ namespace FS.Extend
             if (!result)
             {
                 var lst = new List<string>();
-                foreach (var item in dicError)
-                {
-                    lst.AddRange(item.Value);
-                }
+                foreach (var item in dicError) { lst.AddRange(item.Value); }
 
                 tip(lst.ToString("<br />"), url);
             }
@@ -460,7 +330,7 @@ namespace FS.Extend
                         {
                             for (var i = 0; i < subCount; i++)
                             {
-                                item.PropertyType.GetMethod("Add").Invoke(objLst, new[] {TestData(objItem, level + 1, subCount)});
+                                item.PropertyType.GetMethod("Add").Invoke(objLst, new[] { TestData(objItem, level + 1, subCount) });
                             }
                         }
                         item.SetValue(info, objLst, null);
@@ -485,13 +355,15 @@ namespace FS.Extend
         /// <returns></returns>
         public static object TestData(Type argumType)
         {
+            var rand = new Random(DateTime.Now.Second);
+
             var val = new object();
             // 对   List 类型处理
             if (argumType.IsGenericType && argumType.GetGenericTypeDefinition() == typeof(Nullable<>)) { return TestData(argumType.GetGenericArguments()[0]); }
             switch (Type.GetTypeCode(argumType))
             {
-                case TypeCode.Boolean: val = Rand.GetRandom(0, 1) == 0; break;
-                case TypeCode.DateTime: val = new DateTime(Rand.GetRandom(2000, DateTime.Now.Year), Rand.GetRandom(1, 12), Rand.GetRandom(1, 30), Rand.GetRandom(0, 23), Rand.GetRandom(0, 59), Rand.GetRandom(0, 59)); break;
+                case TypeCode.Boolean: val = rand.Next(0, 1) == 0; break;
+                case TypeCode.DateTime: val = new DateTime(rand.Next(2000, DateTime.Now.Year), rand.Next(1, 12), rand.Next(1, 30), rand.Next(0, 23), rand.Next(0, 59), rand.Next(0, 59)); break;
                 case TypeCode.Char:
                 case TypeCode.Single:
                 case TypeCode.SByte:
@@ -503,7 +375,7 @@ namespace FS.Extend
                 case TypeCode.Double:
                 case TypeCode.Int16:
                 case TypeCode.Int32:
-                case TypeCode.Int64: val = Rand.GetRandom(255); break;
+                case TypeCode.Int64: val = rand.Next(255); break;
                 default: val = "测试数据"; break;
             }
             return val.ConvertType(argumType);

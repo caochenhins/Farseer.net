@@ -80,21 +80,6 @@ namespace FS.Extend
             return dic;
         }
 
-        /// <summary>
-        ///     枚举转ListItem
-        /// </summary>
-        public static List<ListItem> ToListItem(this Type enumType)
-        {
-            var lst = new List<ListItem>();
-
-            foreach (int value in Enum.GetValues(enumType))
-            {
-                var listitem = new ListItem(GetName((Enum) Enum.ToObject(enumType, value)), value.ToString());
-                lst.Add(listitem);
-            }
-
-            return lst;
-        }
 
         ///// <summary>
         /////     枚举转ListItem

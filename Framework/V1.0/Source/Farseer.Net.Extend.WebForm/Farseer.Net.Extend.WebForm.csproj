@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -40,10 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="CheckBoxListExtend.cs" />
+    <Compile Include="DataTableExtend.cs" />
+    <Compile Include="Extends.cs" />
+    <Compile Include="ModelExtend.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Farseer.Net.Extend\Farseer.Net.Extend.csproj">
+      <Project>{91113e61-664d-4c77-b3ff-f6c19dc09a25}</Project>
+      <Name>Farseer.Net.Extend</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Farseer.Net\Farseer.Net.csproj">
       <Project>{4f393e31-dfcd-434a-a350-53d635a99317}</Project>
       <Name>Farseer.Net</Name>

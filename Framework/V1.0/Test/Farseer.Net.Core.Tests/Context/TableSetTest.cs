@@ -39,7 +39,7 @@ namespace Farseer.Net.Core.Tests.Context
 
 
 
-            info = UserPO.Data.Select(select).ToInfo();
+            info = TableContext<UserPO>.Data.Select(select).ToInfo();
             Assert.IsNotNull(info);
             Assert.IsTrue(info.PassWord != null && info.GenderType == null && info.LoginIP == null && info.UserName == null && info.ID != null && info.LoginCount == null);
             Assert.IsTrue(info.ID == lst[0].ID);
@@ -63,7 +63,7 @@ namespace Farseer.Net.Core.Tests.Context
         [TestMethod]
         public void InsertTestMethod()
         {
-            var count = UserPO.Data.Count();
+            var count = TableContext<UserPO>.Data.Count();
             var currentCount = 0;
             UserPO info;
             using (var table = new TableContext<UserPO>())
@@ -81,10 +81,10 @@ namespace Farseer.Net.Core.Tests.Context
             TableContext<UserPO>.Data.Insert(new UserPO() { UserName = "yy" });
 
 
-            info = UserPO.Data.Desc(o => o.ID).ToInfo();
+            info = TableContext<UserPO>.Data.Desc(o => o.ID).ToInfo();
             Assert.IsTrue(info.UserName == "yy");
 
-            currentCount = UserPO.Data.Count();
+            currentCount = TableContext<UserPO>.Data.Count();
             Assert.IsTrue(currentCount == count + 2);
 
 
@@ -104,7 +104,7 @@ namespace Farseer.Net.Core.Tests.Context
             }
 
             TableContext<UserPO>.Data.Where(o => o.ID == ID).Update(new UserPO() { UserName = "bb" });
-            Assert.IsTrue(UserPO.Data.Desc(o => o.ID).ToInfo().UserName == "bb");
+            Assert.IsTrue(TableContext<UserPO>.Data.Desc(o => o.ID).ToInfo().UserName == "bb");
 
         }
     }

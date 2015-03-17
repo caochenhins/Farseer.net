@@ -11,6 +11,7 @@ using FS.Core.Client.SqlServer;
 using FS.Core.Context;
 using FS.Core.Data;
 using FS.Core.Infrastructure;
+using FS.Mapping.Table;
 
 namespace FS.Core
 {
@@ -27,6 +28,25 @@ namespace FS.Core
                 case DataBaseType.Oracle: return new DbQuery(tableContext, new SqlServerProvider());
                 default: return new DbQuery(tableContext, new SqlServerProvider());
             }
+        }
+        /// <summary>
+        /// 返回数据库类型名称
+        /// </summary>
+        /// <param name="dbType">数据库类型</param>
+        /// <returns></returns>
+        public static DbProvider GetDbProvider<TEntity>() where TEntity : class,new()
+        {
+            var dbType = TableMapCache.GetMap<TEntity>().ClassInfo.DataType;
+            switch (dbType)
+            {
+                case DataBaseType.MySql: return new SqlServerProvider();
+                case DataBaseType.OleDb: return new SqlServerProvider();
+                case DataBaseType.Oracle: return new SqlServerProvider();
+                case DataBaseType.SQLite: return new SqlServerProvider();
+                case DataBaseType.SqlServer: return new SqlServerProvider();
+                case DataBaseType.Xml: return new SqlServerProvider();
+            }
+            return new SqlServerProvider();
         }
 
         /// <summary>

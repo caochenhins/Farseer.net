@@ -58,24 +58,31 @@ namespace FS.Extend
         {
             MemberExpression memberExpression;
 
-            var unary = select.Body as UnaryExpression;
+            var unary = @select.Body as UnaryExpression;
             if (unary != null)
             {
                 memberExpression = unary.Operand as MemberExpression;
             }
-            else if (select.Body.NodeType == ExpressionType.Call)
+            else if (@select.Body.NodeType == ExpressionType.Call)
             {
-                memberExpression = (MemberExpression)((MethodCallExpression)select.Body).Object;
+                memberExpression = (MemberExpression)((MethodCallExpression)@select.Body).Object;
             }
             else
             {
-                memberExpression = select.Body as MemberExpression;
+                memberExpression = @select.Body as MemberExpression;
             }
 
             var map = TableMapCache.GetMap<T1>();
             var modelInfo = map.GetModelInfo((memberExpression.Member).Name);
 
             return modelInfo.Value.Column.Name;
+        }
+
+        public static Expression<Func<TOuter, TInner>> Combine<TOuter, TMiddle, TInner>(
+            Expression<Func<TOuter, TMiddle>> first,
+            Expression<Func<TMiddle, TInner>> second)
+        {
+            return x => second.Compile()(first.Compile()(x));
         }
     }
 }

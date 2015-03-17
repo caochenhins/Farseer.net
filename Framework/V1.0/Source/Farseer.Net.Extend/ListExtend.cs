@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using FS.Core.Infrastructure;
+using FS.Extend.Infrastructure;
+using FS.Mapping.Table;
 
 namespace FS.Extend
 {
@@ -139,7 +142,6 @@ namespace FS.Extend
         {
             return lst.Count > 0 ? lst[lst.Count - 1] : default(T);
         }
-
 
         /// <summary>
         ///     判断value是否存在于列表中
@@ -344,19 +346,6 @@ namespace FS.Extend
             }
             return result;
         }
-        /// <summary>
-        ///     将List转换成字符串
-        /// </summary>
-        /// <param name="lst">要拼接的LIST</param>
-        /// <param name="sign">分隔符</param>
-        public static string ToString(this IEnumerable lst, string sign = ",")
-        {
-            if (lst == null) { return string.Empty; }
-
-            var str = new StringBuilder();
-            foreach (var item in lst) { str.Append(item + sign); }
-            return str.ToString().DelEndOf(sign);
-        }
 
         /// <summary>
         ///     获取下一条记录
@@ -376,37 +365,6 @@ namespace FS.Extend
         public static TInfo ToPreviousInfo<TInfo>(this IEnumerable<TInfo> lst, int ID) where TInfo : IEntity
         {
             return lst.Where(o => o.ID < ID).OrderByDescending(o => o.ID).FirstOrDefault();
-        }
-
-        /// <summary>
-        ///     对List进行分页
-        /// </summary>
-        /// <typeparam name="TInfo">实体类</typeparam>
-        /// <param name="lst">List列表</param>
-        /// <param name="pageSize">每页大小</param>
-        /// <param name="pageIndex">索引</param>
-        public static List<TInfo> ToList<TInfo>(this IEnumerable<TInfo> lst, int pageSize, int pageIndex = 1)
-        {
-            if (pageSize == 0) { return lst.ToList(); }
-
-            #region 计算总页数
-
-            var allCurrentPage = 0;
-            var recordCount = lst.Count();
-            if (pageIndex < 1) { pageIndex = 1; return lst.Take(pageSize).ToList(); }
-            if (pageSize < 1) { pageSize = 10; }
-
-            if (pageSize != 0)
-            {
-                allCurrentPage = (recordCount / pageSize);
-                allCurrentPage = ((recordCount % pageSize) != 0 ? allCurrentPage + 1 : allCurrentPage);
-                allCurrentPage = (allCurrentPage == 0 ? 1 : allCurrentPage);
-            }
-            if (pageIndex > allCurrentPage) { pageIndex = allCurrentPage; }
-
-            #endregion
-
-            return lst.Skip(pageSize * (pageIndex - 1)).Take(pageSize).ToList();
         }
 
         ///// <summary>
@@ -444,43 +402,6 @@ namespace FS.Extend
         //    return lstConvert;
         //}
 
-        /// <summary>
-        ///     对List进行分页
-        /// </summary>
-        /// <typeparam name="TInfo">实体类</typeparam>
-        /// <param name="lst">List列表</param>
-        /// <param name="IDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
-        /// <param name="pageSize">每页大小</param>
-        /// <param name="pageIndex">索引</param>
-        public static List<TInfo> ToList<TInfo>(this IEnumerable<TInfo> lst, List<int> IDs, int pageSize, int pageIndex = 1) where TInfo : IEntity
-        {
-            return ToList(lst.Where(o => IDs.Contains(o.ID)), pageSize, pageIndex);
-        }
-
-        /// <summary>
-        ///     对List进行分页
-        /// </summary>
-        /// <typeparam name="TInfo">实体类</typeparam>
-        /// <param name="lst">List列表</param>
-        /// <param name="rpt">Repeater</param>
-        /// <returns></returns>
-        public static List<TInfo> ToList<TInfo>(this IEnumerable<TInfo> lst, Repeater rpt)
-        {
-            rpt.PageCount = lst.Count();
-            return ToList(lst, rpt.PageSize, rpt.PageIndex);
-        }
-
-        /// <summary>
-        ///     对List进行分页
-        /// </summary>
-        /// <typeparam name="TInfo">实体类</typeparam>
-        /// <param name="lst">List列表</param>
-        /// <param name="IDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
-        /// <param name="rpt">Repeater</param>
-        public static List<TInfo> ToList<TInfo>(this IEnumerable<TInfo> lst, List<int> IDs, Repeater rpt) where TInfo : IEntity
-        {
-            return ToList(lst.Where(o => IDs.Contains(o.ID)), rpt);
-        }
 
         /// <summary>
         ///     获取List列表
@@ -650,10 +571,10 @@ namespace FS.Extend
         /// <param name="select">字段选择器</param>
         /// <param name="IDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
         /// <param name="lst">列表</param>
-        public static List<TInfo> ToDistinctList<TInfo, T>(this IEnumerable<TInfo> lst, Func<TInfo, T> select) where TInfo : class
-        {
-            return lst.Distinct(new InfoComparer<TInfo, T>(select)).ToList();
-        }
+        //public static List<TInfo> ToDistinctList<TInfo, T>(this IEnumerable<TInfo> lst, Func<TInfo, T> select) where TInfo : class
+        //{
+        //    return lst.Distinct(new InfoComparer<TInfo, T>(select)).ToList();
+        //}
 
         ///// <summary>
         /////     不重复列表
@@ -965,6 +886,5 @@ namespace FS.Extend
         //    }
         //}
         #endregion
-
     }
 }

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Xml.Linq;
+using FS.Extend.Infrastructure;
 using FS.Mapping.Table;
 
 namespace FS.Extend
@@ -13,53 +15,6 @@ namespace FS.Extend
     /// </summary>
     public static class ExtendExtend
     {
-        /// <summary>
-        ///     把服務器返回的Cookies信息寫入到客戶端中
-        /// </summary>
-        public static void Cookies(this WebClient wc)
-        {
-            if (wc.ResponseHeaders == null) return;
-            var setcookie = wc.ResponseHeaders[HttpResponseHeader.SetCookie];
-            if (string.IsNullOrEmpty(setcookie)) return;
-            var cookie = wc.Headers[HttpRequestHeader.Cookie];
-            var cookieList = new Dictionary<string, string>();
-
-            if (!string.IsNullOrEmpty(cookie))
-            {
-                foreach (var ck in cookie.Split(';'))
-                {
-                    var key = ck.Substring(0, ck.IndexOf('='));
-                    var value = ck.Substring(ck.IndexOf('=') + 1);
-                    if (!cookieList.ContainsKey(key)) cookieList.Add(key, value);
-                }
-            }
-
-            foreach (var ck in setcookie.Split(';'))
-            {
-                var str = ck;
-                while (str.Contains(',') && str.IndexOf(',') < str.LastIndexOf('='))
-                {
-                    str = str.Substring(str.IndexOf(',') + 1);
-                }
-                var key = str.IndexOf('=') != -1 ? str.Substring(0, str.IndexOf('=')) : "";
-                var value = str.Substring(str.IndexOf('=') + 1);
-                if (!cookieList.ContainsKey(key))
-                    cookieList.Add(key, value);
-                else
-                    cookieList[key] = value;
-            }
-
-            var list = new string[cookieList.Count()];
-            var index = 0;
-            foreach (var pair in cookieList)
-            {
-                list[index] = string.Format("{0}={1}", pair.Key, pair.Value);
-                index++;
-            }
-
-            wc.Headers[HttpRequestHeader.Cookie] = list.ToString(";");
-        }
-
         /// <summary>
         ///     将XML转成实体
         /// </summary>
@@ -97,43 +52,6 @@ namespace FS.Extend
         }
 
         /// <summary>
-        ///     将DataRowCollection转成List[DataRow]
-        /// </summary>
-        /// <param name="drc">DataRowCollection</param>
-        public static List<DataRow> ToRows(this DataRowCollection drc)
-        {
-            var lstRow = new List<DataRow>();
-
-            if (drc == null) { return lstRow; }
-
-            foreach (DataRow dr in drc) { lstRow.Add(dr); }
-
-            return lstRow;
-        }
-
-        /// <summary>
-        ///     将DataRow转成实体类
-        /// </summary>
-        /// <typeparam name="T">实体类</typeparam>
-        /// <param name="dr">源DataRow</param>
-        public static T ToInfo<T>(this DataRow dr) where T : class,new()
-        {
-            var map = TableMapCache.GetMap<T>();
-            var t = (T)Activator.CreateInstance(typeof(T));
-
-            //赋值字段
-            foreach (var kic in map.ModelList)
-            {
-                if (dr.Table.Columns.Contains(kic.Value.Column.Name))
-                {
-                    if (!kic.Key.CanWrite) { continue; }
-                    kic.Key.SetValue(t, dr[kic.Value.Column.Name].ConvertType(kic.Key.PropertyType), null);
-                }
-            }
-            return t ?? new T();
-        }
-
-        /// <summary>
         ///     IDataReader转换为实体类
         /// </summary>
         /// <param name="ds">源DataSet</param>
@@ -160,25 +78,6 @@ namespace FS.Extend
         }
 
         /// <summary>
-        ///     检查是否存在该类型的子窗体
-        /// </summary>
-        /// <param name="form">Windows窗体对象</param>
-        /// <param name="childFormName">窗体名称</param>
-        /// <returns>是否存在</returns>
-        public static bool IsExist(this Form form, string childFormName)
-        {
-            foreach (var frm in form.MdiChildren)
-            {
-                if (frm.GetType().Name == childFormName)
-                {
-                    frm.Activate();
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
         ///     设置创建人信息
         /// </summary>
         /// <param name="createInfo">被赋值的实体</param>
@@ -186,7 +85,7 @@ namespace FS.Extend
         /// <param name="createName">创建人名称</param>
         public static void SetCreateInfo(this ICreateInfo createInfo, int? createID = 0, string createName = "")
         {
-            createInfo.CreateIP = Req.GetIP();
+            //createInfo.CreateIP = Req.GetIP();
             createInfo.CreateAt = DateTime.Now;
             createInfo.CreateID = createID;
             createInfo.CreateName = createName;
@@ -200,7 +99,7 @@ namespace FS.Extend
         /// <param name="updateName">创建人名称</param>
         public static void SetUpdateInfo(this IUpdateInfo updateInfo, int? updateID = 0, string updateName = "")
         {
-            updateInfo.UpdateIP = Req.GetIP();
+            //updateInfo.UpdateIP = Req.GetIP();
             updateInfo.UpdateAt = DateTime.Now;
             updateInfo.UpdateID = updateID;
             updateInfo.UpdateName = updateName;
@@ -214,7 +113,7 @@ namespace FS.Extend
         /// <param name="auditName">创建人名称</param>
         public static void SetAuditInfo(this IAuditInfo auditInfo, int? auditID = 0, string auditName = "")
         {
-            auditInfo.AuditIP = Req.GetIP();
+            //auditInfo.AuditIP = Req.GetIP();
             auditInfo.AuditAt = DateTime.Now;
             auditInfo.AuditID = auditID;
             auditInfo.AuditName = auditName;
@@ -238,12 +137,12 @@ namespace FS.Extend
         /// <typeparam name="T2">Value</typeparam>
         public static string ToJson<T1, T2>(this Dictionary<T1, T2> dic)
         {
-            var sp = new StrPlus();
+            var sb = new StringBuilder();
             foreach (var item in dic)
             {
-                sp += string.Format("{0}={1}&", item.Key, item.Value);
+                sb.Append(String.Format("{0}={1}&", item.Key, item.Value));
             }
-            return sp.DelLastChar("&");
+            return sb.Length > 0 ? sb.Remove(sb.Length - 1, 1).ToString() : sb.ToString();
         }
     }
 }

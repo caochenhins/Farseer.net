@@ -1,0 +1,55 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using FS.Core.Infrastructure;
+using FS.Utils.WebForm.Repeater;
+
+namespace FS.Extend
+{
+    public static class Extend
+    {
+        /// <summary>
+        ///     对List进行分页
+        /// </summary>
+        /// <typeparam name="TInfo">实体类</typeparam>
+        /// <param name="lst">List列表</param>
+        /// <param name="rpt">Repeater</param>
+        /// <returns></returns>
+        public static List<TInfo> ToList<TInfo>(this IEnumerable<TInfo> lst, Repeater rpt)
+        {
+            rpt.PageCount = lst.Count();
+            return lst.ToList(rpt.PageSize, rpt.PageIndex);
+        }
+
+        /// <summary>
+        ///     IEnumerable绑定到Repeater
+        /// </summary>
+        /// <param name="rpt">QynRepeater</param>
+        /// <param name="recordCount">记录总数</param>
+        /// <param name="lst">IEnumerable</param>
+        public static void Bind(this Repeater rpt, IEnumerable lst, int recordCount = -1)
+        {
+            rpt.DataSource = lst;
+            rpt.DataBind();
+
+            if (recordCount > -1)
+            {
+                rpt.PageCount = recordCount;
+            }
+        }
+
+        /// <summary>
+        ///     对List进行分页
+        /// </summary>
+        /// <typeparam name="TInfo">实体类</typeparam>
+        /// <param name="lst">List列表</param>
+        /// <param name="IDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
+        /// <param name="rpt">Repeater</param>
+        public static List<TInfo> ToList<TInfo>(this IEnumerable<TInfo> lst, List<int> IDs, Repeater rpt) where TInfo : IEntity
+        {
+            return ToList(lst.Where(o => IDs.Contains(o.ID)), rpt);
+        }
+    }
+}

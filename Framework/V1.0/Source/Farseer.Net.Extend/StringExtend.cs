@@ -19,7 +19,7 @@ namespace FS.Extend
         /// <param name="options">选项</param>
         public static string ClearString(this string str, string tag, RegexOptions options = RegexOptions.None)
         {
-            if (str.IsNullOrEmpty()) { return string.Empty; }
+            if (string.IsNullOrWhiteSpace(str)) { return string.Empty; }
             return tag.IsNullOrEmpty() ? str : Regex.Replace(str, tag, "", options);
         }
 
@@ -61,7 +61,7 @@ namespace FS.Extend
         public static List<T> ToList<T>(this string str, T defValue, string splitString = ",")
         {
             var lst = new List<T>();
-            if (str.IsNullOrEmpty()) { return lst; }
+            if (string.IsNullOrWhiteSpace(str)) { return lst; }
 
             //判断是否带分隔符，如果没有。则直接拆份单个Char
             if (splitString.Len() == 0)
@@ -89,7 +89,7 @@ namespace FS.Extend
         public static List<Enum> ToEnumList(this string str, Type type, string splitString = ",")
         {
             var lst = new List<Enum>();
-            if (str.IsNullOrEmpty()) { return lst; }
+            if (string.IsNullOrWhiteSpace(str)) { return lst; }
 
             //判断是否带分隔符，如果没有。则直接拆份单个Char
             if (splitString.Len() == 0)
@@ -102,134 +102,6 @@ namespace FS.Extend
                 foreach (var item in strArray) { lst.Add((Enum)item.ConvertType(type)); }
             }
             return lst;
-        }
-
-        /// <summary>
-        ///     将字符串转换成Array型
-        /// </summary>
-        /// <param name="str">要转换的字符串</param>
-        /// <param name="splitString">分隔符为NullOrEmpty时，则直接拆份为Char</param>
-        /// <param name="defValue">默认值(单项转换失败时，默认值为NullOrEmpty时，则不添加，否则替换为默认值)</param>
-        /// <typeparam name="T">基本类型</typeparam>
-        public static T[] ToArray<T>(this string str, T defValue, string splitString = ",")
-        {
-            T[] lst;
-
-            string[] strArray;
-
-            if (string.IsNullOrEmpty(str))
-            {
-                return null;
-            }
-            strArray = new string[str.Length];
-            //判断是否带分隔符，如果没有。则直接拆份单个Char
-            if (string.IsNullOrEmpty(splitString))
-            {
-                var c = str.ToCharArray();
-                for (var i = 0; i < c.Length; i++)
-                {
-                    strArray[i] = c[i].ConvertType("");
-                }
-            }
-
-            else
-            {
-                strArray = Regex.Split(str, Regex.Escape(splitString), RegexOptions.IgnoreCase);
-            }
-
-            lst = new T[strArray.Length];
-
-            for (var i = 0; i < strArray.Length; i++)
-            {
-                if (strArray[i].IsType<T>())
-                {
-                    lst[i] = strArray[i].ConvertType(default(T));
-                }
-                else if (defValue != null)
-                {
-                    lst[i] = defValue;
-                }
-            }
-
-            return lst;
-        }
-
-        /// <summary>
-        ///     删除指定最后的字符串
-        /// </summary>
-        /// <param name="str">要转换的字符串</param>
-        /// <param name="strChar">要删除的字符串</param>
-        public static string DelEndOf(this string str, string strChar)
-        {
-            if (str.Len() == 0 || strChar.Len() == 0) { return str; }
-            var strLower = str.ToLower();
-            var strCharLower = strChar.ToLower();
-
-            if (strLower.EndsWith(strCharLower))
-            {
-                var index = strLower.LastIndexOf(strCharLower);
-                if (index > -1) { str = str.Substring(0, index); }
-            }
-            return str;
-        }
-
-        /// <summary>
-        ///     删除指定最后的字符串(直到找到为止)
-        /// </summary>
-        /// <param name="str">要转换的字符串</param>
-        /// <param name="strChar">要删除的字符串</param>
-        public static string DelLastOf(this string str, string strChar)
-        {
-            if (str.Len() == 0 || strChar.Len() == 0) { return str; }
-            var index = str.LastIndexOf(strChar);
-            return index > -1 ? str.Substring(0, index) : str;
-        }
-
-        /// <summary>
-        ///     从字符串的指定位置截取指定长度的子字符串
-        /// </summary>
-        /// <param name="str">原字符串</param>
-        /// <param name="startIndex">子字符串的起始位置</param>
-        /// <param name="length">子字符串的长度(负数，则获取全部)</param>
-        public static string SubString(this string str, int startIndex, int length = 0)
-        {
-            if (startIndex < 0) { return str; }
-            if (str.Length <= startIndex) { return string.Empty; }
-            if (length < 1) { return str.Substring(startIndex); }
-            return str.Length < startIndex + length ? str.Substring(startIndex) : str.Substring(startIndex, length);
-        }
-
-        /// <summary>
-        ///     截取到tag字符串
-        /// </summary>
-        /// <param name="str">原字符串</param>
-        /// <param name="tag">截取到的字符串</param>
-        public static string SubString(this string str, string tag)
-        {
-            return str.IndexOf(tag) > -1 ? str.Substring(0, str.IndexOf(tag)) : str;
-        }
-
-        /// <summary>
-        ///     比较两者是否相等，不考虑大小写,两边空格
-        /// </summary>
-        /// <param name="str">对比一</param>
-        /// <param name="str2">对比二</param>
-        /// <returns></returns>
-        public static bool IsEquals(this string str, string str2)
-        {
-            if (str == str2)
-            {
-                return true;
-            }
-            if (str == null || str2 == null)
-            {
-                return false;
-            }
-            if (str.Trim().Length != str2.Trim().Length)
-            {
-                return false;
-            }
-            return string.Compare(str.Trim(), str2.Trim(), true) == 0;
         }
 
         /// <summary>
@@ -258,7 +130,7 @@ namespace FS.Extend
         /// <returns></returns>
         public static bool IsStartsWith(this string str, string value)
         {
-            return !str.IsNullOrEmpty() && str.ToLower().StartsWith(value.ToLower());
+            return !string.IsNullOrWhiteSpace(str) && str.ToLower().StartsWith(value.ToLower());
         }
 
         /// <summary>
@@ -269,7 +141,7 @@ namespace FS.Extend
         /// <returns></returns>
         public static bool IsEndsWith(this string str, string value)
         {
-            return !str.IsNullOrEmpty() && str.ToLower().EndsWith(value.ToLower());
+            return !string.IsNullOrWhiteSpace(str) && str.ToLower().EndsWith(value.ToLower());
         }
 
         /// <summary>
@@ -435,7 +307,7 @@ namespace FS.Extend
         public static string CutTrim(this string source, int leftIndex, string rightStr = null)
         {
             if (leftIndex > 0) { source = source.SubString(leftIndex); }
-            if (!rightStr.IsNullOrEmpty()) { return source.SubString(0, source.LastIndexOf(rightStr)); }
+            if (!string.IsNullOrWhiteSpace(rightStr)) { return source.SubString(0, source.LastIndexOf(rightStr)); }
             return source;
         }
 
@@ -447,8 +319,8 @@ namespace FS.Extend
         /// <param name="rightStr">结束位置字符串</param>
         public static string CutTrim(this string source, string leftStr, string rightStr = null)
         {
-            if (!leftStr.IsNullOrEmpty()) { source = source.SubString(source.IndexOf(leftStr) + leftStr.Length); }
-            if (!rightStr.IsNullOrEmpty()) { return source.SubString(0, source.LastIndexOf(rightStr)); }
+            if (!string.IsNullOrWhiteSpace(leftStr)) { source = source.SubString(source.IndexOf(leftStr) + leftStr.Length); }
+            if (!string.IsNullOrWhiteSpace(rightStr)) { return source.SubString(0, source.LastIndexOf(rightStr)); }
             return source;
         }
 
@@ -460,7 +332,7 @@ namespace FS.Extend
         /// <param name="rightIndex">结束位置</param>
         public static string CutTrim(this string source, string leftStr, int rightIndex = 0)
         {
-            if (!leftStr.IsNullOrEmpty()) { source = source.SubString(source.IndexOf(leftStr) + leftStr.Length); }
+            if (!string.IsNullOrWhiteSpace(leftStr)) { source = source.SubString(source.IndexOf(leftStr) + leftStr.Length); }
             if (rightIndex > 0) { return source.SubString(0, source.Length - rightIndex); }
             return source;
         }
@@ -479,16 +351,10 @@ namespace FS.Extend
             var str = new StringBuilder();
             foreach (var item in source)
             {
-                if (Str.Length(str.ToString()) >= length)
-                {
-                    return str + tag;
-                }
+                if (Encoding.Default.GetBytes(str.ToString()).Length >= length) { return str + tag; }
                 str.Append(item);
             }
-            if (isAlwaysShowTag)
-            {
-                str.Append(tag);
-            }
+            if (isAlwaysShowTag) { str.Append(tag); }
             return str.ToString();
         }
 
@@ -499,7 +365,7 @@ namespace FS.Extend
         /// <param name="newString">要替换的新字符串</param>
         public static string WhileNullOrEmpty(this string str, string newString)
         {
-            return str.IsNullOrEmpty() ? newString : str;
+            return string.IsNullOrWhiteSpace(str) ? newString : str;
         }
 
         /// <summary>
@@ -509,7 +375,7 @@ namespace FS.Extend
         /// <param name="newString">要替换的新字符串</param>
         public static string WhileNotNullOrEmpty(this string str, string newString)
         {
-            return str.IsNullOrEmpty() ? str : newString;
+            return string.IsNullOrWhiteSpace(str) ? str : newString;
         }
 
         /// <summary>
@@ -531,12 +397,12 @@ namespace FS.Extend
         /// <param name="count">次数</param>
         public static string For(this string str, int count = 1)
         {
-            var strs = new StrPlus();
+            var strs = new StringBuilder();
             for (var i = 0; i < count; i++)
             {
-                strs += str;
+                strs.Append(str);
             }
-            return strs;
+            return strs.ToString();
         }
     }
 }

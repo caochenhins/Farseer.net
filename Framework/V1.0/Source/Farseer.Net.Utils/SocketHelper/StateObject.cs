@@ -17,7 +17,7 @@ namespace FS.Utils.SocketHelper
         /// <summary>
         /// 
         /// </summary>
-        public string Msg { get { return Encoding.ASCII.GetString(Buffer).ClearString("\\0"); } }
+        public string Msg { get { return Encoding.ASCII.GetString(Buffer).Replace("\\0", ""); } }
         /// <summary>
         /// 接收的最大值
         /// </summary>
@@ -31,7 +31,7 @@ namespace FS.Utils.SocketHelper
         /// 接收的最大值
         /// </summary>
         /// <param name="bufferSize">接收的最大值</param>
-        public StateObject(int bufferSize, Socket socket= null)
+        public StateObject(int bufferSize, Socket socket = null)
         {
             BufferSize = bufferSize;
             Buffer = new byte[bufferSize];
