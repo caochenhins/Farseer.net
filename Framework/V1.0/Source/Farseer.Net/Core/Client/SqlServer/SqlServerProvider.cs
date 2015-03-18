@@ -1,5 +1,6 @@
 ﻿using System.Data.Common;
 using FS.Core.Infrastructure;
+using FS.Mapping.Table;
 
 namespace FS.Core.Client.SqlServer
 {
@@ -32,6 +33,11 @@ namespace FS.Core.Client.SqlServer
 
         public override ISqlQuery<TEntity> CreateSqlQuery<TEntity>(IQuery query, IQueryQueue queryQueue, string tableName)
         {
+            var map = TableMapCache.GetMap<TEntity>();
+            switch (map.ClassInfo.DataVer)
+            {
+                case "2000": return new SqlServerSqlQuery2000<TEntity>(query, queryQueue, tableName);
+            }
             return new SqlServerSqlQuery<TEntity>(query, queryQueue, tableName);
         }
     }

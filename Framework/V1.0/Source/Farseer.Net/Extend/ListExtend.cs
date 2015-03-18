@@ -7,7 +7,7 @@ using FS.Core.Infrastructure;
 
 namespace FS.Extend
 {
-    public static class ListExtend
+    public static partial class ListExtend
     {
         /// <summary>
         ///     将List转换成字符串

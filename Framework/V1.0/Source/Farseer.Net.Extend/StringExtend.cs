@@ -9,7 +9,7 @@ namespace FS.Extend
     /// <summary>
     ///     String扩展工具
     /// </summary>
-    public static class StringExtend
+    public static partial class StringExtend
     {
         /// <summary>
         ///     指定清除标签的内容

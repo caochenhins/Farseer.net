@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace FS.Extend
 {
-    public static class StringExtend
+    public static partial class StringExtend
     {
         /// <summary>
         ///     将字符串转换成List型

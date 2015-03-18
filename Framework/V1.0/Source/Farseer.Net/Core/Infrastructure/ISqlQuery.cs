@@ -14,7 +14,11 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 查询多条记录
         /// </summary>
-        void ToList();
+        void ToList(int top = 0);
+        /// <summary>
+        /// 查询多条记录
+        /// </summary>
+        void ToList(int pageSize, int pageIndex);
         /// <summary>
         /// 删除
         /// </summary>

@@ -58,6 +58,21 @@ namespace Farseer.Net.Core.Tests.Context
             Assert.IsTrue(lst.Count == 1);
             Assert.IsTrue(info.PassWord != null && info.GenderType == null && info.LoginIP == null && info.UserName == null && info.ID != null && info.LoginCount == null);
             Assert.IsTrue(info.ID == ID);
+
+
+            lst = TableContext<UserPO>.Data.ToList(3);
+            Assert.IsNotNull(lst);
+            Assert.IsTrue(lst.Count <= 3);
+
+            lst = TableContext<UserPO>.Data.ToList(3, 2);
+            Assert.IsNotNull(lst);
+            Assert.IsTrue(lst.Count <= 3);
+
+            var count = TableContext<UserPO>.Data.Where(o => o.ID > 10).Count();
+            var recordCount = 0;
+            lst = TableContext<UserPO>.Data.Where(o => o.ID > 10).ToList(99999, 1, out  recordCount).ToList();
+            Assert.IsNotNull(lst);
+            Assert.IsTrue(count == recordCount);
         }
 
         [TestMethod]
@@ -104,6 +119,25 @@ namespace Farseer.Net.Core.Tests.Context
             }
 
             TableContext<UserPO>.Data.Where(o => o.ID == ID).Update(new UserPO() { UserName = "bb" });
+            Assert.IsTrue(TableContext<UserPO>.Data.Desc(o => o.ID).ToInfo().UserName == "bb");
+
+        }
+
+        [TestMethod]
+        public void AddUpTestMethod()
+        {
+            UserPO info;
+            using (var table = new TableContext<UserPO>())
+            {
+                info = table.TableSet.Desc(o => o.ID).ToInfo();
+
+                table.TableSet.Where(o => o.ID == info.ID).Append(o => new { o.LoginCount }, 4).AddUp();
+                table.SaveChanges();
+                var info2 = table.TableSet.Desc(o => o.ID).ToInfo();
+                Assert.IsTrue(info2.LoginCount == info.LoginCount + 4);
+            }
+
+            TableContext<UserPO>.Data.Where(o => o.ID == info.ID).Update(new UserPO() { UserName = "bb" });
             Assert.IsTrue(TableContext<UserPO>.Data.Desc(o => o.ID).ToInfo().UserName == "bb");
 
         }

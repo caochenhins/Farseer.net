@@ -56,6 +56,7 @@
     <Compile Include="Core\Client\SqlServer\SqlServerExpressionBool.cs" />
     <Compile Include="Core\Client\ExpressionVisit.cs" />
     <Compile Include="Core\Client\SqlServer\SqlServerExpressionNew.cs" />
+    <Compile Include="Core\Client\SqlServer\SqlServerSqlQuery2000.cs" />
     <Compile Include="Core\Infrastructure\DbExpressionBoolProvider.cs" />
     <Compile Include="Core\Infrastructure\DbExpressionNewProvider.cs" />
     <Compile Include="Core\Client\SqlServer\SqlServerProvider.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Extend\ListExtend.cs" />
     <Compile Include="Extend\ObjectExtend.cs" />
     <Compile Include="Extend\StringExtend.cs" />
+    <Compile Include="Extend\TableSetExtend.cs" />
     <Compile Include="Mapping\Table\DBAttribute.cs" />
     <Compile Include="Mapping\Table\FieldMapState.cs" />
     <Compile Include="Mapping\Table\TableMap.cs" />

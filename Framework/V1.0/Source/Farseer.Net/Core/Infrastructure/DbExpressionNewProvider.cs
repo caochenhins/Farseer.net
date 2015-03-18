@@ -52,6 +52,7 @@ namespace FS.Core.Infrastructure
                 case ExpressionType.Lambda: return VisitLambda((LambdaExpression)exp);
                 case ExpressionType.New: return VisitNew((NewExpression)exp);
                 case ExpressionType.MemberAccess: return CreateFieldName((MemberExpression)exp);
+                case ExpressionType.Convert: return Visit(((UnaryExpression)exp).Operand);
             }
             throw new Exception(string.Format("类型：(ExpressionType){0}，不存在。", exp.NodeType));
         }

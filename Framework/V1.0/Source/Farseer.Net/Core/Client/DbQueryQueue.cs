@@ -41,6 +41,7 @@ namespace FS.Core.Client
         {
             var param = Param == null ? null : Param.ToArray();
             var result = Sql.Length < 1 ? 0 : _query.TableContext.Database.ExecuteNonQuery(CommandType.Text, Sql.ToString(), param);
+
             _query.Clear();
             return result;
         }
@@ -53,6 +54,7 @@ namespace FS.Core.Client
                 lst = reader.ToList<T>();
                 reader.Close();
             }
+
             _query.Clear();
             return lst;
         }
@@ -65,6 +67,7 @@ namespace FS.Core.Client
                 t = reader.ToInfo<T>();
                 reader.Close();
             }
+
             _query.Clear();
             return t;
         }
@@ -72,7 +75,10 @@ namespace FS.Core.Client
         {
             var param = Param == null ? null : Param.ToArray();
             var value = _query.TableContext.Database.ExecuteScalar(CommandType.Text, Sql.ToString(), param);
-            return (T)Convert.ChangeType(value, typeof(T));
+            var t = (T)Convert.ChangeType(value, typeof(T));
+
+            _query.Clear();
+            return t;
         }
 
         public void Dispose()

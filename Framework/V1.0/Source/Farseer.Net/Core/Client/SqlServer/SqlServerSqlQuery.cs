@@ -8,226 +8,202 @@ namespace FS.Core.Client.SqlServer
 {
     public class SqlServerSqlQuery<TEntity> : ISqlQuery<TEntity> where TEntity : class,new()
     {
-        private readonly IQueryQueue _queryQueue;
-        private readonly string _tableName;
-        private readonly IQuery _query;
-        private readonly ExpressionVisit<TEntity> _visit;
+        protected readonly IQueryQueue QueryQueue;
+        protected readonly string TableName;
+        protected readonly IQuery Query;
+        protected readonly ExpressionVisit<TEntity> Visit;
 
         public SqlServerSqlQuery(IQuery query, IQueryQueue queryQueue, string tableName)
         {
-            _query = query;
-            _queryQueue = queryQueue;
-            _tableName = tableName;
-            _visit = new ExpressionVisit<TEntity>(query, queryQueue, new SqlServerExpressionNew<TEntity>(query, queryQueue), new SqlServerExpressionBool<TEntity>(query, queryQueue));
+            Query = query;
+            QueryQueue = queryQueue;
+            TableName = tableName;
+            Visit = new ExpressionVisit<TEntity>(query, queryQueue, new SqlServerExpressionNew<TEntity>(query, queryQueue), new SqlServerExpressionBool<TEntity>(query, queryQueue));
         }
 
-        public void ToInfo()
+        public virtual void ToInfo()
         {
-            _queryQueue.Sql = new StringBuilder();
-            var strSelectSql = _visit.Select(_queryQueue.ExpSelect);
-            var strWhereSql = _visit.Where(_queryQueue.ExpWhere);
-            var strOrderBySql = _visit.OrderBy(_queryQueue.ExpOrderBy);
+            QueryQueue.Sql = new StringBuilder();
+            var strSelectSql = Visit.Select(QueryQueue.ExpSelect);
+            var strWhereSql = Visit.Where(QueryQueue.ExpWhere);
+            var strOrderBySql = Visit.OrderBy(QueryQueue.ExpOrderBy);
+
+            if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "*"; }
+            if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
+            if (!string.IsNullOrWhiteSpace(strOrderBySql)) { strOrderBySql = "ORDER BY " + strOrderBySql; }
+
+            QueryQueue.Sql.AppendFormat("SELECT TOP 1 {0} FROM {1} {2} {3}", strSelectSql, Query.DbProvider.KeywordAegis(TableName), strWhereSql, strOrderBySql);
+        }
+
+        public virtual void ToList(int top = 0)
+        {
+            QueryQueue.Sql = new StringBuilder();
+            var strSelectSql = Visit.Select(QueryQueue.ExpSelect);
+            var strWhereSql = Visit.Where(QueryQueue.ExpWhere);
+            var strOrderBySql = Visit.OrderBy(QueryQueue.ExpOrderBy);
+            var strTopSql = top > 0 ? string.Format("TOP {0}", top) : string.Empty;
 
 
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "*"; }
-            _queryQueue.Sql.Append(string.Format("SELECT TOP 1 {0} ", strSelectSql));
+            if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
+            if (!string.IsNullOrWhiteSpace(strOrderBySql)) { strOrderBySql = "ORDER BY " + strOrderBySql; }
 
-            _queryQueue.Sql.Append(string.Format("FROM {0} ", _query.DbProvider.KeywordAegis(_tableName)));
-
-            if (!string.IsNullOrWhiteSpace(strWhereSql))
-            {
-                _queryQueue.Sql.Append(string.Format("WHERE {0} ", strWhereSql));
-            }
-
-            if (!string.IsNullOrWhiteSpace(strOrderBySql))
-            {
-                _queryQueue.Sql.Append(string.Format("ORDER BY {0} ", strOrderBySql));
-            }
+            QueryQueue.Sql.AppendFormat("SELECT {0} {1} FROM {2} {3} {4}", strTopSql, strSelectSql, Query.DbProvider.KeywordAegis(TableName), strWhereSql, strOrderBySql);
         }
 
-        public void ToList()
+        public virtual void ToList(int pageSize, int pageIndex)
         {
-            var strSelectSql = _visit.Select(_queryQueue.ExpSelect);
-            var strWhereSql = _visit.Where(_queryQueue.ExpWhere);
-            var strOrderBySql = _visit.OrderBy(_queryQueue.ExpOrderBy);
+            // 不分页
+            if (pageIndex == 1) { ToList(pageSize); return; }
 
-            _queryQueue.Sql = new StringBuilder();
+            var map = TableMapCache.GetMap<TEntity>();
+            var strSelectSql = Visit.Select(QueryQueue.ExpSelect);
+            var strWhereSql = Visit.Where(QueryQueue.ExpWhere);
+            var strOrderBySql = Visit.OrderBy(QueryQueue.ExpOrderBy);
+
+            QueryQueue.Sql = new StringBuilder();
 
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "*"; }
-            _queryQueue.Sql.Append(string.Format("SELECT {0} ", strSelectSql));
-
-            _queryQueue.Sql.Append(string.Format("FROM {0} ", _query.DbProvider.KeywordAegis(_tableName)));
-
-            if (!string.IsNullOrWhiteSpace(strWhereSql))
-            {
-                _queryQueue.Sql.Append(string.Format("WHERE {0} ", strWhereSql));
-            }
-
-            if (!string.IsNullOrWhiteSpace(strOrderBySql))
-            {
-                _queryQueue.Sql.Append(string.Format("ORDER BY {0} ", strOrderBySql));
-            }
+            if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
+            strOrderBySql = "ORDER BY " + (string.IsNullOrWhiteSpace(strOrderBySql) ? string.Format("{0} ASC", map.IndexName) : strOrderBySql);
+            QueryQueue.Sql.AppendFormat("SELECT {0} FROM (SELECT {0},ROW_NUMBER() OVER({1}) as Row FROM {2} {3}) a WHERE Row BETWEEN {4} AND {5};", strSelectSql, strOrderBySql, TableName, strWhereSql, (pageIndex - 1) * pageSize + 1, pageIndex * pageSize);
         }
 
-        public void Count()
+        public virtual void Count()
         {
-            _queryQueue.Sql = new StringBuilder();
-            var strWhereSql = _visit.Where(_queryQueue.ExpWhere);
+            QueryQueue.Sql = new StringBuilder();
+            var strWhereSql = Visit.Where(QueryQueue.ExpWhere);
 
-            _queryQueue.Sql.Append(string.Format("SELECT Count(0) "));
+            if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
 
-            _queryQueue.Sql.Append(string.Format("FROM {0} ", _query.DbProvider.KeywordAegis(_tableName)));
-
-            if (!string.IsNullOrWhiteSpace(strWhereSql))
-            {
-                _queryQueue.Sql.Append(string.Format("WHERE {0} ", strWhereSql));
-            }
+            QueryQueue.Sql.AppendFormat("SELECT Count(0) FROM {0} {1}", Query.DbProvider.KeywordAegis(TableName), strWhereSql);
         }
 
-        public void Sum()
+        public virtual void Sum()
         {
-            _queryQueue.Sql = new StringBuilder();
-            var strSelectSql = _visit.Select(_queryQueue.ExpSelect);
-            var strWhereSql = _visit.Where(_queryQueue.ExpWhere);
-
+            QueryQueue.Sql = new StringBuilder();
+            var strSelectSql = Visit.Select(QueryQueue.ExpSelect);
+            var strWhereSql = Visit.Where(QueryQueue.ExpWhere);
 
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "0"; }
-            _queryQueue.Sql.Append(string.Format("SELECT SUM({0}) ", strSelectSql));
+            if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
 
-            _queryQueue.Sql.Append(string.Format("FROM {0} ", _query.DbProvider.KeywordAegis(_tableName)));
-
-            if (!string.IsNullOrWhiteSpace(strWhereSql))
-            {
-                _queryQueue.Sql.Append(string.Format("WHERE {0} ", strWhereSql));
-            }
+            QueryQueue.Sql.AppendFormat("SELECT SUM({0}) FROM {1} {2}", strSelectSql, Query.DbProvider.KeywordAegis(TableName), strWhereSql);
         }
 
-        public void Max()
+        public virtual void Max()
         {
-            _queryQueue.Sql = new StringBuilder();
-            var strSelectSql = _visit.Select(_queryQueue.ExpSelect);
-            var strWhereSql = _visit.Where(_queryQueue.ExpWhere);
-
+            QueryQueue.Sql = new StringBuilder();
+            var strSelectSql = Visit.Select(QueryQueue.ExpSelect);
+            var strWhereSql = Visit.Where(QueryQueue.ExpWhere);
 
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "0"; }
-            _queryQueue.Sql.Append(string.Format("SELECT MAX({0}) ", strSelectSql));
+            if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
 
-            _queryQueue.Sql.Append(string.Format("FROM {0} ", _query.DbProvider.KeywordAegis(_tableName)));
-
-            if (!string.IsNullOrWhiteSpace(strWhereSql))
-            {
-                _queryQueue.Sql.Append(string.Format("WHERE {0} ", strWhereSql));
-            }
+            QueryQueue.Sql.AppendFormat("SELECT MAX({0}) FROM {1} {2}", strSelectSql, Query.DbProvider.KeywordAegis(TableName), strWhereSql);
         }
 
-        public void Min()
+        public virtual void Min()
         {
-            _queryQueue.Sql = new StringBuilder();
-            var strSelectSql = _visit.Select(_queryQueue.ExpSelect);
-            var strWhereSql = _visit.Where(_queryQueue.ExpWhere);
-
+            QueryQueue.Sql = new StringBuilder();
+            var strSelectSql = Visit.Select(QueryQueue.ExpSelect);
+            var strWhereSql = Visit.Where(QueryQueue.ExpWhere);
 
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "0"; }
-            _queryQueue.Sql.Append(string.Format("SELECT MIN({0}) ", strSelectSql));
+            if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
 
-            _queryQueue.Sql.Append(string.Format("FROM {0} ", _query.DbProvider.KeywordAegis(_tableName)));
-
-            if (!string.IsNullOrWhiteSpace(strWhereSql))
-            {
-                _queryQueue.Sql.Append(string.Format("WHERE {0} ", strWhereSql));
-            }
+            QueryQueue.Sql.AppendFormat("SELECT MIN({0}) FROM {1} {2}", strSelectSql, Query.DbProvider.KeywordAegis(TableName), strWhereSql);
         }
 
-        public void Value()
+        public virtual void Value()
         {
-            _queryQueue.Sql = new StringBuilder();
-            var strSelectSql = _visit.Select(_queryQueue.ExpSelect);
-            var strWhereSql = _visit.Where(_queryQueue.ExpWhere);
-            var strOrderBySql = _visit.OrderBy(_queryQueue.ExpOrderBy);
-
+            QueryQueue.Sql = new StringBuilder();
+            var strSelectSql = Visit.Select(QueryQueue.ExpSelect);
+            var strWhereSql = Visit.Where(QueryQueue.ExpWhere);
+            var strOrderBySql = Visit.OrderBy(QueryQueue.ExpOrderBy);
 
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "*"; }
-            _queryQueue.Sql.Append(string.Format("SELECT TOP 1 {0} ", strSelectSql));
+            if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
+            if (!string.IsNullOrWhiteSpace(strOrderBySql)) { strOrderBySql = "ORDER BY " + strOrderBySql; }
 
-            _queryQueue.Sql.Append(string.Format("FROM {0} ", _query.DbProvider.KeywordAegis(_tableName)));
-
-            if (!string.IsNullOrWhiteSpace(strWhereSql))
-            {
-                _queryQueue.Sql.Append(string.Format("WHERE {0} ", strWhereSql));
-            }
-
-            if (!string.IsNullOrWhiteSpace(strOrderBySql))
-            {
-                _queryQueue.Sql.Append(string.Format("ORDER BY {0} ", strOrderBySql));
-            }
+            QueryQueue.Sql.AppendFormat("SELECT TOP 1 {0} FROM {1} {2} {3}", strSelectSql, Query.DbProvider.KeywordAegis(TableName), strWhereSql, strOrderBySql);
         }
 
-        public void Delete()
+        public virtual void Delete()
         {
-            _queryQueue.Sql = new StringBuilder();
-            var strWhereSql = _visit.Where(_queryQueue.ExpWhere);
+            QueryQueue.Sql = new StringBuilder();
+            var strWhereSql = Visit.Where(QueryQueue.ExpWhere);
 
-            _queryQueue.Sql.AppendFormat("DELETE FROM {0} ", _query.DbProvider.KeywordAegis(_tableName));
-            if (!string.IsNullOrWhiteSpace(strWhereSql)) { _queryQueue.Sql.Append(string.Format("WHERE {0} ", strWhereSql)); }
+            if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
+
+            QueryQueue.Sql.AppendFormat("DELETE FROM {0} {1}", Query.DbProvider.KeywordAegis(TableName), strWhereSql);
         }
 
-        public void Insert(TEntity entity)
+        public virtual void Insert(TEntity entity)
         {
-            _queryQueue.Sql = new StringBuilder();
-            var strinsertAssemble = _visit.Insert(entity);
+            QueryQueue.Sql = new StringBuilder();
+            var strinsertAssemble = Visit.Insert(entity);
+
+            var map = TableMapCache.GetMap(entity);
+
+            // 主键如果有值，则需要 SET IDENTITY_INSERT ON
+            var indexHaveValue = map.GetModelInfo().Key != null && map.GetModelInfo().Key.GetValue(entity, null) != null;
+            if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { QueryQueue.Sql.AppendFormat("SET IDENTITY_INSERT {0} ON ; ", TableName); }
+
+            QueryQueue.Sql.AppendFormat("INSERT INTO {0} {1}", TableName, strinsertAssemble);
+
+            if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { QueryQueue.Sql.AppendFormat("; SET IDENTITY_INSERT {0} OFF ", TableName); }
+        }
+
+        public virtual void InsertIdentity(TEntity entity)
+        {
+            QueryQueue.Sql = new StringBuilder();
+            var strinsertAssemble = Visit.Insert(entity);
 
             var map = TableMapCache.GetMap(entity);
 
             var indexHaveValue = map.GetModelInfo().Key != null && map.GetModelInfo().Key.GetValue(entity, null) != null;
-            if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { _queryQueue.Sql.AppendFormat("SET IDENTITY_INSERT {0} ON ; ", _tableName); }
+            if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { QueryQueue.Sql.AppendFormat("SET IDENTITY_INSERT {0} ON ; ", TableName); }
 
-            _queryQueue.Sql.AppendFormat("INSERT INTO {0} ", _tableName);
-            _queryQueue.Sql.Append(strinsertAssemble);
+            QueryQueue.Sql.AppendFormat("INSERT INTO {0} {1};SELECT @@IDENTITY;", TableName, strinsertAssemble);
 
-            if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { _queryQueue.Sql.AppendFormat("; SET IDENTITY_INSERT {0} OFF ", _tableName); }
+            if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { QueryQueue.Sql.AppendFormat("; SET IDENTITY_INSERT {0} OFF; ", TableName); }
         }
 
-        public void InsertIdentity(TEntity entity)
+        public virtual void Update(TEntity entity)
         {
-            _queryQueue.Sql = new StringBuilder();
-            var strinsertAssemble = _visit.Insert(entity);
+            QueryQueue.Sql = new StringBuilder();
+            var strWhereSql = Visit.Where(QueryQueue.ExpWhere);
+            var strAssemble = Visit.Assign(entity);
 
-            var map = TableMapCache.GetMap(entity);
+            if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
 
-            var indexHaveValue = map.GetModelInfo().Key != null && map.GetModelInfo().Key.GetValue(entity, null) != null;
-            if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { _queryQueue.Sql.AppendFormat("SET IDENTITY_INSERT {0} ON ; ", _tableName); }
-
-            _queryQueue.Sql.AppendFormat("INSERT INTO {0} ", _tableName);
-            _queryQueue.Sql.Append(strinsertAssemble);
-
-            if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { _queryQueue.Sql.AppendFormat("; SET IDENTITY_INSERT {0} OFF; ", _tableName); }
-
-            _queryQueue.Sql.AppendFormat("SELECT @@IDENTITY;");
+            QueryQueue.Sql.AppendFormat("UPDATE {0} SET {1} {2}", Query.DbProvider.KeywordAegis(TableName), strAssemble, strWhereSql);
         }
 
-        public void Update(TEntity entity)
+        public virtual void AddUp()
         {
-            _queryQueue.Sql = new StringBuilder();
-            var strWhereSql = _visit.Where(_queryQueue.ExpWhere);
-            var strAssemble = _visit.Assign(entity);
+            if (QueryQueue.ExpAssign == null || QueryQueue.ExpAssign.Count == 0) { throw new Exception("赋值的参数不能为空！"); }
+            QueryQueue.Sql = new StringBuilder();
+            var strWhereSql = Visit.Where(QueryQueue.ExpWhere);
 
-            _queryQueue.Sql.AppendFormat("UPDATE {0} SET ", _query.DbProvider.KeywordAegis(_tableName));
-            _queryQueue.Sql.Append(strAssemble);
-            if (!string.IsNullOrWhiteSpace(strWhereSql)) { _queryQueue.Sql.Append(string.Format(" WHERE {0} ", strWhereSql)); }
+            if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
+
+            #region 字段赋值
+            var sqlAssign = new StringBuilder();
+            foreach (var keyValue in QueryQueue.ExpAssign)
+            {
+                var strAssemble = Visit.Assign(keyValue.Key);
+                var strs = strAssemble.Split(',');
+                foreach (var s in strs) { sqlAssign.AppendFormat("{0} = {0} + {1},", s, keyValue.Value); }
+            }
+            if (sqlAssign.Length > 0) { sqlAssign = sqlAssign.Remove(sqlAssign.Length - 1, 1); }
+            #endregion
+
+            QueryQueue.Sql.AppendFormat("UPDATE {0} SET {1} {2}", Query.DbProvider.KeywordAegis(TableName), sqlAssign, strWhereSql);
         }
 
-        public void AddUp()
-        {
-            _queryQueue.Sql = new StringBuilder();
-            var strWhereSql = _visit.Where(_queryQueue.ExpWhere);
-            var strAssemble = _visit.Assign(_queryQueue.ExpAssign);
-
-            _queryQueue.Sql.AppendFormat("UPDATE {0} SET ", _query.DbProvider.KeywordAegis(_tableName));
-            _queryQueue.Sql.Append(strAssemble);
-            if (!string.IsNullOrWhiteSpace(strWhereSql)) { _queryQueue.Sql.Append(string.Format(" WHERE {0} ", strWhereSql)); }
-        }
-
-        public void BulkCopy(List<TEntity> lst)
+        public virtual void BulkCopy(List<TEntity> lst)
         {
             throw new NotImplementedException();
         }

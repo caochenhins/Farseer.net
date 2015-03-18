@@ -6,7 +6,7 @@ namespace FS.Extend
     /// <summary>
     ///     Object扩展工具
     /// </summary>
-    public static class ObjectExtend
+    public static partial class ObjectExtend
     {
         /// <summary>
         ///     将任何数组转换成用符号连接的字符串

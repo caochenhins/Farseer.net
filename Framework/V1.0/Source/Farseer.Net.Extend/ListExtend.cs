@@ -11,7 +11,7 @@ namespace FS.Extend
     /// <summary>
     ///     Data扩展工具
     /// </summary>
-    public static class ListExtend
+    public static partial class ListExtend
     {
         /// <summary>
         ///     判断value是否存在于列表中

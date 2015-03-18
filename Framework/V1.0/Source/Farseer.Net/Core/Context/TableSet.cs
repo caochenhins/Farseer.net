@@ -65,7 +65,8 @@ namespace FS.Core.Context
 
         public TableSet<TEntity> Append(Expression<Func<TEntity, object>> fieldName, object fieldValue)
         {
-            // QueryQueue.ExpAssign = QueryQueue.ExpAssign == null ? QueryQueue.ExpAssign = asc : Expression.Add(QueryQueue.ExpAssign, asc);
+            if (QueryQueue.ExpAssign == null) { QueryQueue.ExpAssign = new Dictionary<Expression, object>(); }
+            if (fieldName != null) { QueryQueue.ExpAssign.Add(fieldName, fieldValue); }
             return this;
         }
 
@@ -76,10 +77,26 @@ namespace FS.Core.Context
         /// 查询多条记录
         /// </summary>
         /// <returns></returns>
-        public List<TEntity> ToList()
+        public List<TEntity> ToList(int top = 0)
         {
-            QueryQueue.SqlQuery<TEntity>().ToList();
+            QueryQueue.SqlQuery<TEntity>().ToList(top);
             return QueryQueue.ExecuteList<TEntity>();
+        }
+
+        public List<TEntity> ToList(int pageSize, int pageIndex)
+        {
+            QueryQueue.SqlQuery<TEntity>().ToList(pageSize, pageIndex);
+            return QueryQueue.ExecuteList<TEntity>();
+        }
+
+        public List<TEntity> ToList(int pageSize, int pageIndex, out int recordCount)
+        {
+            var queue = QueryQueue;
+            recordCount = Count();
+            QueryQueue.ExpOrderBy = queue.ExpOrderBy;
+            QueryQueue.ExpSelect = queue.ExpSelect;
+            QueryQueue.ExpWhere = queue.ExpWhere;
+            return ToList(pageSize, pageIndex);
         }
         /// <summary>
         /// 查询单条记录
