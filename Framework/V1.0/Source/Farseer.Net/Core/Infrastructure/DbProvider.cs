@@ -17,6 +17,10 @@ namespace FS.Core.Infrastructure
     public abstract class DbProvider
     {
         /// <summary>
+        /// 返回当前新增的标识
+        /// </summary>
+        public abstract string CurrentIdentity { get; }
+        /// <summary>
         ///     支持一次传输最多的参数个数
         /// </summary>
         public abstract int ParamsMaxLength { get; }

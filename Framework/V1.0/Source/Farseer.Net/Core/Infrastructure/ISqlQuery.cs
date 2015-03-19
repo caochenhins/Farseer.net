@@ -14,11 +14,17 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 查询多条记录
         /// </summary>
-        void ToList(int top = 0);
+        /// <param name="top">限制显示的数量</param>
+        /// <param name="isDistinct">返回当前条件下非重复数据</param>
+        /// <param name="isRand">返回当前条件下随机的数据</param>
+        void ToList(int top = 0, bool isDistinct = false, bool isRand = false);
         /// <summary>
         /// 查询多条记录
         /// </summary>
-        void ToList(int pageSize, int pageIndex);
+        /// <param name="pageSize">每页显示数量</param>
+        /// <param name="pageIndex">分页索引</param>
+        /// <param name="isDistinct">返回当前条件下非重复数据</param>
+        void ToList(int pageSize, int pageIndex, bool isDistinct = false);
         /// <summary>
         /// 删除
         /// </summary>
@@ -38,8 +44,8 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 查询数量
         /// </summary>
-        void Count();
-
+        /// <param name="isDistinct">返回当前条件下非重复数据</param>
+        void Count(bool isDistinct = false);
         /// <summary>
         /// 累计和
         /// </summary>
@@ -63,6 +69,6 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 使用数据库特性进行大批量插入操作
         /// </summary>
-        void BulkCopy(List<TEntity> lst);
+        //void BulkCopy(List<TEntity> lst);
     }
 }

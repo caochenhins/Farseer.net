@@ -5,5 +5,5 @@
         T ID { get; set; }
     }
 
-    public interface IEntity : IEntity<int> { }
+    public interface IEntity : IEntity<int?> { }
 }

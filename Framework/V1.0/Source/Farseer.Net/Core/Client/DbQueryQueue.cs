@@ -45,33 +45,33 @@ namespace FS.Core.Client
             _query.Clear();
             return result;
         }
-        public List<T> ExecuteList<T>() where T : class, new()
+        public List<TEntity> ExecuteList<TEntity>() where TEntity : class, new()
         {
             var param = Param == null ? null : Param.ToArray();
-            List<T> lst;
+            List<TEntity> lst;
             using (var reader = _query.TableContext.Database.GetReader(CommandType.Text, Sql.ToString(), param))
             {
-                lst = reader.ToList<T>();
+                lst = reader.ToList<TEntity>();
                 reader.Close();
             }
 
             _query.Clear();
             return lst;
         }
-        public T ExecuteInfo<T>() where T : class, new()
+        public TEntity ExecuteInfo<TEntity>() where TEntity : class, new()
         {
             var param = Param == null ? null : Param.ToArray();
-            T t;
+            TEntity t;
             using (var reader = _query.TableContext.Database.GetReader(CommandType.Text, Sql.ToString(), param))
             {
-                t = reader.ToInfo<T>();
+                t = reader.ToInfo<TEntity>();
                 reader.Close();
             }
 
             _query.Clear();
             return t;
         }
-        public T ExecuteQuery<T>()
+        public T ExecuteQuery<T>(T defValue = default(T))
         {
             var param = Param == null ? null : Param.ToArray();
             var value = _query.TableContext.Database.ExecuteScalar(CommandType.Text, Sql.ToString(), param);

@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using FS.Core.Context;
 using FS.Core.Infrastructure;
 using FS.Utils.WebForm.Repeater;
 
 namespace FS.Extend
 {
-    public static class Extend
+    public static partial class Extend
     {
         /// <summary>
         ///     对List进行分页
@@ -41,13 +42,28 @@ namespace FS.Extend
         /// <summary>
         ///     对List进行分页
         /// </summary>
-        /// <typeparam name="TInfo">实体类</typeparam>
+        /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="lst">List列表</param>
         /// <param name="IDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
         /// <param name="rpt">Repeater</param>
-        public static List<TInfo> ToList<TInfo>(this IEnumerable<TInfo> lst, List<int> IDs, Repeater rpt) where TInfo : IEntity
+        public static List<TEntity> ToList<TEntity>(this IEnumerable<TEntity> lst, List<int> IDs, Repeater rpt) where TEntity : IEntity
         {
-            return ToList(lst.Where(o => IDs.Contains(o.ID)), rpt);
+            return ToList(lst.Where(o => IDs.Contains(o.ID.GetValueOrDefault())), rpt);
+        }
+
+        /// <summary>
+        ///     通用的分页方法(多条件)
+        /// </summary>
+        /// <param name="ts">TableSet</param>
+        /// <param name="rpt">Repeater带分页控件</param>
+        /// <typeparam name="TEntity">实体类</typeparam>
+        public static List<TEntity> ToList<TEntity>(this TableSet<TEntity> ts, Repeater rpt) where TEntity : class, Core.Infrastructure.IEntity, new()
+        {
+            int recordCount;
+            var lst = ts.ToList(rpt.PageSize, rpt.PageIndex, out recordCount);
+            rpt.PageCount = recordCount;
+
+            return lst;
         }
     }
 }

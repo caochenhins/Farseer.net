@@ -52,17 +52,17 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 当前队列立即交互数据库（返回List<T>）
         /// </summary>
-        List<T> ExecuteList<T>() where T : class, new();
+        List<TEntity> ExecuteList<TEntity>() where TEntity : class, new();
 
         /// <summary>
         /// 当前队列立即交互数据库（返回Info）
         /// </summary>
-        T ExecuteInfo<T>() where T : class, new();
+        TEntity ExecuteInfo<TEntity>() where TEntity : class, new();
 
         /// <summary>
         /// 当前队列立即交互数据库（返回T）
         /// </summary>
-        T ExecuteQuery<T>();
+        T ExecuteQuery<T>(T defValue = default(T));
 
         /// <summary>
         /// 延迟执行SQL生成

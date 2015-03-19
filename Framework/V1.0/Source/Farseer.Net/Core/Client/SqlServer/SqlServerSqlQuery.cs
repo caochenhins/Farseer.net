@@ -35,48 +35,63 @@ namespace FS.Core.Client.SqlServer
             QueryQueue.Sql.AppendFormat("SELECT TOP 1 {0} FROM {1} {2} {3}", strSelectSql, Query.DbProvider.KeywordAegis(TableName), strWhereSql, strOrderBySql);
         }
 
-        public virtual void ToList(int top = 0)
+        public virtual void ToList(int top = 0, bool isDistinct = false, bool isRand = false)
         {
             QueryQueue.Sql = new StringBuilder();
             var strSelectSql = Visit.Select(QueryQueue.ExpSelect);
             var strWhereSql = Visit.Where(QueryQueue.ExpWhere);
             var strOrderBySql = Visit.OrderBy(QueryQueue.ExpOrderBy);
             var strTopSql = top > 0 ? string.Format("TOP {0}", top) : string.Empty;
-
+            var strDistinctSql = isDistinct ? "Distinct" : string.Empty;
 
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "*"; }
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
             if (!string.IsNullOrWhiteSpace(strOrderBySql)) { strOrderBySql = "ORDER BY " + strOrderBySql; }
+            if (isDistinct && isRand) { strSelectSql += ",NEWID() as newid "; }
 
-            QueryQueue.Sql.AppendFormat("SELECT {0} {1} FROM {2} {3} {4}", strTopSql, strSelectSql, Query.DbProvider.KeywordAegis(TableName), strWhereSql, strOrderBySql);
+            if (!isRand)
+            {
+                QueryQueue.Sql.AppendFormat("SELECT {0} {1} {2} FROM {3} {4} {5}", strDistinctSql, strTopSql, strSelectSql, Query.DbProvider.KeywordAegis(TableName), strWhereSql, strOrderBySql);
+            }
+            else if (string.IsNullOrWhiteSpace(strOrderBySql))
+            {
+                QueryQueue.Sql.AppendFormat("SELECT {0} {1} {2} FROM {3} {4} ORDER BY NEWID()", strDistinctSql, strTopSql, strSelectSql, Query.DbProvider.KeywordAegis(TableName), strWhereSql);
+            }
+            else
+            {
+                QueryQueue.Sql.AppendFormat("SELECT * FROM (SELECT {0} {1} {2} FROM {3} {4} ORDER BY NEWID()) a {5}", strDistinctSql, strTopSql, strSelectSql, Query.DbProvider.KeywordAegis(TableName), strWhereSql, strOrderBySql);
+            }
         }
 
-        public virtual void ToList(int pageSize, int pageIndex)
+        public virtual void ToList(int pageSize, int pageIndex, bool isDistinct = false)
         {
             // 不分页
-            if (pageIndex == 1) { ToList(pageSize); return; }
+            if (pageIndex == 1) { ToList(pageSize, isDistinct); return; }
 
             var map = TableMapCache.GetMap<TEntity>();
             var strSelectSql = Visit.Select(QueryQueue.ExpSelect);
             var strWhereSql = Visit.Where(QueryQueue.ExpWhere);
             var strOrderBySql = Visit.OrderBy(QueryQueue.ExpOrderBy);
+            var strDistinctSql = isDistinct ? "Distinct" : string.Empty;
 
             QueryQueue.Sql = new StringBuilder();
 
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "*"; }
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
             strOrderBySql = "ORDER BY " + (string.IsNullOrWhiteSpace(strOrderBySql) ? string.Format("{0} ASC", map.IndexName) : strOrderBySql);
-            QueryQueue.Sql.AppendFormat("SELECT {0} FROM (SELECT {0},ROW_NUMBER() OVER({1}) as Row FROM {2} {3}) a WHERE Row BETWEEN {4} AND {5};", strSelectSql, strOrderBySql, TableName, strWhereSql, (pageIndex - 1) * pageSize + 1, pageIndex * pageSize);
+
+            QueryQueue.Sql.AppendFormat("SELECT {1} FROM (SELECT {0} {1},ROW_NUMBER() OVER({2}) as Row FROM {3} {4}) a WHERE Row BETWEEN {5} AND {6};", strDistinctSql, strSelectSql, strOrderBySql, TableName, strWhereSql, (pageIndex - 1) * pageSize + 1, pageIndex * pageSize);
         }
 
-        public virtual void Count()
+        public virtual void Count(bool isDistinct = false)
         {
             QueryQueue.Sql = new StringBuilder();
             var strWhereSql = Visit.Where(QueryQueue.ExpWhere);
+            var strDistinctSql = isDistinct ? "Distinct" : string.Empty;
 
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
 
-            QueryQueue.Sql.AppendFormat("SELECT Count(0) FROM {0} {1}", Query.DbProvider.KeywordAegis(TableName), strWhereSql);
+            QueryQueue.Sql.AppendFormat("SELECT {0} Count(0) FROM {1} {2}", strDistinctSql, Query.DbProvider.KeywordAegis(TableName), strWhereSql);
         }
 
         public virtual void Sum()
@@ -165,7 +180,7 @@ namespace FS.Core.Client.SqlServer
             var indexHaveValue = map.GetModelInfo().Key != null && map.GetModelInfo().Key.GetValue(entity, null) != null;
             if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { QueryQueue.Sql.AppendFormat("SET IDENTITY_INSERT {0} ON ; ", TableName); }
 
-            QueryQueue.Sql.AppendFormat("INSERT INTO {0} {1};SELECT @@IDENTITY;", TableName, strinsertAssemble);
+            QueryQueue.Sql.AppendFormat("INSERT INTO {0} {1};{2}", TableName, strinsertAssemble, Query.DbProvider.CurrentIdentity);
 
             if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { QueryQueue.Sql.AppendFormat("; SET IDENTITY_INSERT {0} OFF; ", TableName); }
         }
@@ -201,11 +216,6 @@ namespace FS.Core.Client.SqlServer
             #endregion
 
             QueryQueue.Sql.AppendFormat("UPDATE {0} SET {1} {2}", Query.DbProvider.KeywordAegis(TableName), sqlAssign, strWhereSql);
-        }
-
-        public virtual void BulkCopy(List<TEntity> lst)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -291,10 +291,9 @@ namespace FS.Core.Data
                     bulkCopy.BulkCopyTimeout = 3600;
                     bulkCopy.WriteToServer(dt);
 
-                    if (bulkCopy != null) { bulkCopy.Close(); }
+                    bulkCopy.Close();
                 }
             }
-            catch (Exception ex) { throw new Exception(ex.Message); }
             finally
             {
                 Close(false);

@@ -48,7 +48,9 @@ namespace Farseer.Net.Core.Tests.Context
         [TestMethod]
         public void ToListTestMethod()
         {
-            var lst = TableContext<UserPO>.Data.ToList();
+            var lst = TableContext<UserPO>.Data.Desc(o => o.ID).ToList(10, true, true);
+            lst = TableContext<UserPO>.Data.ToList(0, true, true);
+            lst = TableContext<UserPO>.Data.ToList();
             Assert.IsTrue(lst != null && lst.Count > 0);
             var ID = lst[0].ID.GetValueOrDefault();
 

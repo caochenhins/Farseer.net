@@ -6,6 +6,11 @@ namespace FS.Core.Client.SqlServer
 {
     public class SqlServerProvider : DbProvider
     {
+        public override string CurrentIdentity
+        {
+            get { return "SELECT @@IDENTITY;"; }
+        }
+
         public override int ParamsMaxLength
         {
             get { return 2100; }
