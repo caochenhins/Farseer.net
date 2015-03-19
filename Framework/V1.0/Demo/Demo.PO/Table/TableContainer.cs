@@ -6,7 +6,7 @@ namespace Demo.PO.Table
     /// <summary>
     /// 表容器
     /// </summary>
-    public class TableContainer : TableContext
+    public class TableContainer : DbContext
     {
         public TableContainer() : base(0) { }
 

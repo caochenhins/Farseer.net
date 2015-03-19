@@ -1,4 +1,5 @@
-﻿using FS.Configs;
+﻿using System.Data;
+using FS.Configs;
 using FS.Core.Data;
 using FS.Mapping.Table;
 
@@ -7,7 +8,7 @@ namespace FS.Core.Context
     /// <summary>
     /// 表上下文
     /// </summary>
-    public class TableContext<TEntity> : TableContext where TEntity : class, new()
+    public class TableContext<TEntity> : DbContext where TEntity : class, new()
     {
         /// <summary>
         /// 通过TEntity的特性，获取数据库配置
@@ -28,18 +29,23 @@ namespace FS.Core.Context
         /// <param name="dbType">数据库类型</param>
         /// <param name="commandTimeout">SQL执行超时时间</param>
         /// <param name="tableName">表名称</param>
-        public TableContext(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, int commandTimeout = 30, string tableName = null) : this(new DbExecutor(connectionString, dbType, commandTimeout), tableName) { }
+        public TableContext(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, int commandTimeout = 30, string tableName = null) : this(new DbExecutor(connectionString, dbType, commandTimeout), tableName) { IsMergeCommand = true; }
 
         /// <summary>
         /// 事务
         /// </summary>
         /// <param name="database">数据库执行</param>
         /// <param name="tableName">表名称</param>
-        public TableContext(DbExecutor database, string tableName = null): base(database, tableName)
+        public TableContext(DbExecutor database, string tableName = null) : base(database, tableName)
         {
             if (string.IsNullOrWhiteSpace(tableName)) { TableName = TableMapCache.GetMap<TEntity>().ClassInfo.Name; }
             TableSet = new TableSet<TEntity>(this);
         }
+
+        /// <summary>
+        /// true:启用合并执行命令、并延迟加载
+        /// </summary>
+        internal protected bool IsMergeCommand { get; private set; }
 
         /// <summary>
         /// 强类型实体对象
@@ -56,6 +62,27 @@ namespace FS.Core.Context
             {
                 return new TableContext<TEntity>() { IsMergeCommand = false }.TableSet;
             }
+        }
+
+        /// <summary>
+        /// 保存修改
+        /// IsMergeCommand=true时：只提交一次SQL到数据库
+        /// </summary>
+        /// <param name="isOlation">默认启用事务操作</param>
+        public int SaveChanges(bool isOlation = true)
+        {
+            // 开启或关闭事务
+            if (isOlation) { Database.OpenTran(IsolationLevel.Serializable); }
+            else { Database.CloseTran(); }
+
+            var result = Query.Commit();
+            // 如果开启了事务，则关闭
+            if (isOlation)
+            {
+                Database.Commit();
+                Database.CloseTran();
+            }
+            return result;
         }
     }
 }

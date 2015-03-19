@@ -17,7 +17,7 @@ namespace FS.Core
 {
     public static class DbFactory
     {
-        public static IQuery CreateQuery(TableContext tableContext)
+        public static IQuery CreateQuery(DbContext tableContext)
         {
             switch (tableContext.Database.DataType)
             {

@@ -12,7 +12,7 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 数据库上下文
         /// </summary>
-        TableContext TableContext { get; }
+        DbContext TableContext { get; }
 
         /// <summary>
         /// 当前所有持久化列表

@@ -12,8 +12,8 @@ namespace FS.Core.Client
     public class DbQuery : IQuery
     {
         public DbProvider DbProvider { get; set; }
-        public TableContext TableContext { get; private set; }
-        public DbQuery(TableContext tableContext, DbProvider dbProvider)
+        public DbContext TableContext { get; private set; }
+        public DbQuery(DbContext tableContext, DbProvider dbProvider)
         {
             TableContext = tableContext;
             GroupQueryQueueList = new List<IQueryQueue>();
