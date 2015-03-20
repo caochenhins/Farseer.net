@@ -9,23 +9,21 @@ namespace FS.Core.Context
     /// <summary>
     /// 视图操作
     /// </summary>
-    /// <typeparam name="TEntity"></typeparam>
+    /// <typeparam name="TEntity">实体</typeparam>
     public class ViewSet<TEntity> : IDisposable where TEntity : class, new()
     {
         /// <summary>
         /// 数据库上下文
         /// </summary>
         private readonly ViewContext<TEntity> _viewContext;
-        private IQuery Query { get { return _viewContext.Query; } }
-        private IQueryQueue QueryQueue { get { return _viewContext.Query.QueryQueue; } }
+        protected virtual IQueryQueue QueryQueue { get { return _viewContext.Query.QueryQueue; } }
 
         /// <summary>
         /// 禁止外部实例化
         /// </summary>
-        private ViewSet() { }
+        protected ViewSet() { }
 
-        internal ViewSet(ViewContext<TEntity> viewContext)
-            : this()
+        internal ViewSet(ViewContext<TEntity> viewContext): this()
         {
             _viewContext = viewContext;
         }
@@ -53,6 +51,11 @@ namespace FS.Core.Context
             return this;
         }
 
+        /// <summary>
+        /// 倒序查询
+        /// </summary>
+        /// <typeparam name="TKey">实体类属性类型</typeparam>
+        /// <param name="desc">字段选择器</param>
         public ViewSet<TEntity> Desc<TKey>(Expression<Func<TEntity, TKey>> desc)
         {
             if (QueryQueue.ExpOrderBy == null) { QueryQueue.ExpOrderBy = new Dictionary<Expression, bool>(); }
@@ -60,17 +63,15 @@ namespace FS.Core.Context
             return this;
         }
 
+        /// <summary>
+        /// 正序查询
+        /// </summary>
+        /// <typeparam name="TKey">实体类属性类型</typeparam>
+        /// <param name="asc">字段选择器</param>
         public ViewSet<TEntity> Asc<TKey>(Expression<Func<TEntity, TKey>> asc)
         {
             if (QueryQueue.ExpOrderBy == null) { QueryQueue.ExpOrderBy = new Dictionary<Expression, bool>(); }
             if (asc != null) { QueryQueue.ExpOrderBy.Add(asc, true); }
-            return this;
-        }
-
-        public ViewSet<TEntity> Append<T>(Expression<Func<TEntity, T>> fieldName, T fieldValue) where T : struct
-        {
-            if (QueryQueue.ExpAssign == null) { QueryQueue.ExpAssign = new Dictionary<Expression, object>(); }
-            if (fieldName != null) { QueryQueue.ExpAssign.Add(fieldName, fieldValue); }
             return this;
         }
 

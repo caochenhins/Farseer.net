@@ -102,6 +102,8 @@ namespace FS.Mapping.Table
                     if (item is ColumnAttribute) { fieldMapState.Column = (ColumnAttribute)item; continue; }
                     // 属性扩展
                     if (item is PropertyExtendAttribute) { fieldMapState.PropertyExtend = ((PropertyExtendAttribute)item).PropertyExtend; continue; }
+                    // 存储过程参数
+                    if (item is ProcAttribute) { fieldMapState.IsOutParam = ((ProcAttribute)item).IsOutParam; fieldMapState.IsInParam = ((ProcAttribute)item).IsInParam; continue; }
                 }
                 //if (fieldMapState.Display == null) { fieldMapState.Display = new DisplayAttribute { Name = propertyInfo.Name }; }
                 //if (fieldMapState.Display.Name.IsNullOrEmpty()) { fieldMapState.Display.Name = propertyInfo.Name; }

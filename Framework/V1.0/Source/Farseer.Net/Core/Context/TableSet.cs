@@ -10,121 +10,78 @@ namespace FS.Core.Context
     /// 表操作
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
-    public class TableSet<TEntity> : IDisposable where TEntity : class, new()
+    public class TableSet<TEntity> : ViewSet<TEntity> where TEntity : class, new()
     {
         /// <summary>
         /// 数据库上下文
         /// </summary>
         private readonly TableContext<TEntity> _tableContext;
         private IQuery Query { get { return _tableContext.Query; } }
-        private IQueryQueue QueryQueue { get { return _tableContext.Query.QueryQueue; } }
+        protected override IQueryQueue QueryQueue { get { return _tableContext.Query.QueryQueue; } }
 
         /// <summary>
         /// 禁止外部实例化
         /// </summary>
         private TableSet() { }
 
-        internal TableSet(TableContext<TEntity> tableContext)
-            : this()
+        internal TableSet(TableContext<TEntity> tableContext): this()
         {
             _tableContext = tableContext;
         }
 
         #region 条件
-
-        /// <summary>
-        ///     字段选择器
-        /// </summary>
-        /// <param name="select">字段选择器</param>
-        public TableSet<TEntity> Select<T>(Expression<Func<TEntity, T>> select)
+        public new TableSet<TEntity> Select<T>(Expression<Func<TEntity, T>> select)
         {
             if (QueryQueue.ExpSelect == null) { QueryQueue.ExpSelect = new List<Expression>(); }
             if (select != null) { QueryQueue.ExpSelect.Add(select); }
             return this;
         }
-
         /// <summary>
         ///     查询条件
         /// </summary>
         /// <param name="where">查询条件</param>
-        public TableSet<TEntity> Where(Expression<Func<TEntity, bool>> where)
+        public new TableSet<TEntity> Where(Expression<Func<TEntity, bool>> where)
         {
             QueryQueue.ExpWhere = QueryQueue.ExpWhere == null ? QueryQueue.ExpWhere = where : Expression.Add(QueryQueue.ExpWhere, where);
             return this;
         }
-
-        public TableSet<TEntity> Desc<TKey>(Expression<Func<TEntity, TKey>> desc)
+        /// <summary>
+        /// 倒序查询
+        /// </summary>
+        /// <typeparam name="TKey">实体类属性类型</typeparam>
+        /// <param name="desc">字段选择器</param>
+        public new TableSet<TEntity> Desc<TKey>(Expression<Func<TEntity, TKey>> desc)
         {
             if (QueryQueue.ExpOrderBy == null) { QueryQueue.ExpOrderBy = new Dictionary<Expression, bool>(); }
             if (desc != null) { QueryQueue.ExpOrderBy.Add(desc, false); }
             return this;
         }
-
-        public TableSet<TEntity> Asc<TKey>(Expression<Func<TEntity, TKey>> asc)
+        /// <summary>
+        /// 正序查询
+        /// </summary>
+        /// <typeparam name="TKey">实体类属性类型</typeparam>
+        /// <param name="asc">字段选择器</param>
+        public new TableSet<TEntity> Asc<TKey>(Expression<Func<TEntity, TKey>> asc)
         {
             if (QueryQueue.ExpOrderBy == null) { QueryQueue.ExpOrderBy = new Dictionary<Expression, bool>(); }
             if (asc != null) { QueryQueue.ExpOrderBy.Add(asc, true); }
             return this;
         }
-
+        /// <summary>
+        /// 字段累加（字段 = 字段 + 值）
+        /// </summary>
+        /// <typeparam name="T">值类型</typeparam>
+        /// <param name="fieldName">字段选择器</param>
+        /// <param name="fieldValue">值</param>
         public TableSet<TEntity> Append<T>(Expression<Func<TEntity, T>> fieldName, T fieldValue) where T : struct
         {
             if (QueryQueue.ExpAssign == null) { QueryQueue.ExpAssign = new Dictionary<Expression, object>(); }
             if (fieldName != null) { QueryQueue.ExpAssign.Add(fieldName, fieldValue); }
             return this;
         }
-
         #endregion
 
         #region 查询
-        /// <summary>
-        /// 查询多条记录（不支持延迟加载）
-        /// </summary>
-        /// <param name="top">限制显示的数量</param>
-        /// <param name="isDistinct">返回当前条件下非重复数据</param>
-        /// <param name="isRand">返回当前条件下随机的数据</param>
-        public List<TEntity> ToList(int top = 0, bool isDistinct = false, bool isRand = false)
-        {
-            QueryQueue.SqlQuery<TEntity>().ToList(top, isDistinct, isRand);
-            return QueryQueue.ExecuteList<TEntity>();
-        }
-
-        /// <summary>
-        /// 查询多条记录（不支持延迟加载）
-        /// </summary>
-        /// <param name="pageSize">每页显示数量</param>
-        /// <param name="pageIndex">分页索引</param>
-        /// <param name="isDistinct">返回当前条件下非重复数据</param>
-        /// <returns></returns>
-        public List<TEntity> ToList(int pageSize, int pageIndex, bool isDistinct = false)
-        {
-            QueryQueue.SqlQuery<TEntity>().ToList(pageSize, pageIndex, isDistinct);
-            return QueryQueue.ExecuteList<TEntity>();
-        }
-        /// <summary>
-        /// 查询多条记录（不支持延迟加载）
-        /// </summary>
-        /// <param name="pageSize">每页显示数量</param>
-        /// <param name="pageIndex">分页索引</param>
-        /// <param name="recordCount">总记录数量</param>
-        /// <param name="isDistinct">返回当前条件下非重复数据</param>
-        public List<TEntity> ToList(int pageSize, int pageIndex, out int recordCount, bool isDistinct = false)
-        {
-            var queue = QueryQueue;
-            recordCount = Count();
-            QueryQueue.ExpOrderBy = queue.ExpOrderBy;
-            QueryQueue.ExpSelect = queue.ExpSelect;
-            QueryQueue.ExpWhere = queue.ExpWhere;
-            return ToList(pageSize, pageIndex, isDistinct);
-        }
-        /// <summary>
-        /// 查询单条记录（不支持延迟加载）
-        /// </summary>
-        public TEntity ToInfo()
-        {
-            QueryQueue.SqlQuery<TEntity>().ToInfo();
-            return QueryQueue.ExecuteInfo<TEntity>();
-        }
         /// <summary>
         /// 修改（支持延迟加载）
         /// </summary>
@@ -220,65 +177,6 @@ namespace FS.Core.Context
             }
         }
         /// <summary>
-        /// 查询数量（不支持延迟加载）
-        /// </summary>
-        public int Count(bool isDistinct = false, bool isRand = false)
-        {
-            QueryQueue.SqlQuery<TEntity>().Count();
-            return QueryQueue.ExecuteQuery<int>();
-        }
-        /// <summary>
-        /// 查询数据是否存在（不支持延迟加载）
-        /// </summary>
-        public bool IsHaving()
-        {
-            return Count() > 0;
-        }
-        /// <summary>
-        /// 累计和（不支持延迟加载）
-        /// </summary>
-        public T Sum<T>(Expression<Func<TEntity, object>> fieldName, T defValue = default(T))
-        {
-            if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Sum操作时，fieldName参数不能为空！"); }
-            Select(fieldName);
-
-            QueryQueue.SqlQuery<TEntity>().Sum();
-            return QueryQueue.ExecuteQuery(defValue);
-        }
-        /// <summary>
-        /// 查询最大数（不支持延迟加载）
-        /// </summary>
-        public T Max<T>(Expression<Func<TEntity, object>> fieldName, T defValue = default(T))
-        {
-            if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Max操作时，fieldName参数不能为空！"); }
-            Select(fieldName);
-
-            QueryQueue.SqlQuery<TEntity>().Max();
-            return QueryQueue.ExecuteQuery(defValue);
-        }
-        /// <summary>
-        /// 查询最小数（不支持延迟加载）
-        /// </summary>
-        public T Min<T>(Expression<Func<TEntity, object>> fieldName, T defValue = default(T))
-        {
-            if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Min操作时，fieldName参数不能为空！"); }
-            Select(fieldName);
-
-            QueryQueue.SqlQuery<TEntity>().Min();
-            return QueryQueue.ExecuteQuery(defValue);
-        }
-        /// <summary>
-        /// 查询单个值（不支持延迟加载）
-        /// </summary>
-        public T Value<T>(Expression<Func<TEntity, object>> fieldName, T defValue = default(T))
-        {
-            if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Value操作时，fieldName参数不能为空！"); }
-            Select(fieldName);
-
-            QueryQueue.SqlQuery<TEntity>().Value();
-            return QueryQueue.ExecuteQuery(defValue);
-        }
-        /// <summary>
         /// 添加或者减少某个字段（支持延迟加载）
         /// </summary>
         /// <param name="fieldName">字段名称</param>
@@ -307,10 +205,5 @@ namespace FS.Core.Context
             }
         }
         #endregion
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

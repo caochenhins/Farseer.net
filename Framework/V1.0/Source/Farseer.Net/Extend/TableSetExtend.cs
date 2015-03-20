@@ -16,7 +16,7 @@ namespace FS.Extend
         /// <typeparam name="TEntity">实体类</typeparam>
         /// <typeparam name="T">实体类的属性</typeparam>
         /// <param name="select">字段选择器</param>
-        public static List<T> ToSelectList<TEntity, T>(this TableSet<TEntity> ts, Expression<Func<TEntity, T>> select) where TEntity : class, new()
+        public static List<T> ToSelectList<TEntity, T>(this ViewSet<TEntity> ts, Expression<Func<TEntity, T>> select) where TEntity : class, new()
         {
             return ts.ToSelectList(0, select);
         }
@@ -29,24 +29,9 @@ namespace FS.Extend
         /// <param name="ts">TableSet</param>
         /// <typeparam name="TEntity">实体类</typeparam>
         /// <typeparam name="T">实体类的属性</typeparam>
-        public static List<T> ToSelectList<TEntity, T>(this TableSet<TEntity> ts, int top, Expression<Func<TEntity, T>> select) where TEntity : class, new()
+        public static List<T> ToSelectList<TEntity, T>(this ViewSet<TEntity> ts, int top, Expression<Func<TEntity, T>> select) where TEntity : class, new()
         {
             return ts.Select(select).ToList(top).Select(select.Compile()).ToList();
-        }
-
-        /// <summary>
-        ///     返回筛选后的列表
-        /// </summary>
-        /// <param name="select">字段选择器</param>
-        /// <param name="top">限制显示的数量</param>
-        /// <param name="ts">TableSet</param>
-        /// <typeparam name="TEntity">实体类</typeparam>
-        /// <typeparam name="T">实体类的属性</typeparam>
-        public static List<T> ToSelectList<TEntity, T>(this TableSet<TEntity> ts, int top, Expression<Func<TEntity, T?>> select)
-            where T : struct
-            where TEntity : class, new()
-        {
-            return ts.Select(select).ToList(top).Select(select.Compile()).ToList().ConvertType<List<T>>();
         }
 
         /// <summary>
@@ -57,7 +42,8 @@ namespace FS.Extend
         /// <param name="ts">TableSet</param>
         /// <typeparam name="TEntity">实体类</typeparam>
         /// <typeparam name="T">实体类的属性</typeparam>
-        public static List<T> ToSelectList<TEntity, T>(this TableSet<TEntity> ts, List<int> IDs, Expression<Func<TEntity, T>> select) where TEntity : class, Core.Infrastructure.IEntity, new()
+        public static List<T> ToSelectList<TEntity, T>(this ViewSet<TEntity> ts, List<int> IDs, Expression<Func<TEntity, T>> select)
+            where TEntity : class, Core.Infrastructure.IEntity, new()
         {
             return ts.Where(o => IDs.Contains(o.ID.GetValueOrDefault())).ToSelectList(select);
         }
@@ -71,7 +57,8 @@ namespace FS.Extend
         /// <param name="ts">TableSet</param>
         /// <typeparam name="TEntity">实体类</typeparam>
         /// <typeparam name="T">实体类的属性</typeparam>
-        public static List<T> ToSelectList<TEntity, T>(this TableSet<TEntity> ts, List<int> IDs, int top, Expression<Func<TEntity, T>> select) where TEntity : class, Core.Infrastructure.IEntity, new()
+        public static List<T> ToSelectList<TEntity, T>(this ViewSet<TEntity> ts, List<int> IDs, int top, Expression<Func<TEntity, T>> select)
+            where TEntity : class, Core.Infrastructure.IEntity, new()
         {
             return ts.Where(o => IDs.Contains(o.ID.GetValueOrDefault())).ToSelectList(top, select);
         }
@@ -106,7 +93,7 @@ namespace FS.Extend
         /// <param name="ts">TableSet</param>
         /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="ID">条件，等同于：o=>o.ID == ID 的操作</param>
-        public static bool IsHaving<TEntity>(this TableSet<TEntity> ts, int? ID) where TEntity : class, Core.Infrastructure.IEntity, new()
+        public static bool IsHaving<TEntity>(this ViewSet<TEntity> ts, int? ID) where TEntity : class, Core.Infrastructure.IEntity, new()
         {
             return ts.Where(o => o.ID == ID).IsHaving();
         }
@@ -117,7 +104,7 @@ namespace FS.Extend
         /// <param name="ts">TableSet</param>
         /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="IDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
-        public static bool IsHaving<TEntity>(this TableSet<TEntity> ts, List<int> IDs) where TEntity : class, Core.Infrastructure.IEntity, new()
+        public static bool IsHaving<TEntity>(this ViewSet<TEntity> ts, List<int> IDs) where TEntity : class, Core.Infrastructure.IEntity, new()
         {
             return ts.Where(o => IDs.Contains(o.ID.GetValueOrDefault())).IsHaving();
         }
@@ -128,7 +115,7 @@ namespace FS.Extend
         /// <param name="ts">TableSet</param>
         /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="ID">条件，等同于：o=>o.ID == ID 的操作</param>
-        public static int Count<TEntity>(this TableSet<TEntity> ts, int? ID) where TEntity : class, Core.Infrastructure.IEntity, new()
+        public static int Count<TEntity>(this ViewSet<TEntity> ts, int? ID) where TEntity : class, Core.Infrastructure.IEntity, new()
         {
             return ts.Where(o => o.ID == ID).Count();
         }
@@ -139,7 +126,7 @@ namespace FS.Extend
         /// <param name="ts">TableSet</param>
         /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="IDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
-        public static int Count<TEntity>(this TableSet<TEntity> ts, List<int> IDs) where TEntity : class, Core.Infrastructure.IEntity, new()
+        public static int Count<TEntity>(this ViewSet<TEntity> ts, List<int> IDs) where TEntity : class, Core.Infrastructure.IEntity, new()
         {
             return ts.Where(o => IDs.Contains(o.ID.GetValueOrDefault())).Count();
         }
@@ -150,7 +137,7 @@ namespace FS.Extend
         /// <param name="ts">TableSet</param>
         /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="ID">条件，等同于：o=>o.ID == ID 的操作</param>
-        public static TEntity ToInfo<TEntity>(this TableSet<TEntity> ts, int? ID) where TEntity : class, Core.Infrastructure.IEntity, new()
+        public static TEntity ToInfo<TEntity>(this ViewSet<TEntity> ts, int? ID) where TEntity : class, Core.Infrastructure.IEntity, new()
         {
             return ts.Where(o => o.ID == ID).ToInfo();
         }
@@ -161,7 +148,7 @@ namespace FS.Extend
         /// <param name="ID">当前ID</param>
         /// <param name="ts">TableSet</param>
         /// <typeparam name="TEntity">实体类</typeparam>
-        public static TEntity ToNexTEntity<TEntity>(this TableSet<TEntity> ts, int? ID) where TEntity : class, Core.Infrastructure.IEntity, new()
+        public static TEntity ToNexTEntity<TEntity>(this ViewSet<TEntity> ts, int? ID) where TEntity : class, Core.Infrastructure.IEntity, new()
         {
             return ts.Where(o => o.ID > ID).Asc(o => o.ID).ToInfo();
         }
@@ -172,7 +159,7 @@ namespace FS.Extend
         /// <param name="ID">当前ID</param>
         /// <param name="ts">TableSet</param>
         /// <typeparam name="TEntity">实体类</typeparam>
-        public static TEntity ToPreviousInfo<TEntity>(this TableSet<TEntity> ts, int? ID) where TEntity : class, Core.Infrastructure.IEntity, new()
+        public static TEntity ToPreviousInfo<TEntity>(this ViewSet<TEntity> ts, int? ID) where TEntity : class, Core.Infrastructure.IEntity, new()
         {
             return ts.Where(o => o.ID < ID).Desc(o => o.ID).ToInfo();
         }
@@ -183,7 +170,7 @@ namespace FS.Extend
         /// <param name="IDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
         /// <param name="ts">TableSet</param>
         /// <typeparam name="TEntity">实体类</typeparam>
-        public static List<TEntity> ToList<TEntity>(this TableSet<TEntity> ts, List<int> IDs) where TEntity : class, Core.Infrastructure.IEntity, new()
+        public static List<TEntity> ToList<TEntity>(this ViewSet<TEntity> ts, List<int> IDs) where TEntity : class, Core.Infrastructure.IEntity, new()
         {
             return ts.Where(o => IDs.Contains(o.ID.GetValueOrDefault())).ToList(0);
         }
@@ -274,7 +261,7 @@ namespace FS.Extend
         /// <summary>
         ///     复制数据
         /// </summary>
-        /// <param name="acTEntity">对新职的赋值</param>
+        /// <param name="act">对新职的赋值</param>
         /// <param name="ts">TableSet</param>
         /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="IDs">o => IDs.Contains(o.ID)</param>

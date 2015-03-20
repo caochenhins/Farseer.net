@@ -33,6 +33,16 @@ namespace FS.Mapping.Table
         ///     扩展类型
         /// </summary>
         public eumPropertyExtend PropertyExtend { get; set; }
+
+        /// <summary>
+        ///     指示字段是否为存储过程中输入的参数
+        /// </summary>
+        public bool IsInParam { get; set; }
+
+        /// <summary>
+        ///     指示字段是否为存储过程中输出的参数
+        /// </summary>
+        public bool IsOutParam { get; set; }
     }
 
     /// <summary>
