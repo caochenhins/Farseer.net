@@ -229,10 +229,7 @@ namespace FS.Core.Bean
         public virtual string ToTable(int pageSize, int pageIndex)
         {
             // 不分页
-            if (pageIndex == 1)
-            {
-                return ToTable(pageSize);
-            }
+            if (pageIndex == 1) { return ToTable(pageSize); }
 
             if (SortString.Length == 0)
             {
@@ -240,8 +237,7 @@ namespace FS.Core.Bean
             }
             var sort2 = SortString.ToString().Replace(" DESC", " [倒序]").Replace("ASC", "DESC").Replace("[倒序]", "ASC");
 
-            return string.Format("SELECT TOP {1} {0} FROM (SELECT TOP {2} {0} FROM {3} {4} {5}) a  {6};",
-                                 GetFields(), pageSize, pageSize * pageIndex, TableName, WhereString, SortString, sort2);
+            return string.Format("SELECT TOP {1} {0} FROM (SELECT TOP {2} {0} FROM {3} {4} {5}) a  {6};", GetFields(), pageSize, pageSize * pageIndex, TableName, WhereString, SortString, sort2);
         }
 
         public virtual string ToTable(int top = 0)
