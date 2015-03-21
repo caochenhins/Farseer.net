@@ -9,14 +9,14 @@ using FS.Core.Infrastructure;
 
 namespace FS.Core.Client
 {
-    public class DbQuery : IQuery
+    public class DbQueryTable : IQueryTable
     {
+        public DbContext Context { get; private set; }
         public DbProvider DbProvider { get; set; }
-        public DbContext TableContext { get; private set; }
-        public DbQuery(DbContext tableContext, DbProvider dbProvider)
+        public DbQueryTable(DbContext tableContext, DbProvider dbProvider)
         {
-            TableContext = tableContext;
-            GroupQueryQueueList = new List<IQueryQueue>();
+            Context = tableContext;
+            GroupQueueList = new List<IQueueTable>();
             DbProvider = dbProvider;
             Clear();
         }
@@ -24,12 +24,12 @@ namespace FS.Core.Client
         /// <summary>
         /// 组列表
         /// </summary>
-        private List<IQueryQueue> GroupQueryQueueList { get; set; }
-        private IQueryQueue _queryQueue;
-        public IQueryQueue QueryQueue { get { return _queryQueue ?? (_queryQueue = DbProvider.CreateQueryQueue(GroupQueryQueueList.Count, this)); } }
-        public IQueryQueue GetQueryQueue(int index)
+        public List<IQueueTable> GroupQueueList { get; set; }
+        private IQueueTable _queryQueue;
+        public IQueueTable Queue { get { return _queryQueue ?? (_queryQueue = DbProvider.CreateQueryQueue(GroupQueueList.Count, this)); } }
+        public IQueueTable GetQueue(int index)
         {
-            return GroupQueryQueueList[index];
+            return GroupQueueList[index];
         }
 
         public List<DbParameter> Param
@@ -37,22 +37,22 @@ namespace FS.Core.Client
             get
             {
                 var lst = new List<DbParameter>();
-                //if (GroupQueryQueueList.Count == 0) { return null; }
-                GroupQueryQueueList.Where(o => o.Param != null).Select(o => o.Param).ToList().ForEach(lst.AddRange);
+                //if (GroupQueueList.Count == 0) { return null; }
+                GroupQueueList.Where(o => o.Param != null).Select(o => o.Param).ToList().ForEach(lst.AddRange);
                 return lst;
             }
         }
 
         public void Append()
         {
-            if (_queryQueue != null) { GroupQueryQueueList.Add(_queryQueue); }
+            if (_queryQueue != null) { GroupQueueList.Add(_queryQueue); }
             Clear();
         }
 
         public int Commit()
         {
             var sb = new StringBuilder();
-            foreach (var queryQueue in GroupQueryQueueList)
+            foreach (var queryQueue in GroupQueueList)
             {
                 // 查看是否延迟加载
                 if (queryQueue.LazyAct != null) { queryQueue.LazyAct(queryQueue); }
@@ -60,13 +60,18 @@ namespace FS.Core.Client
             }
 
             if (Param.Count > DbProvider.ParamsMaxLength) { throw new Exception(string.Format("SQL参数过多，当前数据库类型，最多支持：{0}个，目前生成了{1}个", DbProvider.ParamsMaxLength, Param.Count)); }
-            var result = TableContext.Database.ExecuteNonQuery(CommandType.Text, sb.ToString(), Param == null ? null : Param.ToArray());
+            var result = Context.Database.ExecuteNonQuery(CommandType.Text, sb.ToString(), Param == null ? null : Param.ToArray());
 
             // 清除队列
-            GroupQueryQueueList.ForEach(o => o.Dispose());
-            GroupQueryQueueList.Clear();
+            GroupQueueList.ForEach(o => o.Dispose());
+            GroupQueueList.Clear();
             Clear();
             return result;
+        }
+
+        IQueueView IQueryView.Queue
+        {
+            get { return Queue; }
         }
 
         public void Clear()

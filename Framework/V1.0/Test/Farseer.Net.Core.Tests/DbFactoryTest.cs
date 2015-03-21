@@ -1,5 +1,5 @@
 ﻿using System;
-using Demo.PO.Table.Members;
+using Demo.PO.Table;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Farseer.Net.Core.Tests

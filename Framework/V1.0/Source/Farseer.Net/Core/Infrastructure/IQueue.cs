@@ -9,7 +9,7 @@ namespace FS.Core.Infrastructure
     /// <summary>
     /// 每一次的数据库查询，将生成一个新的实例
     /// </summary>
-    public interface IQueryQueue : IDisposable
+    public interface IQueue : IDisposable
     {
         /// <summary>
         /// 当前队列的ID
@@ -19,26 +19,7 @@ namespace FS.Core.Infrastructure
         /// 当前组索引
         /// </summary>
         int Index { get; set; }
-        /// <summary>
-        /// 查询字段的表达式树
-        /// </summary>
-        List<Expression> ExpSelect { get; set; }
-        /// <summary>
-        /// 排序字段的表达式树(true:正序；false：倒序）
-        /// </summary>
-        Dictionary<Expression, bool> ExpOrderBy { get; set; }
-        /// <summary>
-        /// 条件字段的表达式树
-        /// </summary>
-        Expression ExpWhere { get; set; }
-        /// <summary>
-        /// 赋值字段的表达式树
-        /// </summary>
-        Dictionary<Expression, object> ExpAssign { get; set; }
-        /// <summary>
-        /// 当前生成的SQL
-        /// </summary>
-        StringBuilder Sql { get; set; }
+        
         /// <summary>
         /// 当前生成的参数
         /// </summary>
@@ -63,17 +44,5 @@ namespace FS.Core.Infrastructure
         /// 当前队列立即交互数据库（返回T）
         /// </summary>
         T ExecuteQuery<T>(T defValue = default(T));
-
-        /// <summary>
-        /// 延迟执行SQL生成
-        /// </summary>
-        Action<IQueryQueue> LazyAct { get; set; }
-
-        /// <summary>
-        /// 将GroupQueryQueue提交到组中，并创建新的GroupQueryQueue
-        /// </summary>
-        //void Append();
-
-        ISqlQuery<TEntity> SqlQuery<TEntity>() where TEntity : class, new();
     }
 }

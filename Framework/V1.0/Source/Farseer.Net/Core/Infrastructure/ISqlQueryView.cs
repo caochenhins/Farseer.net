@@ -3,9 +3,9 @@
 namespace FS.Core.Infrastructure
 {
     /// <summary>
-    /// 数据库支持的SQL方法
+    /// 视图支持的SQL方法
     /// </summary>
-    public interface ISqlQuery<TEntity> where TEntity : class,new()
+    public interface ISqlQueryView<TEntity> where TEntity : class,new()
     {
         /// <summary>
         /// 查询单条记录
@@ -25,22 +25,6 @@ namespace FS.Core.Infrastructure
         /// <param name="pageIndex">分页索引</param>
         /// <param name="isDistinct">返回当前条件下非重复数据</param>
         void ToList(int pageSize, int pageIndex, bool isDistinct = false);
-        /// <summary>
-        /// 删除
-        /// </summary>
-        void Delete();
-        /// <summary>
-        /// 插入
-        /// </summary>
-        void Insert(TEntity entity);
-        /// <summary>
-        /// 插入
-        /// </summary>
-        void InsertIdentity(TEntity entity);
-        /// <summary>
-        /// 修改
-        /// </summary>
-        void Update(TEntity entity);
         /// <summary>
         /// 查询数量
         /// </summary>
@@ -62,13 +46,5 @@ namespace FS.Core.Infrastructure
         /// 查询单个值
         /// </summary>
         void Value();
-        /// <summary>
-        /// 添加或者减少某个字段
-        /// </summary>
-        void AddUp();
-        /// <summary>
-        /// 使用数据库特性进行大批量插入操作
-        /// </summary>
-        //void BulkCopy(List<TEntity> lst);
     }
 }

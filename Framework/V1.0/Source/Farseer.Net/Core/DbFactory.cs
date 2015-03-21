@@ -17,23 +17,53 @@ namespace FS.Core
 {
     public static class DbFactory
     {
-        public static IQuery CreateQuery(DbContext tableContext)
+        /// <summary>
+        /// 返回数据库持久化
+        /// </summary>
+        /// <param name="context">数据库上下文</param>
+        /// <returns></returns>
+        public static IQueryTable CreateQueryTable(DbContext context)
         {
-            switch (tableContext.Database.DataType)
+            switch (context.Database.DataType)
             {
-                case DataBaseType.OleDb: return new DbQuery(tableContext, new SqlServerProvider());
-                case DataBaseType.MySql: return new DbQuery(tableContext, new SqlServerProvider());
-                case DataBaseType.Xml: return new DbQuery(tableContext, new SqlServerProvider());
-                case DataBaseType.SQLite: return new DbQuery(tableContext, new SqlServerProvider());
-                case DataBaseType.Oracle: return new DbQuery(tableContext, new SqlServerProvider());
-                default: return new DbQuery(tableContext, new SqlServerProvider());
+                case DataBaseType.OleDb: return new DbQueryTable(context, new SqlServerProvider());
+                case DataBaseType.MySql: return new DbQueryTable(context, new SqlServerProvider());
+                case DataBaseType.Xml: return new DbQueryTable(context, new SqlServerProvider());
+                case DataBaseType.SQLite: return new DbQueryTable(context, new SqlServerProvider());
+                case DataBaseType.Oracle: return new DbQueryTable(context, new SqlServerProvider());
+                default: return new DbQueryTable(context, new SqlServerProvider());
             }
         }
+
+        //public static IQueryView CreateQueryView(DbContext context)
+        //{
+        //    switch (context.Database.DataType)
+        //    {
+        //        case DataBaseType.OleDb: return new DbQueryView(context, new SqlServerProvider());
+        //        case DataBaseType.MySql: return new DbQueryView(context, new SqlServerProvider());
+        //        case DataBaseType.Xml: return new DbQueryView(context, new SqlServerProvider());
+        //        case DataBaseType.SQLite: return new DbQueryView(context, new SqlServerProvider());
+        //        case DataBaseType.Oracle: return new DbQueryView(context, new SqlServerProvider());
+        //        default: return new DbQueryView(context, new SqlServerProvider());
+        //    }
+        //}
+        //public static IQueryProc CreateQueryProc(DbContext context)
+        //{
+        //    switch (context.Database.DataType)
+        //    {
+        //        case DataBaseType.OleDb: return new DbQueryProc(context, new SqlServerProvider());
+        //        case DataBaseType.MySql: return new DbQueryProc(context, new SqlServerProvider());
+        //        case DataBaseType.Xml: return new DbQueryProc(context, new SqlServerProvider());
+        //        case DataBaseType.SQLite: return new DbQueryProc(context, new SqlServerProvider());
+        //        case DataBaseType.Oracle: return new DbQueryProc(context, new SqlServerProvider());
+        //        default: return new DbQueryProc(context, new SqlServerProvider());
+        //    }
+        //}
+
+
         /// <summary>
         /// 返回数据库类型名称
         /// </summary>
-        /// <param name="dbType">数据库类型</param>
-        /// <returns></returns>
         public static DbProvider GetDbProvider<TEntity>() where TEntity : class,new()
         {
             var dbType = TableMapCache.GetMap<TEntity>().ClassInfo.DataType;
@@ -53,7 +83,6 @@ namespace FS.Core
         /// 返回数据库类型名称
         /// </summary>
         /// <param name="dbType">数据库类型</param>
-        /// <returns></returns>
         public static DbProviderFactory GetDbProvider(DataBaseType dbType)
         {
             switch (dbType)

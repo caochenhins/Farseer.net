@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
-using Demo.PO.Table.Members;
-using FS.Core.Client.SqlServer;
+using Demo.PO.Table;
 using FS.Core.Context;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
 
 namespace Farseer.Net.Core.Tests.Context
 {

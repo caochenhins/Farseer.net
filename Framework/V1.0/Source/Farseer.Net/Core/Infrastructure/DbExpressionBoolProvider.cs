@@ -30,12 +30,12 @@ namespace FS.Core.Infrastructure
         /// </summary>
         protected int m_ParamsCount;
 
-        protected readonly IQueryQueue QueryQueue;
+        protected readonly IQueue QueryQueue;
         protected readonly IQuery Query;
         private string currentFieldName;
         protected DbParameter CurrentDbParameter;
 
-        public DbExpressionBoolProvider(IQuery query, IQueryQueue queryQueue)
+        public DbExpressionBoolProvider(IQuery query, IQueue queryQueue)
         {
             QueryQueue = queryQueue;
             Query = query;

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using FS.Core.Infrastructure;
-using FS.Extend;
 
 namespace FS.Core.Context
 {
@@ -16,6 +14,7 @@ namespace FS.Core.Context
         /// 数据库上下文
         /// </summary>
         private readonly ProcContext<TEntity> _procContext;
+        private IQueryProc Query { get { return _procContext.Query; } }
         protected virtual IQueryQueue QueryQueue { get { return _procContext.Query.QueryQueue; } }
 
         /// <summary>
@@ -31,13 +30,27 @@ namespace FS.Core.Context
         /// <summary>
         /// 执行存储过程（不返回值）
         /// </summary>
-        public void Execute()
-        { }
+        public void Execute(TEntity entity)
+        {
+            if (entity == null) { throw new ArgumentNullException("entity", "执行操作时，参数不能为空！"); }
+
+            //  判断是否启用合并提交
+            if (_procContext.IsMergeCommand)
+            {
+                QueryQueue.LazyAct = (queryQueue) => queryQueue.SqlQuery<TEntity>().Update(entity);
+                Query.Append();
+            }
+            else
+            {
+                QueryQueue.SqlQuery<TEntity>().Update(entity);
+                QueryQueue.Execute();
+            }
+        }
 
         /// <summary>
         /// 执行存储过程（返回单条记录）
         /// </summary>
-        public TEntity ToInfo()
+        public TEntity ToInfo(TEntity entity)
         {
             return null;
         }
@@ -45,7 +58,7 @@ namespace FS.Core.Context
         /// <summary>
         /// 执行存储过程（返回多条记录）
         /// </summary>
-        public List<TEntity> ToList()
+        public List<TEntity> ToList(TEntity entity)
         {
             return null;
         }

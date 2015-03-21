@@ -22,14 +22,14 @@ namespace FS.Core.Infrastructure
         /// </summary>
         public readonly Stack<string> SqlList = new Stack<string>();
 
-        protected readonly IQueryQueue QueryQueue;
+        protected readonly IQueue QueryQueue;
         protected readonly IQuery Query;
         /// <summary>
         /// 是否是字段筛选
         /// </summary>
         protected bool IsSelect;
 
-        public DbExpressionNewProvider(IQuery query, IQueryQueue queryQueue)
+        public DbExpressionNewProvider(IQuery query, IQueue queryQueue)
         {
             QueryQueue = queryQueue;
             Query = query;

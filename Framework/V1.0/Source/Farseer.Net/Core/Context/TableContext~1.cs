@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using FS.Configs;
 using FS.Core.Data;
+using FS.Core.Infrastructure;
 using FS.Mapping.Table;
 
 namespace FS.Core.Context
@@ -29,7 +30,7 @@ namespace FS.Core.Context
         /// <param name="dbType">数据库类型</param>
         /// <param name="commandTimeout">SQL执行超时时间</param>
         /// <param name="tableName">表名称</param>
-        public TableContext(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, int commandTimeout = 30, string tableName = null) : this(new DbExecutor(connectionString, dbType, commandTimeout), tableName) { IsMergeCommand = true; }
+        public TableContext(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, int commandTimeout = 30, string tableName = null) : this(new DbExecutor(connectionString, dbType, commandTimeout), tableName) {  }
 
         /// <summary>
         /// 事务
@@ -38,9 +39,16 @@ namespace FS.Core.Context
         /// <param name="tableName">表名称</param>
         public TableContext(DbExecutor database, string tableName = null) : base(database, tableName)
         {
-            if (string.IsNullOrWhiteSpace(tableName)) { TableName = TableMapCache.GetMap<TEntity>().ClassInfo.Name; }
+            if (string.IsNullOrWhiteSpace(tableName)) { Name = TableMapCache.GetMap<TEntity>().ClassInfo.Name; }
             TableSet = new TableSet<TEntity>(this);
+            IsMergeCommand = true;
+            Query = DbFactory.CreateQueryTable(this);
         }
+
+        /// <summary>
+        /// 数据库查询支持
+        /// </summary>
+        internal protected IQueryTable Query { get; set; }
 
         /// <summary>
         /// true:启用合并执行命令、并延迟加载

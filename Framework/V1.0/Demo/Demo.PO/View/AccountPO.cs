@@ -1,5 +1,4 @@
 ﻿using System.Data.Linq.Mapping;
-using Demo.Common;
 using FS.Core.Context;
 using FS.Mapping.Table;
 

@@ -31,19 +31,24 @@ namespace FS.Core.Client.SqlServer
             return string.Format("[{0}]", fieldName);
         }
 
-        public override IQueryQueue CreateQueryQueue(int index, IQuery query)
+        public override IQueueTable CreateQueryQueue(int index, IQueryTable query)
         {
-            return new DbQueryQueue(index, query);
+            return new DbQueueTable(index, query);
         }
 
-        public override ISqlQuery<TEntity> CreateSqlQuery<TEntity>(IQuery query, IQueryQueue queryQueue, string tableName)
+        public override ISqlQueryTable<TEntity> CreateSqlQuery<TEntity>(IQueryTable query, IQueueTable queue, string tableName)
         {
             var map = TableMapCache.GetMap<TEntity>();
             switch (map.ClassInfo.DataVer)
             {
-                case "2000": return new SqlServerSqlQuery2000<TEntity>(query, queryQueue, tableName);
+                case "2000": return new SqlServerSqlQuery2000<TEntity>(query, queue, tableName);
             }
-            return new SqlServerSqlQuery<TEntity>(query, queryQueue, tableName);
+            return new SqlServerSqlQuery<TEntity>(query, queue, tableName);
+        }
+
+        public override ISqlQueryView<TEntity> CreateSqlQuery<TEntity>(IQueryView query, IQueueView queue, string tableName)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

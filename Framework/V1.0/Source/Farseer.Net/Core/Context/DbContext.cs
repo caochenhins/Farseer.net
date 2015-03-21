@@ -7,7 +7,7 @@ using FS.Core.Infrastructure;
 namespace FS.Core.Context
 {
     /// <summary>
-    /// 表上下文
+    /// 数据库上下文
     /// </summary>
     public class DbContext : IDisposable
     {
@@ -15,8 +15,8 @@ namespace FS.Core.Context
         /// 通过数据库配置，连接数据库
         /// </summary>
         /// <param name="dbIndex">数据库选项</param>
-        /// <param name="tableName">表名/视图名/存储过程名</param>
-        protected internal DbContext(int dbIndex = 0, string tableName = null) : this(DbFactory.CreateConnString(dbIndex), DbConfigs.ConfigInfo.DbList[dbIndex].DataType, DbConfigs.ConfigInfo.DbList[dbIndex].CommandTimeout, tableName) { }
+        /// <param name="name">表名/视图名/存储过程名</param>
+        protected internal DbContext(int dbIndex = 0, string name = null) : this(DbFactory.CreateConnString(dbIndex), DbConfigs.ConfigInfo.DbList[dbIndex].DataType, DbConfigs.ConfigInfo.DbList[dbIndex].CommandTimeout, name) { }
 
         /// <summary>
         /// 通过自定义数据链接符，连接数据库
@@ -24,19 +24,18 @@ namespace FS.Core.Context
         /// <param name="connectionString">数据库连接字符串</param>
         /// <param name="dbType">数据库类型</param>
         /// <param name="commandTimeout">SQL执行超时时间</param>
-        /// <param name="tableName">表名/视图名/存储过程名</param>
-        protected internal DbContext(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, int commandTimeout = 30, string tableName = null) : this(new DbExecutor(connectionString, dbType, commandTimeout), tableName) { }
+        /// <param name="name">表名/视图名/存储过程名</param>
+        protected internal DbContext(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, int commandTimeout = 30, string name = null) : this(new DbExecutor(connectionString, dbType, commandTimeout), name) { }
 
         /// <summary>
         /// 事务
         /// </summary>
         /// <param name="database">数据库执行</param>
-        /// <param name="tableName">表名/视图名/存储过程名</param>
-        protected internal DbContext(DbExecutor database, string tableName = null)
+        /// <param name="name">表名/视图名/存储过程名</param>
+        protected internal DbContext(DbExecutor database, string name = null)
         {
             Database = database;
-            TableName = tableName;
-            Query = DbFactory.CreateQuery(this);
+            Name = name;
         }
 
         /// <summary>
@@ -45,14 +44,9 @@ namespace FS.Core.Context
         internal protected DbExecutor Database { get; private set; }
 
         /// <summary>
-        /// 数据库查询支持
-        /// </summary>
-        internal protected IQuery Query { get; set; }
-
-        /// <summary>
         /// 表名/视图名/存储过程名
         /// </summary>
-        internal protected string TableName { get; protected set; }
+        internal protected string Name { get; protected set; }
 
         /// <summary>
         /// 释放资源

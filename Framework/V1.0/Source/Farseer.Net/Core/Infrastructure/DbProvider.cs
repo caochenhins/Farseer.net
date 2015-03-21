@@ -203,16 +203,26 @@ namespace FS.Core.Infrastructure
         /// <param name="index">索引</param>
         /// <param name="query">数据库持久化</param>
         /// <returns></returns>
-        public abstract IQueryQueue CreateQueryQueue(int index, IQuery query);
+        public abstract IQueueTable CreateQueryQueue(int index, IQueryTable query);
 
         /// <summary>
         /// 创建SQL查询
         /// </summary>
         /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="query">数据库持久化</param>
-        /// <param name="queryQueue">当前队列</param>
+        /// <param name="queue">当前队列</param>
         /// <param name="tableName">表名</param>
         /// <returns></returns>
-        public abstract ISqlQuery<TEntity> CreateSqlQuery<TEntity>(IQuery query, IQueryQueue queryQueue, string tableName) where TEntity : class,new();
+        public abstract ISqlQueryTable<TEntity> CreateSqlQuery<TEntity>(IQueryTable query, IQueueTable queue, string tableName) where TEntity : class,new();
+
+        /// <summary>
+        /// 创建SQL查询
+        /// </summary>
+        /// <typeparam name="TEntity">实体类</typeparam>
+        /// <param name="query">数据库持久化</param>
+        /// <param name="queue">当前队列</param>
+        /// <param name="tableName">表名</param>
+        /// <returns></returns>
+        public abstract ISqlQueryView<TEntity> CreateSqlQuery<TEntity>(IQueryView query, IQueueView queue, string tableName) where TEntity : class,new();
     }
 }

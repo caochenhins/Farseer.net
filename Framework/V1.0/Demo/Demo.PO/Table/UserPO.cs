@@ -3,7 +3,7 @@ using Demo.Common;
 using FS.Core.Context;
 using FS.Mapping.Table;
 
-namespace Demo.PO.Table.Members
+namespace Demo.PO.Table
 {
     [DB(Name = "Members_User")]
     public class UserPO : TableContext<UserPO>

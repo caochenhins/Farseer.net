@@ -9,7 +9,7 @@ namespace FS.Core.Client.SqlServer
 {
     public class SqlServerExpressionBool<TEntity> : DbExpressionBoolProvider<TEntity> where TEntity : class, new()
     {
-        public SqlServerExpressionBool(IQuery query, IQueryQueue queryQueue) : base(query, queryQueue) { }
+        public SqlServerExpressionBool(IQuery query, IQueue queryQueue) : base(query, queryQueue) { }
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {

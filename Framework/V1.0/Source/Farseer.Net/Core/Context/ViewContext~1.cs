@@ -39,7 +39,7 @@ namespace FS.Core.Context
         public ViewContext(DbExecutor database, string tableName = null) : base(database, tableName)
         {
             if (string.IsNullOrWhiteSpace(tableName)) { TableName = TableMapCache.GetMap<TEntity>().ClassInfo.Name; }
-            //ViewSet = new ViewSet<TEntity>(this);
+            ViewSet = new ViewSet<TEntity>(this);
         }
 
         /// <summary>

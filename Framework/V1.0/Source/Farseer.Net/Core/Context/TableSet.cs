@@ -10,39 +10,39 @@ namespace FS.Core.Context
     /// 表操作
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
-    public class TableSet<TEntity> : ViewSet<TEntity> where TEntity : class, new()
+    public class TableSet<TEntity> : IDisposable where TEntity : class, new()
     {
         /// <summary>
         /// 数据库上下文
         /// </summary>
         private readonly TableContext<TEntity> _tableContext;
-        private IQuery Query { get { return _tableContext.Query; } }
-        protected override IQueryQueue QueryQueue { get { return _tableContext.Query.QueryQueue; } }
+        private IQueryTable Query { get { return _tableContext.Query; } }
+        private IQueueTable Queue { get { return _tableContext.Query.Queue; } }
 
         /// <summary>
         /// 禁止外部实例化
         /// </summary>
         private TableSet() { }
 
-        internal TableSet(TableContext<TEntity> tableContext): this()
+        internal TableSet(TableContext<TEntity> tableContext) : this()
         {
             _tableContext = tableContext;
         }
 
         #region 条件
-        public new TableSet<TEntity> Select<T>(Expression<Func<TEntity, T>> select)
+        public TableSet<TEntity> Select<T>(Expression<Func<TEntity, T>> select)
         {
-            if (QueryQueue.ExpSelect == null) { QueryQueue.ExpSelect = new List<Expression>(); }
-            if (select != null) { QueryQueue.ExpSelect.Add(select); }
+            if (Queue.ExpSelect == null) { Queue.ExpSelect = new List<Expression>(); }
+            if (select != null) { Queue.ExpSelect.Add(select); }
             return this;
         }
         /// <summary>
         ///     查询条件
         /// </summary>
         /// <param name="where">查询条件</param>
-        public new TableSet<TEntity> Where(Expression<Func<TEntity, bool>> where)
+        public TableSet<TEntity> Where(Expression<Func<TEntity, bool>> where)
         {
-            QueryQueue.ExpWhere = QueryQueue.ExpWhere == null ? QueryQueue.ExpWhere = where : Expression.Add(QueryQueue.ExpWhere, where);
+            Queue.ExpWhere = Queue.ExpWhere == null ? Queue.ExpWhere = where : Expression.Add(Queue.ExpWhere, where);
             return this;
         }
         /// <summary>
@@ -50,10 +50,10 @@ namespace FS.Core.Context
         /// </summary>
         /// <typeparam name="TKey">实体类属性类型</typeparam>
         /// <param name="desc">字段选择器</param>
-        public new TableSet<TEntity> Desc<TKey>(Expression<Func<TEntity, TKey>> desc)
+        public TableSet<TEntity> Desc<TKey>(Expression<Func<TEntity, TKey>> desc)
         {
-            if (QueryQueue.ExpOrderBy == null) { QueryQueue.ExpOrderBy = new Dictionary<Expression, bool>(); }
-            if (desc != null) { QueryQueue.ExpOrderBy.Add(desc, false); }
+            if (Queue.ExpOrderBy == null) { Queue.ExpOrderBy = new Dictionary<Expression, bool>(); }
+            if (desc != null) { Queue.ExpOrderBy.Add(desc, false); }
             return this;
         }
         /// <summary>
@@ -61,10 +61,10 @@ namespace FS.Core.Context
         /// </summary>
         /// <typeparam name="TKey">实体类属性类型</typeparam>
         /// <param name="asc">字段选择器</param>
-        public new TableSet<TEntity> Asc<TKey>(Expression<Func<TEntity, TKey>> asc)
+        public TableSet<TEntity> Asc<TKey>(Expression<Func<TEntity, TKey>> asc)
         {
-            if (QueryQueue.ExpOrderBy == null) { QueryQueue.ExpOrderBy = new Dictionary<Expression, bool>(); }
-            if (asc != null) { QueryQueue.ExpOrderBy.Add(asc, true); }
+            if (Queue.ExpOrderBy == null) { Queue.ExpOrderBy = new Dictionary<Expression, bool>(); }
+            if (asc != null) { Queue.ExpOrderBy.Add(asc, true); }
             return this;
         }
         /// <summary>
@@ -75,13 +75,121 @@ namespace FS.Core.Context
         /// <param name="fieldValue">值</param>
         public TableSet<TEntity> Append<T>(Expression<Func<TEntity, T>> fieldName, T fieldValue) where T : struct
         {
-            if (QueryQueue.ExpAssign == null) { QueryQueue.ExpAssign = new Dictionary<Expression, object>(); }
-            if (fieldName != null) { QueryQueue.ExpAssign.Add(fieldName, fieldValue); }
+            if (Queue.ExpAssign == null) { Queue.ExpAssign = new Dictionary<Expression, object>(); }
+            if (fieldName != null) { Queue.ExpAssign.Add(fieldName, fieldValue); }
             return this;
         }
         #endregion
 
         #region 查询
+        /// <summary>
+        /// 查询多条记录（不支持延迟加载）
+        /// </summary>
+        /// <param name="top">限制显示的数量</param>
+        /// <param name="isDistinct">返回当前条件下非重复数据</param>
+        /// <param name="isRand">返回当前条件下随机的数据</param>
+        public List<TEntity> ToList(int top = 0, bool isDistinct = false, bool isRand = false)
+        {
+            Queue.SqlQuery<TEntity>().ToList(top, isDistinct, isRand);
+            return Queue.ExecuteList<TEntity>();
+        }
+
+        /// <summary>
+        /// 查询多条记录（不支持延迟加载）
+        /// </summary>
+        /// <param name="pageSize">每页显示数量</param>
+        /// <param name="pageIndex">分页索引</param>
+        /// <param name="isDistinct">返回当前条件下非重复数据</param>
+        /// <returns></returns>
+        public List<TEntity> ToList(int pageSize, int pageIndex, bool isDistinct = false)
+        {
+            Queue.SqlQuery<TEntity>().ToList(pageSize, pageIndex, isDistinct);
+            return Queue.ExecuteList<TEntity>();
+        }
+        /// <summary>
+        /// 查询多条记录（不支持延迟加载）
+        /// </summary>
+        /// <param name="pageSize">每页显示数量</param>
+        /// <param name="pageIndex">分页索引</param>
+        /// <param name="recordCount">总记录数量</param>
+        /// <param name="isDistinct">返回当前条件下非重复数据</param>
+        public List<TEntity> ToList(int pageSize, int pageIndex, out int recordCount, bool isDistinct = false)
+        {
+            var queue = Queue;
+            recordCount = Count();
+            Queue.ExpOrderBy = queue.ExpOrderBy;
+            Queue.ExpSelect = queue.ExpSelect;
+            Queue.ExpWhere = queue.ExpWhere;
+            return ToList(pageSize, pageIndex, isDistinct);
+        }
+        /// <summary>
+        /// 查询单条记录（不支持延迟加载）
+        /// </summary>
+        public TEntity ToInfo()
+        {
+            Queue.SqlQuery<TEntity>().ToInfo();
+            return Queue.ExecuteInfo<TEntity>();
+        }
+        /// <summary>
+        /// 查询数量（不支持延迟加载）
+        /// </summary>
+        public int Count(bool isDistinct = false, bool isRand = false)
+        {
+            Queue.SqlQuery<TEntity>().Count();
+            return Queue.ExecuteQuery<int>();
+        }
+        /// <summary>
+        /// 查询数据是否存在（不支持延迟加载）
+        /// </summary>
+        public bool IsHaving()
+        {
+            return Count() > 0;
+        }
+        /// <summary>
+        /// 累计和（不支持延迟加载）
+        /// </summary>
+        public T Sum<T>(Expression<Func<TEntity, object>> fieldName, T defValue = default(T))
+        {
+            if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Sum操作时，fieldName参数不能为空！"); }
+            Select(fieldName);
+
+            Queue.SqlQuery<TEntity>().Sum();
+            return Queue.ExecuteQuery(defValue);
+        }
+        /// <summary>
+        /// 查询最大数（不支持延迟加载）
+        /// </summary>
+        public T Max<T>(Expression<Func<TEntity, object>> fieldName, T defValue = default(T))
+        {
+            if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Max操作时，fieldName参数不能为空！"); }
+            Select(fieldName);
+
+            Queue.SqlQuery<TEntity>().Max();
+            return Queue.ExecuteQuery(defValue);
+        }
+        /// <summary>
+        /// 查询最小数（不支持延迟加载）
+        /// </summary>
+        public T Min<T>(Expression<Func<TEntity, object>> fieldName, T defValue = default(T))
+        {
+            if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Min操作时，fieldName参数不能为空！"); }
+            Select(fieldName);
+
+            Queue.SqlQuery<TEntity>().Min();
+            return Queue.ExecuteQuery(defValue);
+        }
+        /// <summary>
+        /// 查询单个值（不支持延迟加载）
+        /// </summary>
+        public T Value<T>(Expression<Func<TEntity, object>> fieldName, T defValue = default(T))
+        {
+            if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Value操作时，fieldName参数不能为空！"); }
+            Select(fieldName);
+
+            Queue.SqlQuery<TEntity>().Value();
+            return Queue.ExecuteQuery(defValue);
+        }
+
         /// <summary>
         /// 修改（支持延迟加载）
         /// </summary>
@@ -94,13 +202,13 @@ namespace FS.Core.Context
             //  判断是否启用合并提交
             if (_tableContext.IsMergeCommand)
             {
-                QueryQueue.LazyAct = (queryQueue) => queryQueue.SqlQuery<TEntity>().Update(entity);
+                Queue.LazyAct = (queryQueue) => queryQueue.SqlQuery<TEntity>().Update(entity);
                 Query.Append();
             }
             else
             {
-                QueryQueue.SqlQuery<TEntity>().Update(entity);
-                QueryQueue.Execute();
+                Queue.SqlQuery<TEntity>().Update(entity);
+                Queue.Execute();
             }
             return entity;
         }
@@ -114,13 +222,13 @@ namespace FS.Core.Context
             //  判断是否启用合并提交
             if (_tableContext.IsMergeCommand)
             {
-                QueryQueue.LazyAct = (queryQueue) => queryQueue.SqlQuery<TEntity>().Insert(entity);
+                Queue.LazyAct = (queryQueue) => queryQueue.SqlQuery<TEntity>().Insert(entity);
                 Query.Append();
             }
             else
             {
-                QueryQueue.SqlQuery<TEntity>().Insert(entity);
-                QueryQueue.Execute();
+                Queue.SqlQuery<TEntity>().Insert(entity);
+                Queue.Execute();
             }
             return entity;
         }
@@ -133,8 +241,8 @@ namespace FS.Core.Context
         {
             if (entity == null) { throw new ArgumentNullException("entity", "插入操作时，参数不能为空！"); }
 
-            QueryQueue.SqlQuery<TEntity>().InsertIdentity(entity);
-            identity = QueryQueue.ExecuteQuery<int>();
+            Queue.SqlQuery<TEntity>().InsertIdentity(entity);
+            identity = Queue.ExecuteQuery<int>();
 
             return entity;
         }
@@ -149,13 +257,13 @@ namespace FS.Core.Context
             // 如果是MSSQLSER，则启用BulkCopy
             if (_tableContext.Database.DataType == Data.DataBaseType.SqlServer)
             {
-                _tableContext.Database.ExecuteSqlBulkCopy(_tableContext.TableName, lst.ToTable());
+                _tableContext.Database.ExecuteSqlBulkCopy(_tableContext.Name, lst.ToTable());
                 return lst;
             }
             lst.ForEach(entity =>
             {
-                QueryQueue.SqlQuery<TEntity>().Insert(entity);
-                QueryQueue.Execute();
+                Queue.SqlQuery<TEntity>().Insert(entity);
+                Queue.Execute();
             });
             return lst;
         }
@@ -167,13 +275,13 @@ namespace FS.Core.Context
             //  判断是否启用合并提交
             if (_tableContext.IsMergeCommand)
             {
-                QueryQueue.LazyAct = (queryQueue) => queryQueue.SqlQuery<TEntity>().Delete();
+                Queue.LazyAct = (queryQueue) => queryQueue.SqlQuery<TEntity>().Delete();
                 Query.Append();
             }
             else
             {
-                QueryQueue.SqlQuery<TEntity>().Delete();
-                QueryQueue.Execute();
+                Queue.SqlQuery<TEntity>().Delete();
+                Queue.Execute();
             }
         }
         /// <summary>
@@ -190,20 +298,25 @@ namespace FS.Core.Context
         /// </summary>
         public void AddUp()
         {
-            if (QueryQueue.ExpAssign == null) { throw new ArgumentNullException("ExpAssign", "+=字段操作时，必须先执行AddUp的另一个重载版本！"); }
+            if (Queue.ExpAssign == null) { throw new ArgumentNullException("ExpAssign", "+=字段操作时，必须先执行AddUp的另一个重载版本！"); }
 
             //  判断是否启用合并提交
             if (_tableContext.IsMergeCommand)
             {
-                QueryQueue.LazyAct = (queryQueue) => queryQueue.SqlQuery<TEntity>().AddUp();
+                Queue.LazyAct = (queryQueue) => queryQueue.SqlQuery<TEntity>().AddUp();
                 Query.Append();
             }
             else
             {
-                QueryQueue.SqlQuery<TEntity>().AddUp();
-                QueryQueue.Execute();
+                Queue.SqlQuery<TEntity>().AddUp();
+                Queue.Execute();
             }
         }
         #endregion
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

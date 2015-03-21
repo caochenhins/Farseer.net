@@ -9,9 +9,9 @@ using FS.Extend;
 
 namespace FS.Core.Client
 {
-    public class DbQueryQueue : IQueryQueue
+    public class DbQueueTable : IQueueTable
     {
-        private readonly IQuery _query;
+        private readonly IQueryTable _query;
         public Dictionary<Expression, bool> ExpOrderBy { get; set; }
         public Guid ID { get; set; }
         public int Index { get; set; }
@@ -19,18 +19,23 @@ namespace FS.Core.Client
         public Expression ExpWhere { get; set; }
         public Dictionary<Expression, object> ExpAssign { get; set; }
         public StringBuilder Sql { get; set; }
+        ISqlQueryView<TEntity> IQueueView.SqlQuery<TEntity>()
+        {
+            return SqlQuery<TEntity>();
+        }
+
         public List<DbParameter> Param { get; set; }
-        public Action<IQueryQueue> LazyAct { get; set; }
-        public DbQueryQueue(int index, IQuery queryProvider)
+        public Action<IQueueTable> LazyAct { get; set; }
+        public DbQueueTable(int index, IQueryTable queryProvider)
         {
             ID = Guid.NewGuid();
             Index = index;
             _query = queryProvider;
         }
 
-        public ISqlQuery<TEntity> SqlQuery<TEntity>() where TEntity : class,new()
+        public ISqlQueryTable<TEntity> SqlQuery<TEntity>() where TEntity : class,new()
         {
-            return _query.DbProvider.CreateSqlQuery<TEntity>(_query, this, _query.TableContext.TableName);
+            return _query.DbProvider.CreateSqlQuery<TEntity>(_query, this, _query.Context.Name);
         }
 
         public void Append()
@@ -40,7 +45,7 @@ namespace FS.Core.Client
         public int Execute()
         {
             var param = Param == null ? null : Param.ToArray();
-            var result = Sql.Length < 1 ? 0 : _query.TableContext.Database.ExecuteNonQuery(CommandType.Text, Sql.ToString(), param);
+            var result = Sql.Length < 1 ? 0 : _query.Context.Database.ExecuteNonQuery(CommandType.Text, Sql.ToString(), param);
 
             _query.Clear();
             return result;
@@ -49,7 +54,7 @@ namespace FS.Core.Client
         {
             var param = Param == null ? null : Param.ToArray();
             List<TEntity> lst;
-            using (var reader = _query.TableContext.Database.GetReader(CommandType.Text, Sql.ToString(), param))
+            using (var reader = _query.Context.Database.GetReader(CommandType.Text, Sql.ToString(), param))
             {
                 lst = reader.ToList<TEntity>();
                 reader.Close();
@@ -62,7 +67,7 @@ namespace FS.Core.Client
         {
             var param = Param == null ? null : Param.ToArray();
             TEntity t;
-            using (var reader = _query.TableContext.Database.GetReader(CommandType.Text, Sql.ToString(), param))
+            using (var reader = _query.Context.Database.GetReader(CommandType.Text, Sql.ToString(), param))
             {
                 t = reader.ToInfo<TEntity>();
                 reader.Close();
@@ -74,7 +79,7 @@ namespace FS.Core.Client
         public T ExecuteQuery<T>(T defValue = default(T))
         {
             var param = Param == null ? null : Param.ToArray();
-            var value = _query.TableContext.Database.ExecuteScalar(CommandType.Text, Sql.ToString(), param);
+            var value = _query.Context.Database.ExecuteScalar(CommandType.Text, Sql.ToString(), param);
             var t = (T)Convert.ChangeType(value, typeof(T));
 
             _query.Clear();

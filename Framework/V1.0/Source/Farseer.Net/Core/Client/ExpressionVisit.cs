@@ -17,7 +17,7 @@ namespace FS.Core.Client
     {
         private readonly DbExpressionNewProvider<TEntity> _expFields;
         private readonly DbExpressionBoolProvider<TEntity> _expWhere;
-        private readonly IQueryQueue _queryQueue;
+        private readonly IQueue _queryQueue;
         private readonly IQuery _query;
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace FS.Core.Client
         /// <param name="queryQueue">每一次的数据库查询，将生成一个新的实例</param>
         /// <param name="expNewProvider">提供ExpressionNew表达式树的解析</param>
         /// <param name="expBoolProvider">提供ExpressionBinary表达式树的解析</param>
-        public ExpressionVisit(IQuery query, IQueryQueue queryQueue, DbExpressionNewProvider<TEntity> expNewProvider, DbExpressionBoolProvider<TEntity> expBoolProvider)
+        public ExpressionVisit(IQuery query, IQueue queryQueue, DbExpressionNewProvider<TEntity> expNewProvider, DbExpressionBoolProvider<TEntity> expBoolProvider)
         {
             _expFields = expNewProvider;
             _expWhere = expBoolProvider;
