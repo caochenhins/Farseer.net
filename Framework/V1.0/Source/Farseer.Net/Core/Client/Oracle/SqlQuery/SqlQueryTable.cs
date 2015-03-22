@@ -3,7 +3,7 @@ using System.Text;
 using FS.Core.Infrastructure;
 using FS.Mapping.Table;
 
-namespace FS.Core.Client.SqlServer.SqlQuery
+namespace FS.Core.Client.Oracle.SqlQuery
 {
     public sealed class SqlQueryTable<TEntity> : SqlQueryView<TEntity>, ISqlQueryTable<TEntity> where TEntity : class,new()
     {

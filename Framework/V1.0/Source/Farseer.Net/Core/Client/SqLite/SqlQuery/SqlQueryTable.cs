@@ -3,7 +3,7 @@ using System.Text;
 using FS.Core.Infrastructure;
 using FS.Mapping.Table;
 
-namespace FS.Core.Client.SqlServer.SqlQuery
+namespace FS.Core.Client.SqLite.SqlQuery
 {
     public sealed class SqlQueryTable<TEntity> : SqlQueryView<TEntity>, ISqlQueryTable<TEntity> where TEntity : class,new()
     {
@@ -45,7 +45,7 @@ namespace FS.Core.Client.SqlServer.SqlQuery
             var indexHaveValue = map.GetModelInfo().Key != null && map.GetModelInfo().Key.GetValue(entity, null) != null;
             if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { Queue.Sql.AppendFormat("SET IDENTITY_INSERT {0} ON ; ", TableName); }
 
-            Queue.Sql.AppendFormat("INSERT INTO {0} {1};SELECT @@IDENTITY;", TableName, strinsertAssemble);
+            Queue.Sql.AppendFormat("INSERT INTO {0} {1};SELECT last_insert_rowid();", TableName, strinsertAssemble);
 
             if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { Queue.Sql.AppendFormat("; SET IDENTITY_INSERT {0} OFF; ", TableName); }
         }

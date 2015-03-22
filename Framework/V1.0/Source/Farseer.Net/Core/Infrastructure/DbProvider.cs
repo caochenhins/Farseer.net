@@ -6,6 +6,8 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using FS.Core.Client.SqlServer.SqlQuery;
+using FS.Core.Queue;
 using FS.Core.Set;
 using FS.Mapping.Table;
 
@@ -17,18 +19,14 @@ namespace FS.Core.Infrastructure
     public abstract class DbProvider
     {
         /// <summary>
-        /// 返回当前新增的标识
-        /// </summary>
-        public abstract string CurrentIdentity { get; }
-        /// <summary>
         ///     支持一次传输最多的参数个数
         /// </summary>
-        public abstract int ParamsMaxLength { get; }
+        public virtual int ParamsMaxLength { get { return 2100; } }
 
         /// <summary>
         ///     参数前缀
         /// </summary>
-        public abstract string ParamsPrefix { get; }
+        public virtual string ParamsPrefix { get { return "@"; } }
 
         /// <summary>
         ///     创建提供程序对数据源类的实现的实例
@@ -39,7 +37,7 @@ namespace FS.Core.Infrastructure
         ///     创建字段保护符
         /// </summary>
         /// <param name="fieldName">字符名称</param>
-        public abstract string KeywordAegis(string fieldName);
+        public virtual string KeywordAegis(string fieldName) { return string.Format("[{0}]", fieldName); }
 
         /// <summary>
         /// 判断是否为字段。还是组合字段。
@@ -246,21 +244,30 @@ namespace FS.Core.Infrastructure
         /// </summary>
         /// <param name="index">索引</param>
         /// <param name="query">数据库持久化</param>
-        public abstract IQueueTable CreateQueue(int index, IQueryTable query);
+        public IQueueTable CreateQueue(int index, IQueryTable query)
+        {
+            return new DbQueueTable(index, query);
+        }
 
         /// <summary>
         /// 创建队列
         /// </summary>
         /// <param name="index">索引</param>
         /// <param name="query">数据库持久化</param>
-        public abstract IQueueView CreateQueue(int index, IQueryView query);
+        public IQueueView CreateQueue(int index, IQueryView query)
+        {
+            return new DbQueueView(index, query);
+        }
 
         /// <summary>
         /// 创建队列
         /// </summary>
         /// <param name="index">索引</param>
         /// <param name="query">数据库持久化</param>
-        public abstract IQueueProc CreateQueue(int index, IQueryProc query);
+        public IQueueProc CreateQueue(int index, IQueryProc query)
+        {
+            return new DbQueueProc(index, query);
+        }
 
         /// <summary>
         /// 创建SQL查询
@@ -270,7 +277,10 @@ namespace FS.Core.Infrastructure
         /// <param name="queue">当前队列</param>
         /// <param name="tableName">表名</param>
         /// <returns></returns>
-        public abstract ISqlQueryTable<TEntity> CreateSqlQuery<TEntity>(IQueryTable query, IQueueTable queue, string tableName) where TEntity : class,new();
+        public ISqlQueryTable<TEntity> CreateSqlQuery<TEntity>(IQueryTable query, IQueueTable queue, string tableName) where TEntity : class,new()
+        {
+            return new SqlQueryTable<TEntity>(query, queue, tableName);
+        }
 
         /// <summary>
         /// 创建SQL查询
@@ -280,7 +290,11 @@ namespace FS.Core.Infrastructure
         /// <param name="queue">当前队列</param>
         /// <param name="tableName">表名</param>
         /// <returns></returns>
-        public abstract ISqlQueryView<TEntity> CreateSqlQuery<TEntity>(IQueryView query, IQueueView queue, string tableName) where TEntity : class,new();
+        public virtual ISqlQueryView<TEntity> CreateSqlQuery<TEntity>(IQueryView query, IQueueView queue, string tableName) where TEntity : class, new()
+        {
+            return new SqlQueryView<TEntity>(query, queue, tableName);
+        }
+
         /// <summary>
         /// 创建SQL查询
         /// </summary>
@@ -289,6 +303,9 @@ namespace FS.Core.Infrastructure
         /// <param name="queue">当前队列</param>
         /// <param name="tableName">表名</param>
         /// <returns></returns>
-        public abstract ISqlQueryProc<TEntity> CreateSqlQuery<TEntity>(IQueryProc query, IQueueProc queue) where TEntity : class,new();
+        public ISqlQueryProc<TEntity> CreateSqlQuery<TEntity>(IQueryProc query, IQueueProc queue) where TEntity : class,new()
+        {
+            return new SqlQueryProc<TEntity>(query, queue);
+        }
     }
 }

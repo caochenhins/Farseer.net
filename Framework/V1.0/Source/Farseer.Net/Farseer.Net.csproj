@@ -53,6 +53,30 @@
     <Compile Include="Configs\GeneralConfigs.cs" />
     <Compile Include="Configs\RewriterConfigs.cs" />
     <Compile Include="Configs\SystemConfigs.cs" />
+    <Compile Include="Core\Client\MySql\ExpressionBool.cs" />
+    <Compile Include="Core\Client\MySql\ExpressionNew.cs" />
+    <Compile Include="Core\Client\MySql\MySqlProvider.cs" />
+    <Compile Include="Core\Client\MySql\SqlQuery\SqlQueryProc.cs" />
+    <Compile Include="Core\Client\MySql\SqlQuery\SqlQueryTable.cs" />
+    <Compile Include="Core\Client\MySql\SqlQuery\SqlQueryView.cs" />
+    <Compile Include="Core\Client\OleDb\ExpressionBool.cs" />
+    <Compile Include="Core\Client\OleDb\ExpressionNew.cs" />
+    <Compile Include="Core\Client\OleDb\OleDbProvider.cs" />
+    <Compile Include="Core\Client\OleDb\SqlQuery\SqlQueryProc.cs" />
+    <Compile Include="Core\Client\OleDb\SqlQuery\SqlQueryTable.cs" />
+    <Compile Include="Core\Client\OleDb\SqlQuery\SqlQueryView.cs" />
+    <Compile Include="Core\Client\Oracle\ExpressionBool.cs" />
+    <Compile Include="Core\Client\Oracle\ExpressionNew.cs" />
+    <Compile Include="Core\Client\Oracle\OracleProvider.cs" />
+    <Compile Include="Core\Client\Oracle\SqlQuery\SqlQueryProc.cs" />
+    <Compile Include="Core\Client\Oracle\SqlQuery\SqlQueryTable.cs" />
+    <Compile Include="Core\Client\Oracle\SqlQuery\SqlQueryView.cs" />
+    <Compile Include="Core\Client\SqLite\ExpressionBool.cs" />
+    <Compile Include="Core\Client\SqLite\ExpressionNew.cs" />
+    <Compile Include="Core\Client\SqLite\SqlQuery\SqlQueryProc.cs" />
+    <Compile Include="Core\Client\SqLite\SqlQuery\SqlQueryTable.cs" />
+    <Compile Include="Core\Client\SqLite\SqlQuery\SqlQueryView.cs" />
+    <Compile Include="Core\Client\SqLite\SqLiteProvider.cs" />
     <Compile Include="Core\Query\DbQueryProc.cs" />
     <Compile Include="Core\Query\DbQueryView.cs" />
     <Compile Include="Core\Queue\DbQueueProc.cs" />
@@ -114,12 +138,7 @@
     <Compile Include="Mapping\Verify\VerifyMapCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Core\Client\MySql\" />
-    <Folder Include="Core\Client\OleDb\" />
-    <Folder Include="Core\Client\Oracle\" />
-    <Folder Include="Core\Client\SQLite\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

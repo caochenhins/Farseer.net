@@ -6,6 +6,10 @@ using System.IO;
 using System.Text;
 using System.Web;
 using FS.Configs;
+using FS.Core.Client.MySql;
+using FS.Core.Client.OleDb;
+using FS.Core.Client.Oracle;
+using FS.Core.Client.SqLite;
 using FS.Core.Client.SqlServer;
 using FS.Core.Context;
 using FS.Core.Data;
@@ -26,11 +30,10 @@ namespace FS.Core
         {
             switch (context.Database.DataType)
             {
-                case DataBaseType.OleDb: return new DbQueryTable(context, new SqlServerProvider());
-                case DataBaseType.MySql: return new DbQueryTable(context, new SqlServerProvider());
-                case DataBaseType.Xml: return new DbQueryTable(context, new SqlServerProvider());
-                case DataBaseType.SQLite: return new DbQueryTable(context, new SqlServerProvider());
-                case DataBaseType.Oracle: return new DbQueryTable(context, new SqlServerProvider());
+                case DataBaseType.OleDb: return new DbQueryTable(context, new OleDbProvider());
+                case DataBaseType.MySql: return new DbQueryTable(context, new MySqlProvider());
+                case DataBaseType.SQLite: return new DbQueryTable(context, new SqLiteProvider());
+                case DataBaseType.Oracle: return new DbQueryTable(context, new OracleProvider());
                 default: return new DbQueryTable(context, new SqlServerProvider());
             }
         }
@@ -39,11 +42,10 @@ namespace FS.Core
         {
             switch (context.Database.DataType)
             {
-                case DataBaseType.OleDb: return new DbQueryView(context, new SqlServerProvider());
-                case DataBaseType.MySql: return new DbQueryView(context, new SqlServerProvider());
-                case DataBaseType.Xml: return new DbQueryView(context, new SqlServerProvider());
-                case DataBaseType.SQLite: return new DbQueryView(context, new SqlServerProvider());
-                case DataBaseType.Oracle: return new DbQueryView(context, new SqlServerProvider());
+                case DataBaseType.OleDb: return new DbQueryView(context, new OleDbProvider());
+                case DataBaseType.MySql: return new DbQueryView(context, new MySqlProvider());
+                case DataBaseType.SQLite: return new DbQueryView(context, new SqLiteProvider());
+                case DataBaseType.Oracle: return new DbQueryView(context, new OracleProvider());
                 default: return new DbQueryView(context, new SqlServerProvider());
             }
         }
@@ -51,11 +53,10 @@ namespace FS.Core
         {
             switch (context.Database.DataType)
             {
-                case DataBaseType.OleDb: return new DbQueryProc(context, new SqlServerProvider());
-                case DataBaseType.MySql: return new DbQueryProc(context, new SqlServerProvider());
-                case DataBaseType.Xml: return new DbQueryProc(context, new SqlServerProvider());
-                case DataBaseType.SQLite: return new DbQueryProc(context, new SqlServerProvider());
-                case DataBaseType.Oracle: return new DbQueryProc(context, new SqlServerProvider());
+                case DataBaseType.OleDb: return new DbQueryProc(context, new OleDbProvider());
+                case DataBaseType.MySql: return new DbQueryProc(context, new MySqlProvider());
+                case DataBaseType.SQLite: return new DbQueryProc(context, new SqLiteProvider());
+                case DataBaseType.Oracle: return new DbQueryProc(context, new OracleProvider());
                 default: return new DbQueryProc(context, new SqlServerProvider());
             }
         }
@@ -69,12 +70,10 @@ namespace FS.Core
             var dbType = TableMapCache.GetMap<TEntity>().ClassInfo.DataType;
             switch (dbType)
             {
-                case DataBaseType.MySql: return new SqlServerProvider();
-                case DataBaseType.OleDb: return new SqlServerProvider();
-                case DataBaseType.Oracle: return new SqlServerProvider();
-                case DataBaseType.SQLite: return new SqlServerProvider();
-                case DataBaseType.SqlServer: return new SqlServerProvider();
-                case DataBaseType.Xml: return new SqlServerProvider();
+                case DataBaseType.OleDb: return new OleDbProvider();
+                case DataBaseType.MySql: return new MySqlProvider();
+                case DataBaseType.SQLite: return new SqLiteProvider();
+                case DataBaseType.Oracle: return new OracleProvider();
             }
             return new SqlServerProvider();
         }
