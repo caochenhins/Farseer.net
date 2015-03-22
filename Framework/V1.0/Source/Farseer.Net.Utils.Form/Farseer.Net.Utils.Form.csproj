@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{710B2B72-A713-499E-BD88-D225606107BC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FS.Utils</RootNamespace>
+    <AssemblyName>Farseer.Net.Utils.WinForm</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Farseer.Net.Utils\AdministrativeCode.cs">
+      <Link>AdministrativeCode.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\Assembly.cs">
+      <Link>Assembly.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\Chinese.cs">
+      <Link>Chinese.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\Encrypt.cs">
+      <Link>Encrypt.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\Files.cs">
+      <Link>Files.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\InfoComparer.cs">
+      <Link>InfoComparer.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\IsType.cs">
+      <Link>IsType.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\Json.cs">
+      <Link>Json.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\Mac.cs">
+      <Link>Mac.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\Net.cs">
+      <Link>Net.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\OLog.cs">
+      <Link>OLog.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\Pro.cs">
+      <Link>Pro.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\QueueTask.cs">
+      <Link>QueueTask.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\Rand.cs">
+      <Link>Rand.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\Reverser.cs">
+      <Link>Reverser.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\RMB.cs">
+      <Link>RMB.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\Serialized.cs">
+      <Link>Serialized.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\SmtpMail.cs">
+      <Link>SmtpMail.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\SocketHelper\ClientSocket.cs">
+      <Link>SocketHelper\ClientSocket.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\SocketHelper\ServerSocket.cs">
+      <Link>SocketHelper\ServerSocket.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\SocketHelper\StateObject.cs">
+      <Link>SocketHelper\StateObject.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\SpeedTest.cs">
+      <Link>SpeedTest.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\Str.cs">
+      <Link>Str.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\StrPlus.cs">
+      <Link>StrPlus.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\Thumbnail.cs">
+      <Link>Thumbnail.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\TimingTasks.cs">
+      <Link>TimingTasks.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\Url.cs">
+      <Link>Url.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\WinRAR.cs">
+      <Link>WinRAR.cs</Link>
+    </Compile>
+    <Compile Include="DataGridViewComparer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Farseer.Net\Farseer.Net.csproj">
+      <Project>{4f393e31-dfcd-434a-a350-53d635a99317}</Project>
+      <Name>Farseer.Net</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4F393E31-DFCD-434A-A350-53D635A99317}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FS</RootNamespace>
+    <AssemblyName>Farseer.Net</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Configs\BaseConfigs.cs" />
+    <Compile Include="Configs\CacheConfigs.cs" />
+    <Compile Include="Configs\DbConfigs.cs" />
+    <Compile Include="Configs\EmailConfigs.cs" />
+    <Compile Include="Configs\GeneralConfigs.cs" />
+    <Compile Include="Configs\RewriterConfigs.cs" />
+    <Compile Include="Configs\SystemConfigs.cs" />
+    <Compile Include="Core\Client\MySql\ExpressionBool.cs" />
+    <Compile Include="Core\Client\MySql\ExpressionNew.cs" />
+    <Compile Include="Core\Client\MySql\MySqlProvider.cs" />
+    <Compile Include="Core\Client\MySql\SqlQuery\SqlQueryProc.cs" />
+    <Compile Include="Core\Client\MySql\SqlQuery\SqlQueryTable.cs" />
+    <Compile Include="Core\Client\MySql\SqlQuery\SqlQueryView.cs" />
+    <Compile Include="Core\Client\OleDb\ExpressionBool.cs" />
+    <Compile Include="Core\Client\OleDb\ExpressionNew.cs" />
+    <Compile Include="Core\Client\OleDb\OleDbProvider.cs" />
+    <Compile Include="Core\Client\OleDb\SqlQuery\SqlQueryProc.cs" />
+    <Compile Include="Core\Client\OleDb\SqlQuery\SqlQueryTable.cs" />
+    <Compile Include="Core\Client\OleDb\SqlQuery\SqlQueryView.cs" />
+    <Compile Include="Core\Client\Oracle\ExpressionBool.cs" />
+    <Compile Include="Core\Client\Oracle\ExpressionNew.cs" />
+    <Compile Include="Core\Client\Oracle\OracleProvider.cs" />
+    <Compile Include="Core\Client\Oracle\SqlQuery\SqlQueryProc.cs" />
+    <Compile Include="Core\Client\Oracle\SqlQuery\SqlQueryTable.cs" />
+    <Compile Include="Core\Client\Oracle\SqlQuery\SqlQueryView.cs" />
+    <Compile Include="Core\Client\SqLite\ExpressionBool.cs" />
+    <Compile Include="Core\Client\SqLite\ExpressionNew.cs" />
+    <Compile Include="Core\Client\SqLite\SqlQuery\SqlQueryProc.cs" />
+    <Compile Include="Core\Client\SqLite\SqlQuery\SqlQueryTable.cs" />
+    <Compile Include="Core\Client\SqLite\SqlQuery\SqlQueryView.cs" />
+    <Compile Include="Core\Client\SqLite\SqLiteProvider.cs" />
+    <Compile Include="Core\Query\DbQueryProc.cs" />
+    <Compile Include="Core\Query\DbQueryView.cs" />
+    <Compile Include="Core\Queue\DbQueueProc.cs" />
+    <Compile Include="Core\Queue\DbQueueView.cs" />
+    <Compile Include="Core\Client\SqlServer\ExpressionBool.cs" />
+    <Compile Include="Core\Client\ExpressionVisit.cs" />
+    <Compile Include="Core\Client\SqlServer\ExpressionNew.cs" />
+    <Compile Include="Core\Client\SqlServer\SqlQuery\SqlQueryProc.cs" />
+    <Compile Include="Core\Client\SqlServer\SqlQuery\SqlQueryView.cs" />
+    <Compile Include="Core\Client\SqlServer\SqlQuery\SqlQueryView2000.cs" />
+    <Compile Include="Core\Context\ProcContext~1.cs" />
+    <Compile Include="Core\Set\ProcSet.cs" />
+    <Compile Include="Core\Context\ViewContext~1.cs" />
+    <Compile Include="Core\Set\ViewSet.cs" />
+    <Compile Include="Core\Infrastructure\DbExpressionBoolProvider.cs" />
+    <Compile Include="Core\Infrastructure\DbExpressionNewProvider.cs" />
+    <Compile Include="Core\Client\SqlServer\SqlServerProvider.cs" />
+    <Compile Include="Core\Query\DbQueryTable.cs" />
+    <Compile Include="Core\Queue\DbQueueTable.cs" />
+    <Compile Include="Core\Client\SqlServer\SqlQuery\SqlQueryTable.cs" />
+    <Compile Include="Core\Infrastructure\DbProvider.cs" />
+    <Compile Include="Core\Infrastructure\IEntity.cs" />
+    <Compile Include="Core\Infrastructure\IQueryProc.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Infrastructure\IQueueProc.cs" />
+    <Compile Include="Core\Infrastructure\IQueueView.cs" />
+    <Compile Include="Core\Infrastructure\IQueueTable.cs" />
+    <Compile Include="Core\Infrastructure\IQueryTable.cs" />
+    <Compile Include="Core\Infrastructure\IQueue.cs" />
+    <Compile Include="Core\Infrastructure\IQuery.cs" />
+    <Compile Include="Core\Context\TableContext~1.cs" />
+    <Compile Include="Core\Set\TableSet.cs" />
+    <Compile Include="Core\Context\DbContext.cs" />
+    <Compile Include="Core\Data\DbExecutor.cs" />
+    <Compile Include="Core\Data\XmlExecutor.cs" />
+    <Compile Include="Core\DbFactory.cs" />
+    <Compile Include="Core\Infrastructure\IQueryView.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Infrastructure\ISqlQueryProc.cs" />
+    <Compile Include="Core\Infrastructure\ISqlQueryView.cs" />
+    <Compile Include="Core\Infrastructure\ISqlQueryTable.cs" />
+    <Compile Include="Extend\DataTableExtend.cs" />
+    <Compile Include="Extend\IDataReaderExtend.cs" />
+    <Compile Include="Extend\ListExtend.cs" />
+    <Compile Include="Extend\ModelExtend.cs" />
+    <Compile Include="Extend\ObjectExtend.cs" />
+    <Compile Include="Extend\StringExtend.cs" />
+    <Compile Include="Extend\TableSetExtend.cs" />
+    <Compile Include="Mapping\Table\DBAttribute.cs" />
+    <Compile Include="Mapping\Table\FieldMapState.cs" />
+    <Compile Include="Mapping\Table\ProcAttribute.cs" />
+    <Compile Include="Mapping\Table\TableMap.cs" />
+    <Compile Include="Mapping\Table\TableMapCache.cs" />
+    <Compile Include="Mapping\Verify\FieldMapState.cs" />
+    <Compile Include="Mapping\Verify\IVerification.cs" />
+    <Compile Include="Mapping\Verify\VerifyMap.cs" />
+    <Compile Include="Mapping\Verify\VerifyMapCache.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

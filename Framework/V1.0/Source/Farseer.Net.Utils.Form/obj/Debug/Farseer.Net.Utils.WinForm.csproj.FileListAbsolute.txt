@@ -1,0 +1,9 @@
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Source\Farseer.Net.Utils.WinForm\bin\Debug\Farseer.Net.Utils.WinForm.dll
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Source\Farseer.Net.Utils.WinForm\bin\Debug\Farseer.Net.Utils.WinForm.pdb
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Source\Farseer.Net.Utils.WinForm\bin\Debug\Farseer.Net.dll
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Source\Farseer.Net.Utils.WinForm\bin\Debug\FS.Utils.dll
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Source\Farseer.Net.Utils.WinForm\bin\Debug\FS.Utils.pdb
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Source\Farseer.Net.Utils.WinForm\bin\Debug\Farseer.Net.pdb
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Source\Farseer.Net.Utils.WinForm\obj\Debug\Farseer.Net.Utils.WinForm.csprojResolveAssemblyReference.cache
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Source\Farseer.Net.Utils.WinForm\obj\Debug\Farseer.Net.Utils.WinForm.dll
+E:\公司\Farseer.Net.Concept\Framework\V1.0\Source\Farseer.Net.Utils.WinForm\obj\Debug\Farseer.Net.Utils.WinForm.pdb
