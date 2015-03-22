@@ -6,7 +6,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using FS.Core.Context;
+using FS.Core.Set;
 using FS.Mapping.Table;
 
 namespace FS.Core.Infrastructure
@@ -59,6 +59,8 @@ namespace FS.Core.Infrastructure
         /// <returns></returns>
         public object ParamConvertValue(object valu, DbType type)
         {
+            if (valu == null) { return null; }
+
             // 时间类型转换
             if (type == DbType.DateTime)
             {
@@ -120,6 +122,31 @@ namespace FS.Core.Infrastructure
         }
 
         /// <summary>
+        /// 根据值，返回类型
+        /// </summary>
+        /// <param name="type">参数类型</param>
+        /// <param name="len">参数长度</param>
+        /// <returns></returns>
+        public DbType GetDbType(Type type, out int len)
+        {
+            if (type.Name.Equals("Nullable`1")) { type = Nullable.GetUnderlyingType(type); }
+            if (type.BaseType != null && type.BaseType.Name == "Enum") { len = 1; return DbType.Byte; }
+            switch (type.Name)
+            {
+                case "DateTime": len = 8; return DbType.DateTime;
+                case "Boolean": len = 1; return DbType.Boolean;
+                case "Int32": len = 4; return DbType.Int32;
+                case "Int16": len = 2; return DbType.Int16;
+                case "Decimal": len = 8; return DbType.Decimal;
+                case "Byte": len = 1; return DbType.Byte;
+                case "Long":
+                case "Float":
+                case "Double": len = 8; return DbType.Decimal;
+                default: len = 0; return DbType.String;
+            }
+        }
+
+        /// <summary>
         ///     创建一个数据库参数对象
         /// </summary>
         /// <param name="name">参数名称</param>
@@ -141,13 +168,30 @@ namespace FS.Core.Infrastructure
         /// <summary>
         ///     创建一个数据库参数对象
         /// </summary>
-        public DbParameter CreateDbParam(string name, object valu)
+        /// <param name="name">参数名称</param>
+        /// <param name="valu">参数值</param>
+        /// <param name="output">是否是输出值</param>
+        public DbParameter CreateDbParam(string name, object valu, bool output = false)
         {
             if (valu == null) { valu = string.Empty; }
 
             int len;
             var type = GetDbType(valu, out len);
-            return CreateDbParam(name, valu, type, len, false);
+            return CreateDbParam(name, valu, type, len, output);
+
+        }
+
+        /// <summary>
+        ///     创建一个数据库参数对象
+        /// </summary>
+        /// <param name="name">参数名称</param>
+        /// <param name="valu">参数值</param>
+        /// <param name="output">是否是输出值</param>
+        public DbParameter CreateDbParam(string name, object valu, Type valueType, bool output = false)
+        {
+            int len;
+            var type = GetDbType(valueType, out len);
+            return CreateDbParam(name, valu, type, len, output);
 
         }
 
@@ -202,8 +246,21 @@ namespace FS.Core.Infrastructure
         /// </summary>
         /// <param name="index">索引</param>
         /// <param name="query">数据库持久化</param>
-        /// <returns></returns>
-        public abstract IQueueTable CreateQueryQueue(int index, IQueryTable query);
+        public abstract IQueueTable CreateQueue(int index, IQueryTable query);
+
+        /// <summary>
+        /// 创建队列
+        /// </summary>
+        /// <param name="index">索引</param>
+        /// <param name="query">数据库持久化</param>
+        public abstract IQueueView CreateQueue(int index, IQueryView query);
+
+        /// <summary>
+        /// 创建队列
+        /// </summary>
+        /// <param name="index">索引</param>
+        /// <param name="query">数据库持久化</param>
+        public abstract IQueueProc CreateQueue(int index, IQueryProc query);
 
         /// <summary>
         /// 创建SQL查询
@@ -224,5 +281,14 @@ namespace FS.Core.Infrastructure
         /// <param name="tableName">表名</param>
         /// <returns></returns>
         public abstract ISqlQueryView<TEntity> CreateSqlQuery<TEntity>(IQueryView query, IQueueView queue, string tableName) where TEntity : class,new();
+        /// <summary>
+        /// 创建SQL查询
+        /// </summary>
+        /// <typeparam name="TEntity">实体类</typeparam>
+        /// <param name="query">数据库持久化</param>
+        /// <param name="queue">当前队列</param>
+        /// <param name="tableName">表名</param>
+        /// <returns></returns>
+        public abstract ISqlQueryProc<TEntity> CreateSqlQuery<TEntity>(IQueryProc query, IQueueProc queue) where TEntity : class,new();
     }
 }

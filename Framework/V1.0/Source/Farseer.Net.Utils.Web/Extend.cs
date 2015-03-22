@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FS.Core.Context;
 using FS.Core.Infrastructure;
+using FS.Core.Set;
 using FS.Utils.WebForm.Repeater;
 
 namespace FS.Extend

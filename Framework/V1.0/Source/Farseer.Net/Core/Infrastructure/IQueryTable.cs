@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Data.Common;
-using FS.Core.Context;
 
 namespace FS.Core.Infrastructure
 {

@@ -7,7 +7,7 @@ using System.Text;
 using FS.Core.Context;
 using FS.Core.Infrastructure;
 
-namespace FS.Core.Client
+namespace FS.Core.Query
 {
     public class DbQueryTable : IQueryTable
     {
@@ -26,7 +26,7 @@ namespace FS.Core.Client
         /// </summary>
         public List<IQueueTable> GroupQueueList { get; set; }
         private IQueueTable _queryQueue;
-        public IQueueTable Queue { get { return _queryQueue ?? (_queryQueue = DbProvider.CreateQueryQueue(GroupQueueList.Count, this)); } }
+        public IQueueTable Queue { get { return _queryQueue ?? (_queryQueue = DbProvider.CreateQueue(GroupQueueList.Count, this)); } }
         public IQueueTable GetQueue(int index)
         {
             return GroupQueueList[index];

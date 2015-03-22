@@ -63,13 +63,6 @@ namespace FS.Core.Data
             OpenTran(tranLevel);
         }
 
-        /// <summary>
-        ///     注销
-        /// </summary>
-        public void Dispose()
-        {
-            Close(true);
-        }
 
         /// <summary>
         ///     开启事务。
@@ -298,6 +291,24 @@ namespace FS.Core.Data
             {
                 Close(false);
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            //释放托管资源
+            if (disposing)
+            {
+                Close(true);
+            }
+        }
+
+        /// <summary>
+        ///     注销
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 

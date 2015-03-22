@@ -6,11 +6,11 @@ using System.IO;
 using System.Text;
 using System.Web;
 using FS.Configs;
-using FS.Core.Client;
 using FS.Core.Client.SqlServer;
 using FS.Core.Context;
 using FS.Core.Data;
 using FS.Core.Infrastructure;
+using FS.Core.Query;
 using FS.Mapping.Table;
 
 namespace FS.Core
@@ -35,30 +35,30 @@ namespace FS.Core
             }
         }
 
-        //public static IQueryView CreateQueryView(DbContext context)
-        //{
-        //    switch (context.Database.DataType)
-        //    {
-        //        case DataBaseType.OleDb: return new DbQueryView(context, new SqlServerProvider());
-        //        case DataBaseType.MySql: return new DbQueryView(context, new SqlServerProvider());
-        //        case DataBaseType.Xml: return new DbQueryView(context, new SqlServerProvider());
-        //        case DataBaseType.SQLite: return new DbQueryView(context, new SqlServerProvider());
-        //        case DataBaseType.Oracle: return new DbQueryView(context, new SqlServerProvider());
-        //        default: return new DbQueryView(context, new SqlServerProvider());
-        //    }
-        //}
-        //public static IQueryProc CreateQueryProc(DbContext context)
-        //{
-        //    switch (context.Database.DataType)
-        //    {
-        //        case DataBaseType.OleDb: return new DbQueryProc(context, new SqlServerProvider());
-        //        case DataBaseType.MySql: return new DbQueryProc(context, new SqlServerProvider());
-        //        case DataBaseType.Xml: return new DbQueryProc(context, new SqlServerProvider());
-        //        case DataBaseType.SQLite: return new DbQueryProc(context, new SqlServerProvider());
-        //        case DataBaseType.Oracle: return new DbQueryProc(context, new SqlServerProvider());
-        //        default: return new DbQueryProc(context, new SqlServerProvider());
-        //    }
-        //}
+        public static IQueryView CreateQueryView(DbContext context)
+        {
+            switch (context.Database.DataType)
+            {
+                case DataBaseType.OleDb: return new DbQueryView(context, new SqlServerProvider());
+                case DataBaseType.MySql: return new DbQueryView(context, new SqlServerProvider());
+                case DataBaseType.Xml: return new DbQueryView(context, new SqlServerProvider());
+                case DataBaseType.SQLite: return new DbQueryView(context, new SqlServerProvider());
+                case DataBaseType.Oracle: return new DbQueryView(context, new SqlServerProvider());
+                default: return new DbQueryView(context, new SqlServerProvider());
+            }
+        }
+        public static IQueryProc CreateQueryProc(DbContext context)
+        {
+            switch (context.Database.DataType)
+            {
+                case DataBaseType.OleDb: return new DbQueryProc(context, new SqlServerProvider());
+                case DataBaseType.MySql: return new DbQueryProc(context, new SqlServerProvider());
+                case DataBaseType.Xml: return new DbQueryProc(context, new SqlServerProvider());
+                case DataBaseType.SQLite: return new DbQueryProc(context, new SqlServerProvider());
+                case DataBaseType.Oracle: return new DbQueryProc(context, new SqlServerProvider());
+                default: return new DbQueryProc(context, new SqlServerProvider());
+            }
+        }
 
 
         /// <summary>

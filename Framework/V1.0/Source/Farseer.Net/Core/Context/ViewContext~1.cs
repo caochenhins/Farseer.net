@@ -1,6 +1,7 @@
-﻿using System.Data;
-using FS.Configs;
+﻿using FS.Configs;
 using FS.Core.Data;
+using FS.Core.Infrastructure;
+using FS.Core.Set;
 using FS.Mapping.Table;
 
 namespace FS.Core.Context
@@ -38,9 +39,15 @@ namespace FS.Core.Context
         /// <param name="tableName">表名称</param>
         public ViewContext(DbExecutor database, string tableName = null) : base(database, tableName)
         {
-            if (string.IsNullOrWhiteSpace(tableName)) { TableName = TableMapCache.GetMap<TEntity>().ClassInfo.Name; }
+            if (string.IsNullOrWhiteSpace(tableName)) { Name = TableMapCache.GetMap<TEntity>().ClassInfo.Name; }
             ViewSet = new ViewSet<TEntity>(this);
+            Query = DbFactory.CreateQueryView(this);
         }
+
+        /// <summary>
+        /// 数据库查询支持
+        /// </summary>
+        internal protected IQueryView Query { get; set; }
 
         /// <summary>
         /// 强类型实体对象

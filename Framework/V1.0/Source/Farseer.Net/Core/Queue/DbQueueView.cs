@@ -7,40 +7,29 @@ using System.Text;
 using FS.Core.Infrastructure;
 using FS.Extend;
 
-namespace FS.Core.Client
+namespace FS.Core.Queue
 {
-    public class DbQueueTable : IQueueTable
+    public class DbQueueView : IQueueView
     {
-        private readonly IQueryTable _query;
+        private readonly IQueryView _query;
         public Dictionary<Expression, bool> ExpOrderBy { get; set; }
         public Guid ID { get; set; }
         public int Index { get; set; }
         public List<Expression> ExpSelect { get; set; }
         public Expression ExpWhere { get; set; }
-        public Dictionary<Expression, object> ExpAssign { get; set; }
         public StringBuilder Sql { get; set; }
-        ISqlQueryView<TEntity> IQueueView.SqlQuery<TEntity>()
-        {
-            return SqlQuery<TEntity>();
-        }
-
         public List<DbParameter> Param { get; set; }
-        public Action<IQueueTable> LazyAct { get; set; }
-        public DbQueueTable(int index, IQueryTable queryProvider)
+        public DbQueueView(int index, IQueryView queryProvider)
         {
             ID = Guid.NewGuid();
             Index = index;
             _query = queryProvider;
+            Param = new List<DbParameter>();
         }
 
-        public ISqlQueryTable<TEntity> SqlQuery<TEntity>() where TEntity : class,new()
+        public ISqlQueryView<TEntity> SqlQuery<TEntity>() where TEntity : class,new()
         {
             return _query.DbProvider.CreateSqlQuery<TEntity>(_query, this, _query.Context.Name);
-        }
-
-        public void Append()
-        {
-            _query.Append();
         }
         public int Execute()
         {
@@ -88,13 +77,14 @@ namespace FS.Core.Client
 
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
+
             if (Sql != null) { Sql.Clear(); Sql = null; }
 
             ExpOrderBy = null;
             ExpSelect = null;
             ExpWhere = null;
 
-            GC.SuppressFinalize(this);
         }
     }
 }

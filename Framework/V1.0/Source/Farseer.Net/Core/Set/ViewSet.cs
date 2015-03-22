@@ -1,84 +1,81 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using FS.Core.Context;
 using FS.Core.Infrastructure;
-using FS.Extend;
 
-namespace FS.Core.Context
+namespace FS.Core.Set
 {
     /// <summary>
-    /// 表操作
+    /// 视图操作
     /// </summary>
-    /// <typeparam name="TEntity"></typeparam>
-    public class TableSet<TEntity> : IDisposable where TEntity : class, new()
+    /// <typeparam name="TEntity">实体</typeparam>
+    public sealed class ViewSet<TEntity> : IDisposable where TEntity : class, new()
     {
         /// <summary>
         /// 数据库上下文
         /// </summary>
-        private readonly TableContext<TEntity> _tableContext;
-        private IQueryTable Query { get { return _tableContext.Query; } }
-        private IQueueTable Queue { get { return _tableContext.Query.Queue; } }
+        private readonly ViewContext<TEntity> _viewContext;
+
+        private IQueueView Queue { get { return _viewContext.Query.Queue; } }
 
         /// <summary>
         /// 禁止外部实例化
         /// </summary>
-        private TableSet() { }
+        private ViewSet() { }
 
-        internal TableSet(TableContext<TEntity> tableContext) : this()
+        internal ViewSet(ViewContext<TEntity> viewContext): this()
         {
-            _tableContext = tableContext;
+            _viewContext = viewContext;
         }
 
         #region 条件
-        public TableSet<TEntity> Select<T>(Expression<Func<TEntity, T>> select)
+
+        /// <summary>
+        ///     字段选择器
+        /// </summary>
+        /// <param name="select">字段选择器</param>
+        public ViewSet<TEntity> Select<T>(Expression<Func<TEntity, T>> select)
         {
             if (Queue.ExpSelect == null) { Queue.ExpSelect = new List<Expression>(); }
             if (select != null) { Queue.ExpSelect.Add(select); }
             return this;
         }
+
         /// <summary>
         ///     查询条件
         /// </summary>
         /// <param name="where">查询条件</param>
-        public TableSet<TEntity> Where(Expression<Func<TEntity, bool>> where)
+        public ViewSet<TEntity> Where(Expression<Func<TEntity, bool>> where)
         {
             Queue.ExpWhere = Queue.ExpWhere == null ? Queue.ExpWhere = where : Expression.Add(Queue.ExpWhere, where);
             return this;
         }
+
         /// <summary>
         /// 倒序查询
         /// </summary>
         /// <typeparam name="TKey">实体类属性类型</typeparam>
         /// <param name="desc">字段选择器</param>
-        public TableSet<TEntity> Desc<TKey>(Expression<Func<TEntity, TKey>> desc)
+        public ViewSet<TEntity> Desc<TKey>(Expression<Func<TEntity, TKey>> desc)
         {
             if (Queue.ExpOrderBy == null) { Queue.ExpOrderBy = new Dictionary<Expression, bool>(); }
             if (desc != null) { Queue.ExpOrderBy.Add(desc, false); }
             return this;
         }
+
         /// <summary>
         /// 正序查询
         /// </summary>
         /// <typeparam name="TKey">实体类属性类型</typeparam>
         /// <param name="asc">字段选择器</param>
-        public TableSet<TEntity> Asc<TKey>(Expression<Func<TEntity, TKey>> asc)
+        public ViewSet<TEntity> Asc<TKey>(Expression<Func<TEntity, TKey>> asc)
         {
             if (Queue.ExpOrderBy == null) { Queue.ExpOrderBy = new Dictionary<Expression, bool>(); }
             if (asc != null) { Queue.ExpOrderBy.Add(asc, true); }
             return this;
         }
-        /// <summary>
-        /// 字段累加（字段 = 字段 + 值）
-        /// </summary>
-        /// <typeparam name="T">值类型</typeparam>
-        /// <param name="fieldName">字段选择器</param>
-        /// <param name="fieldValue">值</param>
-        public TableSet<TEntity> Append<T>(Expression<Func<TEntity, T>> fieldName, T fieldValue) where T : struct
-        {
-            if (Queue.ExpAssign == null) { Queue.ExpAssign = new Dictionary<Expression, object>(); }
-            if (fieldName != null) { Queue.ExpAssign.Add(fieldName, fieldValue); }
-            return this;
-        }
+
         #endregion
 
         #region 查询
@@ -188,129 +185,6 @@ namespace FS.Core.Context
 
             Queue.SqlQuery<TEntity>().Value();
             return Queue.ExecuteQuery(defValue);
-        }
-
-        /// <summary>
-        /// 修改（支持延迟加载）
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        public TEntity Update(TEntity entity)
-        {
-            if (entity == null) { throw new ArgumentNullException("entity", "更新操作时，参数不能为空！"); }
-
-            //  判断是否启用合并提交
-            if (_tableContext.IsMergeCommand)
-            {
-                Queue.LazyAct = (queryQueue) => queryQueue.SqlQuery<TEntity>().Update(entity);
-                Query.Append();
-            }
-            else
-            {
-                Queue.SqlQuery<TEntity>().Update(entity);
-                Queue.Execute();
-            }
-            return entity;
-        }
-        /// <summary>
-        /// 插入（支持延迟加载）
-        /// </summary>
-        /// <param name="entity"></param>
-        public TEntity Insert(TEntity entity)
-        {
-            if (entity == null) { throw new ArgumentNullException("entity", "插入操作时，参数不能为空！"); }
-            //  判断是否启用合并提交
-            if (_tableContext.IsMergeCommand)
-            {
-                Queue.LazyAct = (queryQueue) => queryQueue.SqlQuery<TEntity>().Insert(entity);
-                Query.Append();
-            }
-            else
-            {
-                Queue.SqlQuery<TEntity>().Insert(entity);
-                Queue.Execute();
-            }
-            return entity;
-        }
-        /// <summary>
-        /// 插入（不支持延迟加载）
-        /// </summary>
-        /// <param name="entity">实体类</param>
-        /// <param name="identity">返回新增的</param>
-        public TEntity Insert(TEntity entity, out int identity)
-        {
-            if (entity == null) { throw new ArgumentNullException("entity", "插入操作时，参数不能为空！"); }
-
-            Queue.SqlQuery<TEntity>().InsertIdentity(entity);
-            identity = Queue.ExecuteQuery<int>();
-
-            return entity;
-        }
-        /// <summary>
-        /// 插入（不支持延迟加载）
-        /// </summary>
-        /// <param name="lst"></param>
-        public List<TEntity> Insert(List<TEntity> lst)
-        {
-            if (lst == null) { throw new ArgumentNullException("lst", "插入操作时，lst参数不能为空！"); }
-
-            // 如果是MSSQLSER，则启用BulkCopy
-            if (_tableContext.Database.DataType == Data.DataBaseType.SqlServer)
-            {
-                _tableContext.Database.ExecuteSqlBulkCopy(_tableContext.Name, lst.ToTable());
-                return lst;
-            }
-            lst.ForEach(entity =>
-            {
-                Queue.SqlQuery<TEntity>().Insert(entity);
-                Queue.Execute();
-            });
-            return lst;
-        }
-        /// <summary>
-        /// 删除（支持延迟加载）
-        /// </summary>
-        public void Delete()
-        {
-            //  判断是否启用合并提交
-            if (_tableContext.IsMergeCommand)
-            {
-                Queue.LazyAct = (queryQueue) => queryQueue.SqlQuery<TEntity>().Delete();
-                Query.Append();
-            }
-            else
-            {
-                Queue.SqlQuery<TEntity>().Delete();
-                Queue.Execute();
-            }
-        }
-        /// <summary>
-        /// 添加或者减少某个字段（支持延迟加载）
-        /// </summary>
-        /// <param name="fieldName">字段名称</param>
-        /// <param name="fieldValue">要+=的值</param>
-        public void AddUp<T>(Expression<Func<TEntity, T>> fieldName, T fieldValue) where T : struct
-        {
-            Append(fieldName, fieldValue).AddUp();
-        }
-        /// <summary>
-        /// 添加或者减少某个字段（支持延迟加载）
-        /// </summary>
-        public void AddUp()
-        {
-            if (Queue.ExpAssign == null) { throw new ArgumentNullException("ExpAssign", "+=字段操作时，必须先执行AddUp的另一个重载版本！"); }
-
-            //  判断是否启用合并提交
-            if (_tableContext.IsMergeCommand)
-            {
-                Queue.LazyAct = (queryQueue) => queryQueue.SqlQuery<TEntity>().AddUp();
-                Query.Append();
-            }
-            else
-            {
-                Queue.SqlQuery<TEntity>().AddUp();
-                Queue.Execute();
-            }
         }
         #endregion
 

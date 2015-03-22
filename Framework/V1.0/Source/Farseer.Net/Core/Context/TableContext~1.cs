@@ -2,6 +2,7 @@
 using FS.Configs;
 using FS.Core.Data;
 using FS.Core.Infrastructure;
+using FS.Core.Set;
 using FS.Mapping.Table;
 
 namespace FS.Core.Context

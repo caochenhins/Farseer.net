@@ -53,18 +53,26 @@
     <Compile Include="Configs\GeneralConfigs.cs" />
     <Compile Include="Configs\RewriterConfigs.cs" />
     <Compile Include="Configs\SystemConfigs.cs" />
-    <Compile Include="Core\Client\DbQueueView.cs" />
-    <Compile Include="Core\Client\SqlServer\SqlServerExpressionBool.cs" />
+    <Compile Include="Core\Query\DbQueryProc.cs" />
+    <Compile Include="Core\Query\DbQueryView.cs" />
+    <Compile Include="Core\Queue\DbQueueProc.cs" />
+    <Compile Include="Core\Queue\DbQueueView.cs" />
+    <Compile Include="Core\Client\SqlServer\ExpressionBool.cs" />
     <Compile Include="Core\Client\ExpressionVisit.cs" />
-    <Compile Include="Core\Client\SqlServer\SqlServerExpressionNew.cs" />
-    <Compile Include="Core\Client\SqlServer\SqlServerSqlQueryView.cs" />
-    <Compile Include="Core\Client\SqlServer\SqlServerSqlQuery2000.cs" />
+    <Compile Include="Core\Client\SqlServer\ExpressionNew.cs" />
+    <Compile Include="Core\Client\SqlServer\SqlQuery\SqlQueryProc.cs" />
+    <Compile Include="Core\Client\SqlServer\SqlQuery\SqlQueryView.cs" />
+    <Compile Include="Core\Client\SqlServer\SqlQuery\SqlQueryView2000.cs" />
+    <Compile Include="Core\Context\ProcContext~1.cs" />
+    <Compile Include="Core\Set\ProcSet.cs" />
+    <Compile Include="Core\Context\ViewContext~1.cs" />
+    <Compile Include="Core\Set\ViewSet.cs" />
     <Compile Include="Core\Infrastructure\DbExpressionBoolProvider.cs" />
     <Compile Include="Core\Infrastructure\DbExpressionNewProvider.cs" />
     <Compile Include="Core\Client\SqlServer\SqlServerProvider.cs" />
-    <Compile Include="Core\Client\DbQueryTable.cs" />
-    <Compile Include="Core\Client\DbQueueTable.cs" />
-    <Compile Include="Core\Client\SqlServer\SqlServerSqlQueryTable.cs" />
+    <Compile Include="Core\Query\DbQueryTable.cs" />
+    <Compile Include="Core\Queue\DbQueueTable.cs" />
+    <Compile Include="Core\Client\SqlServer\SqlQuery\SqlQueryTable.cs" />
     <Compile Include="Core\Infrastructure\DbProvider.cs" />
     <Compile Include="Core\Infrastructure\IEntity.cs" />
     <Compile Include="Core\Infrastructure\IQueryProc.cs">
@@ -77,7 +85,7 @@
     <Compile Include="Core\Infrastructure\IQueue.cs" />
     <Compile Include="Core\Infrastructure\IQuery.cs" />
     <Compile Include="Core\Context\TableContext~1.cs" />
-    <Compile Include="Core\Context\TableSet.cs" />
+    <Compile Include="Core\Set\TableSet.cs" />
     <Compile Include="Core\Context\DbContext.cs" />
     <Compile Include="Core\Data\DbExecutor.cs" />
     <Compile Include="Core\Data\XmlExecutor.cs" />
@@ -85,6 +93,7 @@
     <Compile Include="Core\Infrastructure\IQueryView.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Core\Infrastructure\ISqlQueryProc.cs" />
     <Compile Include="Core\Infrastructure\ISqlQueryView.cs" />
     <Compile Include="Core\Infrastructure\ISqlQueryTable.cs" />
     <Compile Include="Extend\DataTableExtend.cs" />

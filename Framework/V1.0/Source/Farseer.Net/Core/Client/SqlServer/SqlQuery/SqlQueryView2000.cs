@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using FS.Core.Infrastructure;
 using FS.Mapping.Table;
 
-namespace FS.Core.Client.SqlServer
+namespace FS.Core.Client.SqlServer.SqlQuery
 {
     /// <summary>
     /// 针对SqlServer 2000 数据库 提供
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
-    public class SqlServerSqlQuery2000<TEntity> : SqlServerSqlQuery<TEntity> where TEntity : class,new()
+    public class SqlQueryView2000<TEntity> : SqlQueryView<TEntity> where TEntity : class,new()
     {
-        public SqlServerSqlQuery2000(IQueryTable query, IQueueTable queue, string tableName) : base(query, queue, tableName) { }
+        public SqlQueryView2000(IQueryView query, IQueueView queue, string tableName) : base(query, queue, tableName) { }
 
         public override void ToList(int pageSize, int pageIndex, bool isDistinct = false)
         {

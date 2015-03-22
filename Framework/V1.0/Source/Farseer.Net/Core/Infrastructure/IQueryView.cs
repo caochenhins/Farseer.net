@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Data.Common;
-using FS.Core.Context;
-
-namespace FS.Core.Infrastructure
+﻿namespace FS.Core.Infrastructure
 {
     /// <summary>
     /// 数据库持久化

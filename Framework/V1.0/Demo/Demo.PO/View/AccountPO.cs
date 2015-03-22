@@ -10,6 +10,7 @@ namespace Demo.PO.View
         /// <summary>
         /// 用户ID
         /// </summary>
+        [Column(IsDbGenerated = true)]
         public int? ID { get; set; }
         /// <summary>
         /// 用户名

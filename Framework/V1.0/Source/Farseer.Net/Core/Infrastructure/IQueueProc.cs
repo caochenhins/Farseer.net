@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq.Expressions;
-using System.Text;
 
 namespace FS.Core.Infrastructure
 {
@@ -15,5 +12,27 @@ namespace FS.Core.Infrastructure
         /// 延迟执行SQL生成
         /// </summary>
         Action<IQueueProc> LazyAct { get; set; }
+
+        ISqlQueryProc<TEntity> SqlQuery<TEntity>() where TEntity : class, new();
+
+        /// <summary>
+        /// 当前队列立即交互数据库
+        /// </summary>
+        int Execute<TEntity>(TEntity entity = null) where TEntity : class, new();
+
+        /// <summary>
+        /// 当前队列立即交互数据库（返回List<T>）
+        /// </summary>
+        List<TEntity> ExecuteList<TEntity>(TEntity entity = null) where TEntity : class, new();
+
+        /// <summary>
+        /// 当前队列立即交互数据库（返回Info）
+        /// </summary>
+        TEntity ExecuteInfo<TEntity>(TEntity entity = null) where TEntity : class, new();
+
+        /// <summary>
+        /// 当前队列立即交互数据库（返回T）
+        /// </summary>
+        T ExecuteQuery<TEntity, T>(TEntity entity = null, T defValue = default(T)) where TEntity : class, new();
     }
 }

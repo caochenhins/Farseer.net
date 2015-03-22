@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace FS.Core.Infrastructure
+﻿namespace FS.Core.Infrastructure
 {
     /// <summary>
     /// 视图支持的SQL方法

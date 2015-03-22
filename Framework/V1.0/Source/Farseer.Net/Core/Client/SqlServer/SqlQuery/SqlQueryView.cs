@@ -1,24 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using FS.Core.Infrastructure;
 using FS.Mapping.Table;
 
-namespace FS.Core.Client.SqlServer
+namespace FS.Core.Client.SqlServer.SqlQuery
 {
-    public class SqlServerSqlQueryView<TEntity> : ISqlQueryView<TEntity> where TEntity : class,new()
+    public class SqlQueryView<TEntity> : ISqlQueryView<TEntity> where TEntity : class,new()
     {
         protected readonly IQueryView Query;
         protected readonly IQueueView Queue;
         protected readonly string TableName;
         protected readonly ExpressionVisit<TEntity> Visit;
 
-        public SqlServerSqlQueryView(IQueryView query, IQueueView queryQueue, string tableName)
+        public SqlQueryView(IQueryView query, IQueueView queryQueue, string tableName)
         {
             Query = query;
             Queue = queryQueue;
             TableName = tableName;
-            Visit = new ExpressionVisit<TEntity>(query, queryQueue, new SqlServerExpressionNew<TEntity>(query, queryQueue), new SqlServerExpressionBool<TEntity>(query, queryQueue));
+            Visit = new ExpressionVisit<TEntity>(query, queryQueue, new ExpressionNew<TEntity>(query, queryQueue), new ExpressionBool<TEntity>(query, queryQueue));
         }
 
         public virtual void ToInfo()
@@ -78,6 +77,8 @@ namespace FS.Core.Client.SqlServer
 
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "*"; }
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
+            if (string.IsNullOrWhiteSpace(strOrderBySql) && string.IsNullOrWhiteSpace(map.IndexName)) { throw new Exception("当未指定排序方式时，必须要指定 主键字段"); }
+
             strOrderBySql = "ORDER BY " + (string.IsNullOrWhiteSpace(strOrderBySql) ? string.Format("{0} ASC", map.IndexName) : strOrderBySql);
 
             Queue.Sql.AppendFormat("SELECT {1} FROM (SELECT {0} {1},ROW_NUMBER() OVER({2}) as Row FROM {3} {4}) a WHERE Row BETWEEN {5} AND {6};", strDistinctSql, strSelectSql, strOrderBySql, TableName, strWhereSql, (pageIndex - 1) * pageSize + 1, pageIndex * pageSize);

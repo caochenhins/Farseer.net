@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 
@@ -27,11 +26,26 @@ namespace FS.Core.Infrastructure
         /// </summary>
         StringBuilder Sql { get; set; }
 
-        /// <summary>
-        /// 视图支持的SQL方法
-        /// </summary>
-        //void Append();
-
         ISqlQueryView<TEntity> SqlQuery<TEntity>() where TEntity : class, new();
+
+        /// <summary>
+        /// 当前队列立即交互数据库
+        /// </summary>
+        int Execute();
+
+        /// <summary>
+        /// 当前队列立即交互数据库（返回List<TEntity>）
+        /// </summary>
+        List<TEntity> ExecuteList<TEntity>() where TEntity : class,new();
+
+        /// <summary>
+        /// 当前队列立即交互数据库（返回Info）
+        /// </summary>
+        TEntity ExecuteInfo<TEntity>() where TEntity : class,new();
+
+        /// <summary>
+        /// 当前队列立即交互数据库（返回T）
+        /// </summary>
+        T ExecuteQuery<T>(T defValue = default(T));
     }
 }

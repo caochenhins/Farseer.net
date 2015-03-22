@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using FS.Core.Context;
-using FS.Core.Data;
+using FS.Core.Set;
 
 namespace FS.Extend
 {
@@ -184,7 +183,7 @@ namespace FS.Extend
         /// <param name="fieldValue">要更新的值</param>
         /// <param name="ts"></param>
         /// <param name="ID">o => o.ID == ID</param>
-        public static void AddUp<TEntity, T>(this TableSet<TEntity> ts, int? ID, Expression<Func<TEntity, T>> select, T fieldValue)
+        public static void AddUp<TEntity, T>(this TableSet<TEntity> ts, int? ID, Expression<Func<TEntity, object>> select, T fieldValue)
             where T : struct
             where TEntity : class, Core.Infrastructure.IEntity, new()
         {

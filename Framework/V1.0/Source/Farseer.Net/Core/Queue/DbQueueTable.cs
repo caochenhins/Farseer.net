@@ -4,30 +4,37 @@ using System.Data;
 using System.Data.Common;
 using System.Linq.Expressions;
 using System.Text;
-using FS.Core.Context;
 using FS.Core.Infrastructure;
 using FS.Extend;
 
-namespace FS.Core.Client
+namespace FS.Core.Queue
 {
-    public class DbQueueView : IQueueView
+    public class DbQueueTable : IQueueTable
     {
-        private readonly IQueryView _query;
+        private readonly IQueryTable _query;
         public Dictionary<Expression, bool> ExpOrderBy { get; set; }
         public Guid ID { get; set; }
         public int Index { get; set; }
         public List<Expression> ExpSelect { get; set; }
         public Expression ExpWhere { get; set; }
+        public Dictionary<Expression, object> ExpAssign { get; set; }
         public StringBuilder Sql { get; set; }
+        ISqlQueryView<TEntity> IQueueView.SqlQuery<TEntity>()
+        {
+            return SqlQuery<TEntity>();
+        }
+
         public List<DbParameter> Param { get; set; }
-        public DbQueueView(int index, IQueryView queryProvider)
+        public Action<IQueueTable> LazyAct { get; set; }
+        public DbQueueTable(int index, IQueryTable queryProvider)
         {
             ID = Guid.NewGuid();
             Index = index;
             _query = queryProvider;
+            Param = new List<DbParameter>();
         }
 
-        public ISqlQueryView<TEntity> SqlQuery<TEntity>() where TEntity : class,new()
+        public ISqlQueryTable<TEntity> SqlQuery<TEntity>() where TEntity : class,new()
         {
             return _query.DbProvider.CreateSqlQuery<TEntity>(_query, this, _query.Context.Name);
         }

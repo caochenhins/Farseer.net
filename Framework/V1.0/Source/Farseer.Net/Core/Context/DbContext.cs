@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Data;
 using FS.Configs;
 using FS.Core.Data;
-using FS.Core.Infrastructure;
 
 namespace FS.Core.Context
 {
@@ -46,13 +44,23 @@ namespace FS.Core.Context
         /// <summary>
         /// 表名/视图名/存储过程名
         /// </summary>
-        internal protected string Name { get; protected set; }
+        internal string Name { get; set; }
 
-        /// <summary>
-        /// 释放资源
-        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            //释放托管资源
+            if (disposing)
+            {
+                Database.Dispose();
+                Database = null;
+            }
+        }
+
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+
             Database.Dispose();
             Database = null;
         }

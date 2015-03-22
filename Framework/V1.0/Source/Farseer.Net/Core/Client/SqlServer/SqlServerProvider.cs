@@ -1,5 +1,7 @@
 ﻿using System.Data.Common;
+using FS.Core.Client.SqlServer.SqlQuery;
 using FS.Core.Infrastructure;
+using FS.Core.Queue;
 using FS.Mapping.Table;
 
 namespace FS.Core.Client.SqlServer
@@ -31,24 +33,39 @@ namespace FS.Core.Client.SqlServer
             return string.Format("[{0}]", fieldName);
         }
 
-        public override IQueueTable CreateQueryQueue(int index, IQueryTable query)
+        public override IQueueTable CreateQueue(int index, IQueryTable query)
         {
             return new DbQueueTable(index, query);
         }
 
+        public override IQueueView CreateQueue(int index, IQueryView query)
+        {
+            return new DbQueueView(index, query);
+        }
+
+        public override IQueueProc CreateQueue(int index, IQueryProc query)
+        {
+            return new DbQueueProc(index, query);
+        }
+
         public override ISqlQueryTable<TEntity> CreateSqlQuery<TEntity>(IQueryTable query, IQueueTable queue, string tableName)
         {
-            var map = TableMapCache.GetMap<TEntity>();
-            switch (map.ClassInfo.DataVer)
-            {
-                case "2000": return new SqlServerSqlQuery2000<TEntity>(query, queue, tableName);
-            }
-            return new SqlServerSqlQuery<TEntity>(query, queue, tableName);
+            return new SqlQueryTable<TEntity>(query, queue, tableName);
         }
 
         public override ISqlQueryView<TEntity> CreateSqlQuery<TEntity>(IQueryView query, IQueueView queue, string tableName)
         {
-            throw new System.NotImplementedException();
+            var map = TableMapCache.GetMap<TEntity>();
+            switch (map.ClassInfo.DataVer)
+            {
+                case "2000": return new SqlQueryView2000<TEntity>(query, queue, tableName);
+            }
+            return new SqlQueryView<TEntity>(query, queue, tableName);
+        }
+
+        public override ISqlQueryProc<TEntity> CreateSqlQuery<TEntity>(IQueryProc query, IQueueProc queue)
+        {
+            return new SqlQueryProc<TEntity>(query, queue);
         }
     }
 }

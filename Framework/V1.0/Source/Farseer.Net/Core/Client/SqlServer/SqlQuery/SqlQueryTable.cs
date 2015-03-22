@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using FS.Core.Infrastructure;
 using FS.Mapping.Table;
 
-namespace FS.Core.Client.SqlServer
+namespace FS.Core.Client.SqlServer.SqlQuery
 {
-    public class SqlServerSqlQuery<TEntity> : SqlServerSqlQueryView<TEntity>, ISqlQueryTable<TEntity> where TEntity : class,new()
+    public sealed class SqlQueryTable<TEntity> : SqlQueryView<TEntity>, ISqlQueryTable<TEntity> where TEntity : class,new()
     {
-        public SqlServerSqlQuery(IQueryTable query, IQueueTable queue, string tableName) : base(query, queue, tableName){ }
+        public SqlQueryTable(IQueryTable query, IQueueTable queue, string tableName) : base(query, queue, tableName){ }
 
-        public virtual void Delete()
+        public void Delete()
         {
             Queue.Sql = new StringBuilder();
             var strWhereSql = Visit.Where(Queue.ExpWhere);
@@ -20,7 +19,7 @@ namespace FS.Core.Client.SqlServer
             Queue.Sql.AppendFormat("DELETE FROM {0} {1}", Query.DbProvider.KeywordAegis(TableName), strWhereSql);
         }
 
-        public virtual void Insert(TEntity entity)
+        public void Insert(TEntity entity)
         {
             Queue.Sql = new StringBuilder();
             var strinsertAssemble = Visit.Insert(entity);
@@ -36,7 +35,7 @@ namespace FS.Core.Client.SqlServer
             if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { Queue.Sql.AppendFormat("; SET IDENTITY_INSERT {0} OFF ", TableName); }
         }
 
-        public virtual void InsertIdentity(TEntity entity)
+        public void InsertIdentity(TEntity entity)
         {
             Queue.Sql = new StringBuilder();
             var strinsertAssemble = Visit.Insert(entity);
@@ -51,7 +50,7 @@ namespace FS.Core.Client.SqlServer
             if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue) { Queue.Sql.AppendFormat("; SET IDENTITY_INSERT {0} OFF; ", TableName); }
         }
 
-        public virtual void Update(TEntity entity)
+        public void Update(TEntity entity)
         {
             Queue.Sql = new StringBuilder();
             var strWhereSql = Visit.Where(Queue.ExpWhere);
@@ -62,7 +61,7 @@ namespace FS.Core.Client.SqlServer
             Queue.Sql.AppendFormat("UPDATE {0} SET {1} {2}", Query.DbProvider.KeywordAegis(TableName), strAssemble, strWhereSql);
         }
 
-        public virtual void AddUp()
+        public void AddUp()
         {
             if (((IQueueTable)Queue).ExpAssign == null || ((IQueueTable)Queue).ExpAssign.Count == 0) { throw new Exception("赋值的参数不能为空！"); }
             Queue.Sql = new StringBuilder();

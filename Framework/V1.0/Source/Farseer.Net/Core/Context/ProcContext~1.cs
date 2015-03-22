@@ -1,7 +1,7 @@
-﻿using System.Data;
-using FS.Configs;
+﻿using FS.Configs;
 using FS.Core.Data;
 using FS.Core.Infrastructure;
+using FS.Core.Set;
 using FS.Mapping.Table;
 
 namespace FS.Core.Context
@@ -37,11 +37,11 @@ namespace FS.Core.Context
         /// </summary>
         /// <param name="database">数据库执行</param>
         /// <param name="tableName">表名称</param>
-        public ProcContext(DbExecutor database, string tableName = null) : base(database, tableName)
+        public ProcContext(DbExecutor database, string tableName = null)
+            : base(database, tableName)
         {
             if (string.IsNullOrWhiteSpace(tableName)) { Name = TableMapCache.GetMap<TEntity>().ClassInfo.Name; }
             ProcSet = new ProcSet<TEntity>(this);
-            IsMergeCommand = true;
             Query = DbFactory.CreateQueryProc(this);
         }
 
@@ -49,11 +49,6 @@ namespace FS.Core.Context
         /// 数据库查询支持
         /// </summary>
         internal protected IQueryProc Query { get; set; }
-
-        /// <summary>
-        /// true:启用合并执行命令、并延迟加载
-        /// </summary>
-        internal protected bool IsMergeCommand { get; private set; }
 
         /// <summary>
         /// 强类型实体对象
@@ -68,26 +63,7 @@ namespace FS.Core.Context
         {
             get
             {
-                return new ProcContext<TEntity>() { IsMergeCommand = false }.ProcSet;
-            }
-        }
-
-        /// <summary>
-        /// 保存修改
-        /// IsMergeCommand=true时：只提交一次SQL到数据库
-        /// </summary>
-        /// <param name="isOlation">默认启用事务操作</param>
-        public void SaveChanges(bool isOlation = true)
-        {
-            // 开启或关闭事务
-            if (isOlation) { Database.OpenTran(IsolationLevel.Serializable); }
-            else { Database.CloseTran(); }
-
-            // 如果开启了事务，则关闭
-            if (isOlation)
-            {
-                Database.Commit();
-                Database.CloseTran();
+                return new ProcContext<TEntity>().ProcSet;
             }
         }
     }

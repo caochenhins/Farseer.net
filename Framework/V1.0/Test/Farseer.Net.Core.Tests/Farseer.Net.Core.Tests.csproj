@@ -55,7 +55,9 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Context\TableContext~1Test.cs" />
-    <Compile Include="Context\TableSetTest.cs" />
+    <Compile Include="Set\ProcSetTest.cs" />
+    <Compile Include="Set\ViewSetTest.cs" />
+    <Compile Include="Set\TableSetTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DbFactoryTest.cs" />
   </ItemGroup>

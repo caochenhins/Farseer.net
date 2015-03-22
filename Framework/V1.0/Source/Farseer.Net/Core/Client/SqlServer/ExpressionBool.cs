@@ -7,9 +7,9 @@ using FS.Core.Infrastructure;
 
 namespace FS.Core.Client.SqlServer
 {
-    public class SqlServerExpressionBool<TEntity> : DbExpressionBoolProvider<TEntity> where TEntity : class, new()
+    public class ExpressionBool<TEntity> : DbExpressionBoolProvider<TEntity> where TEntity : class, new()
     {
-        public SqlServerExpressionBool(IQuery query, IQueue queryQueue) : base(query, queryQueue) { }
+        public ExpressionBool(IQuery query, IQueue queryQueue) : base(query, queryQueue) { }
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
