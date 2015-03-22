@@ -33,6 +33,6 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 当前队列立即交互数据库（返回T）
         /// </summary>
-        T ExecuteQuery<TEntity, T>(TEntity entity = null, T defValue = default(T)) where TEntity : class, new();
+        T ExecuteValue<TEntity, T>(TEntity entity = null, T defValue = default(T)) where TEntity : class, new();
     }
 }

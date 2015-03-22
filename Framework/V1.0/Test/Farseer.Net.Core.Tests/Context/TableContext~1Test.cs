@@ -16,7 +16,7 @@ namespace Farseer.Net.Core.Tests.Context
         [TestMethod]
         public void StaticTableContextTestMethod()
         {
-            Assert.AreNotEqual(TableContext<UserPO>.Data != null, true);
+            Assert.AreEqual(TableContext<UserPO>.Data != null, true);
         }
 
         [TestMethod]
@@ -37,7 +37,7 @@ namespace Farseer.Net.Core.Tests.Context
                 context.TableSet.Insert(info);
 
 
-                context.TableSet.Where(o => o.ID == 1).Append(o => o.LoginCount, 1).Append(o => o.LoginCount, 1).AddUp();
+                context.TableSet.Where(o => o.ID == 1).Append(o => o.LoginCount, 1).AddUp();
 
                 var lst = context.TableSet.Where(o => o.ID > 0).Desc(o => new { o.ID, o.LoginCount }).Asc(o => o.GenderType).ToList();
 

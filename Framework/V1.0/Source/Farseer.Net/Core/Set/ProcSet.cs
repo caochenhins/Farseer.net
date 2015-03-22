@@ -32,6 +32,15 @@ namespace FS.Core.Set
         /// <summary>
         /// 执行存储过程（不返回值）
         /// </summary>
+        public T Value<T>(TEntity entity = null, T t = default(T))
+        {
+            Queue.SqlQuery<TEntity>().CreateParam(entity);
+            return Queue.ExecuteValue(entity, t);
+        }
+
+        /// <summary>
+        /// 执行存储过程（不返回值）
+        /// </summary>
         public void Execute(TEntity entity = null)
         {
             Queue.SqlQuery<TEntity>().CreateParam(entity);
@@ -41,7 +50,7 @@ namespace FS.Core.Set
         /// <summary>
         /// 执行存储过程（返回单条记录）
         /// </summary>
-        public TEntity ToInfo(TEntity entity = null) 
+        public TEntity ToInfo(TEntity entity = null)
         {
             Queue.SqlQuery<TEntity>().CreateParam(entity);
             return Queue.ExecuteInfo(entity);

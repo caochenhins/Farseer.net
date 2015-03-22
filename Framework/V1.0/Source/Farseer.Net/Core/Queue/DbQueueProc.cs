@@ -57,7 +57,7 @@ namespace FS.Core.Queue
                 lst = reader.ToList<TEntity>();
                 reader.Close();
             }
-
+            _query.Context.Database.Close(false);
             SetParamToEntity(entity);
             _query.Clear();
             return lst;
@@ -72,13 +72,14 @@ namespace FS.Core.Queue
                 t = reader.ToInfo<TEntity>();
                 reader.Close();
             }
+            _query.Context.Database.Close(false);
 
             SetParamToEntity(entity);
             _query.Clear();
             return t;
         }
 
-        public T ExecuteQuery<TEntity, T>(TEntity entity = null, T defValue = default(T)) where TEntity : class,new()
+        public T ExecuteValue<TEntity, T>(TEntity entity = null, T defValue = default(T)) where TEntity : class, new()
         {
             var param = Param == null ? null : Param.ToArray();
             var value = _query.Context.Database.ExecuteScalar(CommandType.StoredProcedure, _query.Context.Name, param);

@@ -48,6 +48,7 @@ namespace FS.Core.Queue
                 lst = reader.ToList<TEntity>();
                 reader.Close();
             }
+            _query.Context.Database.Close(false);
 
             _query.Clear();
             return lst;
@@ -61,6 +62,7 @@ namespace FS.Core.Queue
                 t = reader.ToInfo<TEntity>();
                 reader.Close();
             }
+            _query.Context.Database.Close(false);
 
             _query.Clear();
             return t;

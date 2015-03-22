@@ -60,9 +60,6 @@ namespace FS.Core.Context
         {
             Dispose(true);
             GC.SuppressFinalize(this);
-
-            Database.Dispose();
-            Database = null;
         }
     }
 }

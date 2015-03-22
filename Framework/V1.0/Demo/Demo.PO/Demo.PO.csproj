@@ -41,6 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Proc\ValueUserPO.cs" />
+    <Compile Include="Proc\ListUserPO.cs" />
+    <Compile Include="Proc\InfoUserPO.cs" />
     <Compile Include="Proc\InsertUserPO.cs" />
     <Compile Include="Table\UserPO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

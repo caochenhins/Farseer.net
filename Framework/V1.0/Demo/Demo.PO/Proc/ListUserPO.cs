@@ -3,25 +3,23 @@ using FS.Mapping.Table;
 
 namespace Demo.PO.Proc
 {
-    [DB(Name = "sp_Insert_User")]
-    public class InsertUserPO : ProcContext<InsertUserPO>
+    [DB(Name = "sp_List_User")]
+    public class ListUserPO : ProcContext<ListUserPO>
     {
         /// <summary>
         /// 用户ID
         /// </summary>
-        [Proc(IsOutParam = true)]
+        [Proc()]
         public int? ID { get; set; }
 
         /// <summary>
         /// 用户名
         /// </summary>
-        [Proc()]
         public string UserName { get; set; }
 
         /// <summary>
         /// 密码
         /// </summary>
-        [Proc()]
         public string PassWord { get; set; }
     }
 }
