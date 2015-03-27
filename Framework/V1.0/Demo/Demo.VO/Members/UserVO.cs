@@ -1,48 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Data.Linq.Mapping;
 using Demo.Common;
 
 namespace Demo.VO.Members
 {
-    public class UserListVO
+    public class UserVO
     {
-        public int ID { get; set; }
-
+        /// <summary>
+        /// 用户ID
+        /// </summary>
+        [Column(IsDbGenerated = true)]
+        public int? ID { get; set; }
         /// <summary>
         /// 用户名
         /// </summary>
         public string UserName { get; set; }
 
         /// <summary>
-        /// 会员类型
+        /// 密码
         /// </summary>
-        public eumGenderType GenderType { get; set; }
+        public string PassWord { get; set; }
 
         /// <summary>
-        /// Email
+        /// 会员类型
         /// </summary>
-        public string Email { get; set; }
+        public eumGenderType? GenderType { get; set; }
 
         /// <summary>
         /// 登陆次数
         /// </summary>
-        public int LoginCount { get; set; }
+        public int? LoginCount { get; set; }
 
         /// <summary>
         /// 登陆IP
         /// </summary>
         public string LoginIP { get; set; }
 
-        /// <summary>
-        /// 登陆时间
-        /// </summary>
-        public DateTime LoginAt { get; set; }
 
         /// <summary>
-        /// 创建时间
+        /// 登陆IP
         /// </summary>
-        public DateTime CreateAt { get; set; }
+        [Column(Name = "getdate()")]
+        public string GetDate { get; set; }
     }
 }

@@ -269,5 +269,19 @@ namespace FS.Extend
             ts.Where(o => IDs.Contains(o.ID.GetValueOrDefault()));
             ts.Copy(act);
         }
+
+        /// <summary>
+        ///     获取数量
+        /// </summary>
+        /// <param name="ts">TableSet</param>
+        /// <typeparam name="TEntity">实体类</typeparam>
+        /// <typeparam name="T">字段类型</typeparam>
+        /// <param name="ID">条件，等同于：o=>o.ID == ID 的操作</param>
+        /// <param name="fieldName">筛选字段</param>
+        /// <param name="defValue">不存在时默认值</param>
+        public static T Value<TEntity, T>(this TableSet<TEntity> ts, int? ID, Expression<Func<TEntity, object>> fieldName, T defValue = default(T)) where TEntity : class, Core.Infrastructure.IEntity, new()
+        {
+            return ts.Where(o => o.ID == ID).Value(fieldName, defValue);
+        }
     }
 }

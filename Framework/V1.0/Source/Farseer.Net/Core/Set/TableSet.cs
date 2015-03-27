@@ -183,6 +183,8 @@ namespace FS.Core.Set
         /// <summary>
         /// 查询单个值（不支持延迟加载）
         /// </summary>
+        /// <param name="fieldName">筛选字段</param>
+        /// <param name="defValue">不存在时默认值</param>
         public T Value<T>(Expression<Func<TEntity, object>> fieldName, T defValue = default(T))
         {
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Value操作时，fieldName参数不能为空！"); }
