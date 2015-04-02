@@ -126,6 +126,7 @@
     <Compile Include="Extend\ModelExtend.cs" />
     <Compile Include="Extend\ObjectExtend.cs" />
     <Compile Include="Extend\StringExtend.cs" />
+    <Compile Include="Extend\ViewSetExtend.cs" />
     <Compile Include="Extend\TableSetExtend.cs" />
     <Compile Include="Mapping\Table\DBAttribute.cs" />
     <Compile Include="Mapping\Table\FieldMapState.cs" />
