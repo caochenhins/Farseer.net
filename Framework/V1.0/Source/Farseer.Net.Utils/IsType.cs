@@ -137,5 +137,14 @@ namespace FS.Utils
         {
             return Regex.IsMatch(zip, @"[0-9]{6}");
         }
+
+        /// <summary>
+        /// 登陆账号
+        /// </summary>
+        /// <param name="name">必须是英文开头的：英文、数字、-、_</param>
+        public static bool IsLoginName(string name)
+        {
+            return Regex.IsMatch(name, @"^[a-z]+[a-z0-9-_]*$");
+        }
     }
 }

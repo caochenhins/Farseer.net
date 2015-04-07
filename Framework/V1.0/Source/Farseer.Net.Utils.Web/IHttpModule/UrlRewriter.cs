@@ -61,7 +61,6 @@ namespace FS.Utils.IHttpModule
                 break;
             }
             app.Context.Trace.Write("Url÷ÿ–¥", "Ω· ¯÷¥––");
-            return;
         }
 
         /// <summary>
