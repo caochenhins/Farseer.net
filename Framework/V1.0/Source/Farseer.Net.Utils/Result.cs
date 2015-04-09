@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using FS.Extend;
+using FS.Mapping.Verify;
 
 namespace FS.Utils
 {
@@ -55,6 +57,14 @@ namespace FS.Utils
         public void Add(bool isTrue, string err, params object[] format)
         {
             if (isTrue) { Add(err, format); }
+        }
+
+        public bool Check<TInfo>(TInfo info) where TInfo : IVerification
+        {
+            // 检查实体情况
+            Dictionary<string, List<string>> dicError;
+            if (!info.Check(out dicError)) { Add(dicError); return false; }
+            return true;
         }
 
         /// <summary>
