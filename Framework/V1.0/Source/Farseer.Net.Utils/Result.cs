@@ -54,11 +54,17 @@ namespace FS.Utils
         /// <param name="err">出错消息</param>
         /// <param name="format">Format格式化</param>
         /// <param name="isTrue">条件为真是，添加错误消息</param>
-        public void Add(bool isTrue, string err, params object[] format)
+        public bool Add(bool isTrue, string err, params object[] format)
         {
             if (isTrue) { Add(err, format); }
+            return isTrue;
         }
 
+        /// <summary>
+        /// 检测实体类是否符合特性要求
+        /// </summary>
+        /// <typeparam name="TInfo">实体类型</typeparam>
+        /// <param name="info">实体类</param>
         public bool Check<TInfo>(TInfo info) where TInfo : IVerification
         {
             // 检查实体情况
