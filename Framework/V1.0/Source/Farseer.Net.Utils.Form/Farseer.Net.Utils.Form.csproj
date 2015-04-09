@@ -86,6 +86,9 @@
     <Compile Include="..\Farseer.Net.Utils\Rand.cs">
       <Link>Rand.cs</Link>
     </Compile>
+    <Compile Include="..\Farseer.Net.Utils\Result.cs">
+      <Link>Result.cs</Link>
+    </Compile>
     <Compile Include="..\Farseer.Net.Utils\Reverser.cs">
       <Link>Reverser.cs</Link>
     </Compile>

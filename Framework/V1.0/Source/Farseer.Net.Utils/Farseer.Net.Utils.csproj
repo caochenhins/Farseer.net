@@ -57,6 +57,7 @@
     <Compile Include="Pro.cs" />
     <Compile Include="QueueTask.cs" />
     <Compile Include="Rand.cs" />
+    <Compile Include="Result.cs" />
     <Compile Include="Reverser.cs" />
     <Compile Include="RMB.cs" />
     <Compile Include="Serialized.cs" />
