@@ -5,7 +5,7 @@ using Demo.VO.Members;
 using FS.Core.Data.Table;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Farseer.Net.Core.Tests.Set
+namespace Farseer.Net.Core.Tests.Table
 {
     [TestClass]
     public class TableSetTest
@@ -83,13 +83,13 @@ namespace Farseer.Net.Core.Tests.Set
             UserVO info;
             using (var table = new TableContext<UserVO>())
             {
-                table.TableSet.Insert(new UserVO() { UserName = "xx" });
+                table.Set.Insert(new UserVO() { UserName = "xx" });
                 table.SaveChanges();
 
-                info = table.TableSet.Desc(o => o.ID).ToInfo();
+                info = table.Set.Desc(o => o.ID).ToInfo();
                 Assert.IsTrue(info.UserName == "xx");
 
-                currentCount = table.TableSet.Count();
+                currentCount = table.Set.Count();
                 Assert.IsTrue(currentCount == count + 1);
             }
 
@@ -111,11 +111,11 @@ namespace Farseer.Net.Core.Tests.Set
             var ID = 0;
             using (var table = new TableContext<UserVO>())
             {
-                ID = table.TableSet.Desc(o => o.ID).ToInfo().ID.GetValueOrDefault();
+                ID = table.Set.Desc(o => o.ID).ToInfo().ID.GetValueOrDefault();
 
-                table.TableSet.Where(o => o.ID == ID).Update(new UserVO() { UserName = "zz" });
+                table.Set.Where(o => o.ID == ID).Update(new UserVO() { UserName = "zz" });
                 table.SaveChanges();
-                Assert.IsTrue(table.TableSet.Desc(o => o.ID).ToInfo().UserName == "zz");
+                Assert.IsTrue(table.Set.Desc(o => o.ID).ToInfo().UserName == "zz");
             }
 
             TableContext<UserVO>.Data.Where(o => o.ID == ID).Update(new UserVO() { UserName = "bb" });
@@ -129,11 +129,11 @@ namespace Farseer.Net.Core.Tests.Set
             UserVO info;
             using (var table = new TableContext<UserVO>())
             {
-                info = table.TableSet.Desc(o => o.ID).ToInfo();
+                info = table.Set.Desc(o => o.ID).ToInfo();
 
-                table.TableSet.Where(o => o.ID == info.ID).Append(o => new { o.LoginCount }, 4).AddUp();
+                table.Set.Where(o => o.ID == info.ID).Append(o => new { o.LoginCount }, 4).AddUp();
                 table.SaveChanges();
-                var info2 = table.TableSet.Desc(o => o.ID).ToInfo();
+                var info2 = table.Set.Desc(o => o.ID).ToInfo();
                 Assert.IsTrue(info2.LoginCount == info.LoginCount + 4);
             }
 

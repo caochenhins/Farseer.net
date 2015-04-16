@@ -1,4 +1,5 @@
 ﻿using System;
+using Demo.PO;
 using Demo.VO.Members;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

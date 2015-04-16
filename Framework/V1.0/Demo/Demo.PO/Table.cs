@@ -11,4 +11,7 @@ namespace Demo.PO
         [DB(Name = "Members_User")]
         public TableSet<UserVO> User { get; set; }
     }
+
+    [DB(Name = "Members_User")]
+    public class UserPO : TableContext<UserVO> { }
 }
