@@ -41,13 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Proc\ValueUserPO.cs" />
-    <Compile Include="Proc\ListUserPO.cs" />
-    <Compile Include="Proc\InfoUserPO.cs" />
-    <Compile Include="Proc\InsertUserPO.cs" />
-    <Compile Include="Table\UserPO.cs" />
+    <Compile Include="Proc.cs" />
+    <Compile Include="Table.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="View\AccountPO.cs" />
+    <Compile Include="View.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Source\Farseer.Net\Farseer.Net.csproj">

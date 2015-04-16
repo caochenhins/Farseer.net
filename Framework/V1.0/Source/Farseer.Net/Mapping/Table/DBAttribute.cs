@@ -6,18 +6,25 @@ namespace FS.Mapping.Table
     /// <summary>
     ///     实体类的属性标记
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Property)]
     public sealed class DBAttribute : Attribute
     {
         /// <summary>
-        ///     默认为MSSqlServer 2005、第一个数据库配置
+        ///     默认第一个数据库配置
         /// </summary>
-        public DBAttribute()
+        /// <param name="name">表名/视图名/存储过程名/</param>
+        /// <param name="dbIndex">数据库选项</param>
+        public DBAttribute(int dbIndex, string name = null)
         {
-            DbIndex = 0;
-            DataType = DataBaseType.SqlServer;
-            DataVer = "2005";
+            DbIndex = dbIndex;
+            Name = name;
         }
+
+        /// <summary>
+        ///     默认第一个数据库配置
+        /// </summary>
+        /// <param name="name">表名/视图名/存储过程名/</param>
+        public DBAttribute(string name = null) : this(0, name) { }
 
         /// <summary>
         ///     表名

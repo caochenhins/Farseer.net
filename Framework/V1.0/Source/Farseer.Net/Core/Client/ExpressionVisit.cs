@@ -2,8 +2,9 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using FS.Core.Client.SqlServer;
+using FS.Core.Data.Table;
 using FS.Core.Infrastructure;
-using FS.Core.Set;
 using FS.Mapping.Table;
 
 namespace FS.Core.Client
@@ -14,10 +15,23 @@ namespace FS.Core.Client
     /// <typeparam name="TEntity"></typeparam>
     public class ExpressionVisit<TEntity> where TEntity : class,new()
     {
-        private readonly DbExpressionNewProvider<TEntity> _expFields;
-        private readonly DbExpressionBoolProvider<TEntity> _expWhere;
-        private readonly IQueue _queue;
-        private readonly IQuery _query;
+        /// <summary>
+        /// 提供ExpressionNew表达式树的解析
+        /// </summary>
+        private readonly DbExpressionNewProvider<TEntity> _expNewProvider;
+        /// <summary>
+        /// 提供ExpressionBinary表达式树的解析
+        /// </summary>
+        private readonly DbExpressionBoolProvider<TEntity> _expBoolProvider;
+
+        /// <summary>
+        /// 队列管理模块
+        /// </summary>
+        protected readonly IQueueManger QueueManger;
+        /// <summary>
+        /// 包含数据库SQL操作的队列
+        /// </summary>
+        protected readonly IQueueSql QueueSql;
 
         /// <summary>
         /// 禁止无参数构造器
@@ -27,16 +41,15 @@ namespace FS.Core.Client
         /// <summary>
         /// 默认构造器
         /// </summary>
-        /// <param name="query">数据库持久化</param>
-        /// <param name="queue">每一次的数据库查询，将生成一个新的实例</param>
-        /// <param name="expNewProvider">提供ExpressionNew表达式树的解析</param>
-        /// <param name="expBoolProvider">提供ExpressionBinary表达式树的解析</param>
-        public ExpressionVisit(IQuery query, IQueue queue, DbExpressionNewProvider<TEntity> expNewProvider, DbExpressionBoolProvider<TEntity> expBoolProvider)
+        /// <param name="queueManger">队列管理模块</param>
+        /// <param name="queueSql">包含数据库SQL操作的队列</param>
+        public ExpressionVisit(IQueueManger queueManger, IQueueSql queueSql)
         {
-            _expFields = expNewProvider;
-            _expWhere = expBoolProvider;
-            _queue = queue;
-            _query = query;
+            QueueManger = queueManger;
+            QueueSql = queueSql;
+
+            _expNewProvider = new ExpressionNew<TEntity>(QueueManger, QueueSql);
+            _expBoolProvider = new ExpressionBool<TEntity>(QueueManger, QueueSql);
         }
 
         /// <summary>
@@ -47,7 +60,7 @@ namespace FS.Core.Client
         {
             Clear();
 
-            var map = TableMapCache.GetMap(entity);
+            var map = TableMapCache.GetMap(typeof(TEntity));
             var sb = new StringBuilder();
 
             //  迭代实体赋值情况
@@ -59,10 +72,10 @@ namespace FS.Core.Client
                 if (obj == null || obj is TableSet<TEntity>) { continue; }
 
                 //  查找组中是否存在已有的参数，有则直接取出
-                var newParam = _query.DbProvider.CreateDbParam(_queue.Index + "_" + kic.Value.Column.Name, obj, _query.Param, _queue.Param);
+                var newParam = QueueManger.DbProvider.CreateDbParam(QueueSql.Index + "_" + kic.Value.Column.Name, obj, QueueManger.Param, QueueSql.Param);
 
                 //  添加参数到列表
-                sb.AppendFormat("{0} = {1} ,", _query.DbProvider.KeywordAegis(kic.Key.Name), newParam.ParameterName);
+                sb.AppendFormat("{0} = {1} ,", QueueManger.DbProvider.KeywordAegis(kic.Key.Name), newParam.ParameterName);
             }
 
             return sb.Length > 0 ? sb.Remove(sb.Length - 1, 1).ToString() : sb.ToString();
@@ -76,8 +89,8 @@ namespace FS.Core.Client
             Clear();
             if (exp == null) { return null; }
             var sb = new StringBuilder();
-            _expFields.Visit(exp, false);
-            _expFields.SqlList.Reverse().ToList().ForEach(o => sb.Append(o + ","));
+            _expNewProvider.Visit(exp, false);
+            _expNewProvider.SqlList.Reverse().ToList().ForEach(o => sb.Append(o + ","));
             return sb.Length > 0 ? sb.Remove(sb.Length - 1, 1).ToString() : sb.ToString();
         }
         /// <summary>
@@ -88,7 +101,7 @@ namespace FS.Core.Client
         {
             Clear();
 
-            var map = TableMapCache.GetMap(entity);
+            var map = TableMapCache.GetMap(typeof(TEntity));
             //  字段
             var strFields = new StringBuilder();
             //  值
@@ -104,10 +117,10 @@ namespace FS.Core.Client
 
                 //  查找组中是否存在已有的参数，有则直接取出
 
-                var newParam = _query.DbProvider.CreateDbParam(_queue.Index + "_" + kic.Value.Column.Name, obj, _query.Param, _queue.Param);
+                var newParam = QueueManger.DbProvider.CreateDbParam(QueueSql.Index + "_" + kic.Value.Column.Name, obj, QueueManger.Param, QueueSql.Param);
 
                 //  添加参数到列表
-                strFields.AppendFormat("{0},", _query.DbProvider.KeywordAegis(kic.Key.Name));
+                strFields.AppendFormat("{0},", QueueManger.DbProvider.KeywordAegis(kic.Key.Name));
                 strValues.AppendFormat("{0},", newParam.ParameterName);
             }
             //QueryQueue.Param = lstParam;
@@ -125,8 +138,8 @@ namespace FS.Core.Client
             foreach (var keyValue in lstExp)
             {
                 Clear();
-                _expFields.Visit(keyValue.Key, false);
-                _expFields.SqlList.Reverse().ToList().ForEach(o => sb.Append(o + ","));
+                _expNewProvider.Visit(keyValue.Key, false);
+                _expNewProvider.SqlList.Reverse().ToList().ForEach(o => sb.Append(o + ","));
                 if (sb.Length <= 0) continue;
                 sb = sb.Remove(sb.Length - 1, 1); sb.Append(string.Format(" {0}", keyValue.Value ? "ASC," : "DESC,"));
             }
@@ -142,10 +155,10 @@ namespace FS.Core.Client
         {
             Clear();
             if (lstExp == null || lstExp.Count == 0) { return null; }
-            lstExp.ForEach(exp => _expFields.Visit(exp, true));
+            lstExp.ForEach(exp => _expNewProvider.Visit(exp, true));
 
             var sb = new StringBuilder();
-            _expFields.SqlList.Reverse().ToList().ForEach(o => sb.Append(o + ","));
+            _expNewProvider.SqlList.Reverse().ToList().ForEach(o => sb.Append(o + ","));
             return sb.Length > 0 ? sb.Remove(sb.Length - 1, 1).ToString() : sb.ToString();
         }
         /// <summary>
@@ -155,17 +168,17 @@ namespace FS.Core.Client
         /// <returns></returns>
         public string Where(Expression exp)
         {
-            _expWhere.Visit(exp);
+            _expBoolProvider.Visit(exp);
 
             var sb = new StringBuilder();
-            _expWhere.SqlList.Reverse().ToList().ForEach(o => sb.Append(o + ","));
+            _expBoolProvider.SqlList.Reverse().ToList().ForEach(o => sb.Append(o + ","));
             return sb.Length > 0 ? sb.Remove(sb.Length - 1, 1).ToString() : sb.ToString();
         }
 
         private void Clear()
         {
-            _expFields.Clear();
-            _expWhere.Clear();
+            _expNewProvider.Clear();
+            _expBoolProvider.Clear();
         }
     }
 }

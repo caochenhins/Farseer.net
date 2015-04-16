@@ -18,16 +18,6 @@ namespace FS.Mapping.Table
         /// <summary>
         ///     返回实体类映射的信息
         /// </summary>
-        /// <param name="info">ModelInfo实体类</param>
-        public static TableMap GetMap<TInfo>(TInfo info = null) where TInfo : class
-        {
-            var type = typeof (TInfo);
-            return GetMap(type);
-        }
-
-        /// <summary>
-        ///     返回实体类映射的信息
-        /// </summary>
         public static TableMap GetMap(Type type)
         {
             if (MapList.ContainsKey(type)) return MapList[type];

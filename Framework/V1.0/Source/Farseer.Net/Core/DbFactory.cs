@@ -11,10 +11,8 @@ using FS.Core.Client.OleDb;
 using FS.Core.Client.Oracle;
 using FS.Core.Client.SqLite;
 using FS.Core.Client.SqlServer;
-using FS.Core.Context;
 using FS.Core.Data;
 using FS.Core.Infrastructure;
-using FS.Core.Query;
 using FS.Mapping.Table;
 
 namespace FS.Core
@@ -22,52 +20,26 @@ namespace FS.Core
     public static class DbFactory
     {
         /// <summary>
-        /// 返回数据库持久化
+        /// 返回数据库类型名称
         /// </summary>
-        /// <param name="context">数据库上下文</param>
-        /// <returns></returns>
-        public static IQueryTable CreateQueryTable(DbContext context)
+        public static DbProvider CreateDbProvider(DataBaseType dbType)
         {
-            switch (context.Database.DataType)
+            switch (dbType)
             {
-                case DataBaseType.OleDb: return new DbQueryTable(context, new OleDbProvider());
-                case DataBaseType.MySql: return new DbQueryTable(context, new MySqlProvider());
-                case DataBaseType.SQLite: return new DbQueryTable(context, new SqLiteProvider());
-                case DataBaseType.Oracle: return new DbQueryTable(context, new OracleProvider());
-                default: return new DbQueryTable(context, new SqlServerProvider());
+                case DataBaseType.OleDb: return new OleDbProvider();
+                case DataBaseType.MySql: return new MySqlProvider();
+                case DataBaseType.SQLite: return new SqLiteProvider();
+                case DataBaseType.Oracle: return new OracleProvider();
             }
+            return new SqlServerProvider();
         }
-
-        public static IQueryView CreateQueryView(DbContext context)
-        {
-            switch (context.Database.DataType)
-            {
-                case DataBaseType.OleDb: return new DbQueryView(context, new OleDbProvider());
-                case DataBaseType.MySql: return new DbQueryView(context, new MySqlProvider());
-                case DataBaseType.SQLite: return new DbQueryView(context, new SqLiteProvider());
-                case DataBaseType.Oracle: return new DbQueryView(context, new OracleProvider());
-                default: return new DbQueryView(context, new SqlServerProvider());
-            }
-        }
-        public static IQueryProc CreateQueryProc(DbContext context)
-        {
-            switch (context.Database.DataType)
-            {
-                case DataBaseType.OleDb: return new DbQueryProc(context, new OleDbProvider());
-                case DataBaseType.MySql: return new DbQueryProc(context, new MySqlProvider());
-                case DataBaseType.SQLite: return new DbQueryProc(context, new SqLiteProvider());
-                case DataBaseType.Oracle: return new DbQueryProc(context, new OracleProvider());
-                default: return new DbQueryProc(context, new SqlServerProvider());
-            }
-        }
-
 
         /// <summary>
         /// 返回数据库类型名称
         /// </summary>
-        public static DbProvider GetDbProvider<TEntity>() where TEntity : class,new()
+        public static DbProvider CreateDbProvider<TEntity>(DataBaseType? db = null) where TEntity : class,new()
         {
-            var dbType = TableMapCache.GetMap<TEntity>().ClassInfo.DataType;
+            var dbType = db ?? TableMapCache.GetMap(typeof(TEntity)).ClassInfo.DataType;
             switch (dbType)
             {
                 case DataBaseType.OleDb: return new OleDbProvider();
@@ -82,7 +54,7 @@ namespace FS.Core
         /// 返回数据库类型名称
         /// </summary>
         /// <param name="dbType">数据库类型</param>
-        public static DbProviderFactory GetDbProvider(DataBaseType dbType)
+        public static DbProviderFactory CreateDbProviderFactory(DataBaseType dbType)
         {
             switch (dbType)
             {
@@ -107,7 +79,7 @@ namespace FS.Core
             switch (dbType)
             {
                 case DataBaseType.SqlServer: conn = new SqlConnection(connectionString); ; break;
-                default: conn = GetDbProvider(dbType).CreateConnection(); break;
+                default: conn = CreateDbProviderFactory(dbType).CreateConnection(); break;
             }
             conn.ConnectionString = connectionString;
             return conn;

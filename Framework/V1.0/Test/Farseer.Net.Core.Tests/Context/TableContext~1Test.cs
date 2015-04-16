@@ -1,5 +1,6 @@
-﻿using Demo.PO.Table;
-using FS.Core.Context;
+﻿using System;
+using Demo.VO.Members;
+using FS.Core.Data.Table;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Farseer.Net.Core.Tests.Context
@@ -10,21 +11,21 @@ namespace Farseer.Net.Core.Tests.Context
         [TestMethod]
         public void NewTableContextTestMethod()
         {
-            using (new TableContext<UserPO>()) { }
+            using (new UserDB()) { }
         }
 
         [TestMethod]
         public void StaticTableContextTestMethod()
         {
-            Assert.AreEqual(TableContext<UserPO>.Data != null, true);
+            Assert.AreEqual(TableContext<UserVO>.Data != null, true);
         }
 
         [TestMethod]
         public void NewAndSaveChangeTableContextTestMethod()
         {
-            using (var context = new TableContext<UserPO>())
+            using (var context = new UserPO())
             {
-                var info = context.TableSet.Where(o => o.ID > 0).Desc(o => new { o.ID, o.LoginCount }).Asc(o => o.GenderType).ToInfo();
+                var info = context.TableSet.Where(o => o.ID > 0 && o.CreateAt < DateTime.Now).Desc(o => new { o.ID, o.LoginCount }).Asc(o => o.GenderType).ToInfo();
                 info.PassWord = "77777";
                 context.TableSet.Where(o => o.ID == 1).Update(info);
 

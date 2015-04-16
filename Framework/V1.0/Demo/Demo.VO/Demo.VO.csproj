@@ -41,10 +41,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Members\InfoUserVO.cs" />
+    <Compile Include="Members\InsertUserVO.cs" />
+    <Compile Include="Members\ListUserVO.cs" />
     <Compile Include="Members\UserVO.cs" />
+    <Compile Include="Members\ValueUserVO.cs" />
+    <Compile Include="Members\AccountVO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Source\Farseer.Net\Farseer.Net.csproj">
+      <Project>{4f393e31-dfcd-434a-a350-53d635a99317}</Project>
+      <Name>Farseer.Net</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Demo.Common\Demo.Common.csproj">
       <Project>{0be98637-0885-4ed8-b2b2-bf4a8f3a1eef}</Project>
       <Name>Demo.Common</Name>

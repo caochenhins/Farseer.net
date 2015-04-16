@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 using Demo.PO.View;
-using FS.Core.Context;
+using FS.Core.Data.View;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Farseer.Net.Core.Tests.Set

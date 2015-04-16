@@ -94,7 +94,7 @@ namespace FS.Core.Data
         {
             if (conn == null)
             {
-                Factory = DbFactory.GetDbProvider(DataType);
+                Factory = DbFactory.CreateDbProviderFactory(DataType);
                 comm = Factory.CreateCommand();
                 comm.CommandTimeout = _commandTimeout;
 

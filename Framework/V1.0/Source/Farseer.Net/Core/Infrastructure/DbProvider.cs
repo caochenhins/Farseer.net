@@ -6,9 +6,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using FS.Core.Client.SqlServer.SqlQuery;
-using FS.Core.Queue;
-using FS.Core.Set;
+using FS.Core.Data.Table;
 using FS.Mapping.Table;
 
 namespace FS.Core.Infrastructure
@@ -199,7 +197,7 @@ namespace FS.Core.Infrastructure
         /// <param name="entity">实体类</param>
         public IList<DbParameter> GetParameter<TEntity>(TEntity entity) where TEntity : class,new()
         {
-            var map = TableMapCache.GetMap(entity);
+            var map = TableMapCache.GetMap(typeof(TEntity));
             var lst = new List<DbParameter>();
 
             foreach (var kic in map.ModelList.Where(o => o.Value.IsDbField))
@@ -240,72 +238,24 @@ namespace FS.Core.Infrastructure
         #endregion
 
         /// <summary>
-        /// 创建队列
-        /// </summary>
-        /// <param name="index">索引</param>
-        /// <param name="query">数据库持久化</param>
-        public IQueueTable CreateQueue(int index, IQueryTable query)
-        {
-            return new DbQueueTable(index, query);
-        }
-
-        /// <summary>
-        /// 创建队列
-        /// </summary>
-        /// <param name="index">索引</param>
-        /// <param name="query">数据库持久化</param>
-        public IQueueView CreateQueue(int index, IQueryView query)
-        {
-            return new DbQueueView(index, query);
-        }
-
-        /// <summary>
-        /// 创建队列
-        /// </summary>
-        /// <param name="index">索引</param>
-        /// <param name="query">数据库持久化</param>
-        public IQueueProc CreateQueue(int index, IQueryProc query)
-        {
-            return new DbQueueProc(index, query);
-        }
-
-        /// <summary>
         /// 创建SQL查询
         /// </summary>
-        /// <typeparam name="TEntity">实体类</typeparam>
-        /// <param name="query">数据库持久化</param>
-        /// <param name="queue">当前队列</param>
-        /// <param name="tableName">表名</param>
-        /// <returns></returns>
-        public ISqlQueryTable<TEntity> CreateSqlQuery<TEntity>(IQueryTable query, IQueueTable queue, string tableName) where TEntity : class,new()
-        {
-            return new SqlQueryTable<TEntity>(query, queue, tableName);
-        }
+        /// <param name="queueManger">队列管理模块</param>
+        /// <param name="queueSql">包含数据库SQL操作的队列</param>
+        public abstract IDbSqlQuery<TEntity> CreateSqlQuery<TEntity>(IQueueManger queueManger, IQueueSql queueSql) where TEntity : class, new();
 
         /// <summary>
-        /// 创建SQL查询
+        /// 创建SQL存储过程
         /// </summary>
-        /// <typeparam name="TEntity">实体类</typeparam>
-        /// <param name="query">数据库持久化</param>
-        /// <param name="queue">当前队列</param>
-        /// <param name="tableName">表名</param>
-        /// <returns></returns>
-        public virtual ISqlQueryView<TEntity> CreateSqlQuery<TEntity>(IQueryView query, IQueueView queue, string tableName) where TEntity : class, new()
-        {
-            return new SqlQueryView<TEntity>(query, queue, tableName);
-        }
+        /// <param name="queueManger">队列管理模块</param>
+        /// <param name="queueSql">包含数据库SQL操作的队列</param>
+        public abstract IDbSqlProc<TEntity> CreateSqlProc<TEntity>(IQueueManger queueManger, IQueue queueSql) where TEntity : class,new();
 
         /// <summary>
-        /// 创建SQL查询
+        /// 创建SQL执行
         /// </summary>
-        /// <typeparam name="TEntity">实体类</typeparam>
-        /// <param name="query">数据库持久化</param>
-        /// <param name="queue">当前队列</param>
-        /// <param name="tableName">表名</param>
-        /// <returns></returns>
-        public ISqlQueryProc<TEntity> CreateSqlQuery<TEntity>(IQueryProc query, IQueueProc queue) where TEntity : class,new()
-        {
-            return new SqlQueryProc<TEntity>(query, queue);
-        }
+        /// <param name="queueManger">队列管理模块</param>
+        /// <param name="queueSql">包含数据库SQL操作的队列</param>
+        public abstract IDbSqlOper<TEntity> CreateSqlOper<TEntity>(IQueueManger queueManger, IQueueSql queueSql) where TEntity : class,new();
     }
 }

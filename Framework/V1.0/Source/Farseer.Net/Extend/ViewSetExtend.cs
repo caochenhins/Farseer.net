@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using FS.Core.Set;
+using FS.Core.Data.View;
 
 namespace FS.Extend
 {

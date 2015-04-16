@@ -4,6 +4,11 @@ namespace FS.Core.Client.Oracle
 {
     public class ExpressionNew<TEntity> : DbExpressionNewProvider<TEntity> where TEntity : class, new()
     {
-        public ExpressionNew(IQuery query, IQueue queryQueue) : base(query, queryQueue) { }
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="queueManger">队列管理模块</param>
+        /// <param name="queueSql">包含数据库SQL操作的队列</param>
+        public ExpressionNew(IQueueManger queueManger, IQueueSql queueSql) : base(queueManger, queueSql) { }
     }
 }

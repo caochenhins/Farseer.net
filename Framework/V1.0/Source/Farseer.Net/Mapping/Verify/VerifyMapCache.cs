@@ -19,16 +19,6 @@ namespace FS.Mapping.Verify
         ///     返回验证的实体类映射的信息
         /// </summary>
         /// <param name="info">IVerification实体类</param>
-        public static VerifyMap GetMap<TInfo>(TInfo info) where TInfo : IVerification
-        {
-            var type = typeof(TInfo);
-            return GetMap(type);
-        }
-
-        /// <summary>
-        ///     返回验证的实体类映射的信息
-        /// </summary>
-        /// <param name="info">IVerification实体类</param>
         public static VerifyMap GetMap(Type type)
         {
             if (VerifyMapList.ContainsKey(type)) return VerifyMapList[type];

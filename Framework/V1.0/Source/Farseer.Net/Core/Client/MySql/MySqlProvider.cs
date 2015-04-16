@@ -1,8 +1,6 @@
 ﻿using System.Data.Common;
-using FS.Core.Client.SqlServer.SqlQuery;
+using FS.Core.Client.MySql.SqlQuery;
 using FS.Core.Infrastructure;
-using FS.Core.Queue;
-using FS.Mapping.Table;
 
 namespace FS.Core.Client.MySql
 {
@@ -16,6 +14,20 @@ namespace FS.Core.Client.MySql
         public override string KeywordAegis(string fieldName)
         {
             return string.Format("`{0}`", fieldName);
+        }
+        public override IDbSqlQuery<TEntity> CreateSqlQuery<TEntity>(IQueueManger queueManger, IQueueSql queueSql)
+        {
+            return new SqlQuery<TEntity>(queueManger, queueSql);
+        }
+
+        public override IDbSqlProc<TEntity> CreateSqlProc<TEntity>(IQueueManger queueManger, IQueue queueSql)
+        {
+            return new SqlProc<TEntity>(queueManger, queueSql);
+        }
+
+        public override IDbSqlOper<TEntity> CreateSqlOper<TEntity>(IQueueManger queueManger, IQueueSql queueSql)
+        {
+            return new SqlOper<TEntity>(queueManger, queueSql);
         }
     }
 }

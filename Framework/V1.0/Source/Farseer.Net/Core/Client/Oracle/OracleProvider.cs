@@ -1,8 +1,6 @@
 ﻿using System.Data.Common;
-using FS.Core.Client.SqlServer.SqlQuery;
+using FS.Core.Client.Oracle.SqlQuery;
 using FS.Core.Infrastructure;
-using FS.Core.Queue;
-using FS.Mapping.Table;
 
 namespace FS.Core.Client.Oracle
 {
@@ -21,6 +19,20 @@ namespace FS.Core.Client.Oracle
         public override DbProviderFactory GetDbProviderFactory
         {
             get { return DbProviderFactories.GetFactory("System.Data.OracleClient"); }
+        }
+        public override IDbSqlQuery<TEntity> CreateSqlQuery<TEntity>(IQueueManger queueManger, IQueueSql queueSql)
+        {
+            return new SqlQuery<TEntity>(queueManger, queueSql);
+        }
+
+        public override IDbSqlProc<TEntity> CreateSqlProc<TEntity>(IQueueManger queueManger, IQueue queueSql)
+        {
+            return new SqlProc<TEntity>(queueManger, queueSql);
+        }
+
+        public override IDbSqlOper<TEntity> CreateSqlOper<TEntity>(IQueueManger queueManger, IQueueSql queueSql)
+        {
+            return new SqlOper<TEntity>(queueManger, queueSql);
         }
     }
 }

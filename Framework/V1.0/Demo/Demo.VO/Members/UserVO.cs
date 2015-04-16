@@ -1,5 +1,7 @@
-﻿using System.Data.Linq.Mapping;
+﻿using System;
+using System.Data.Linq.Mapping;
 using Demo.Common;
+using FS.Mapping.Table;
 
 namespace Demo.VO.Members
 {
@@ -35,11 +37,15 @@ namespace Demo.VO.Members
         /// </summary>
         public string LoginIP { get; set; }
 
-
         /// <summary>
         /// 登陆IP
         /// </summary>
         [Column(Name = "getdate()")]
         public string GetDate { get; set; }
+
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public DateTime CreateAt { get; set; }
     }
 }

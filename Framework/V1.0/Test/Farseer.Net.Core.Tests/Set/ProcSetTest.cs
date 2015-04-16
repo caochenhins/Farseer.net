@@ -1,5 +1,4 @@
 ﻿using Demo.PO.Proc;
-using FS.Core.Context;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Farseer.Net.Core.Tests.Set

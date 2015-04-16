@@ -389,16 +389,16 @@ namespace FS.Extend
         ///     IDataReader转换为实体类
         /// </summary>
         /// <param name="reader">源IDataReader</param>
-        /// <typeparam name="T">实体类</typeparam>
-        public static List<T> ToList<T>(this IDataReader reader) where T : class, new()
+        /// <typeparam name="TEntity">实体类</typeparam>
+        public static List<TEntity> ToList<TEntity>(this IDataReader reader) where TEntity : class, new()
         {
-            var list = new List<T>();
-            var Map = TableMapCache.GetMap<T>();
-            T t;
+            var list = new List<TEntity>();
+            var Map = TableMapCache.GetMap(typeof(TEntity));
+            TEntity t;
 
             while (reader.Read())
             {
-                t = (T)Activator.CreateInstance(typeof(T));
+                t = (TEntity)Activator.CreateInstance(typeof(TEntity));
 
                 //赋值字段
                 foreach (var kic in Map.ModelList)
@@ -421,12 +421,12 @@ namespace FS.Extend
         ///     数据填充
         /// </summary>
         /// <param name="reader">源IDataReader</param>
-        /// <typeparam name="T">实体类</typeparam>
-        public static T ToInfo<T>(this IDataReader reader) where T : class, new()
+        /// <typeparam name="TEntity">实体类</typeparam>
+        public static TEntity ToInfo<TEntity>(this IDataReader reader) where TEntity : class, new()
         {
-            var map = TableMapCache.GetMap<T>();
+            var map = TableMapCache.GetMap(typeof(TEntity));
 
-            var t = (T)Activator.CreateInstance(typeof(T));
+            var t = (TEntity)Activator.CreateInstance(typeof(TEntity));
             var isHaveValue = false;
 
             if (reader.Read())

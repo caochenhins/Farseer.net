@@ -13,26 +13,35 @@ namespace FS.Core.Infrastructure
     public abstract class DbExpressionNewProvider<TEntity> where TEntity : class, new()
     {
         /// <summary>
-        ///     实体类映射
+        /// 实体类映射
         /// </summary>
         protected readonly TableMap Map = typeof(TEntity);
-
         /// <summary>
-        ///     条件堆栈
+        /// 条件堆栈
         /// </summary>
         public readonly Stack<string> SqlList = new Stack<string>();
-
-        protected readonly IQueue QueryQueue;
-        protected readonly IQuery Query;
+        /// <summary>
+        /// 队列管理模块
+        /// </summary>
+        protected readonly IQueueManger QueueManger;
+        /// <summary>
+        /// 包含数据库SQL操作的队列
+        /// </summary>
+        protected readonly IQueueSql QueueSql;
         /// <summary>
         /// 是否是字段筛选
         /// </summary>
         protected bool IsSelect;
 
-        public DbExpressionNewProvider(IQuery query, IQueue queryQueue)
+        /// <summary>
+        /// 提供ExpressionNew表达式树的解析
+        /// </summary>
+        /// <param name="queueManger">队列管理模块</param>
+        /// <param name="queueSql">包含数据库SQL操作的队列</param>
+        public DbExpressionNewProvider(IQueueManger queueManger, IQueueSql queueSql)
         {
-            QueryQueue = queryQueue;
-            Query = query;
+            QueueManger = queueManger;
+            QueueSql = queueSql;
         }
 
         /// <summary>
@@ -66,11 +75,11 @@ namespace FS.Core.Infrastructure
 
             // 加入Sql队列
             string filedName;
-            if (!Query.DbProvider.IsField(keyValue.Value.Column.Name))
+            if (!QueueManger.DbProvider.IsField(keyValue.Value.Column.Name))
             {
                 filedName = IsSelect ? keyValue.Value.Column.Name + " as " + keyValue.Key.Name : keyValue.Value.Column.Name;
             }
-            else { filedName = Query.DbProvider.KeywordAegis(keyValue.Value.Column.Name); }
+            else { filedName = QueueManger.DbProvider.KeywordAegis(keyValue.Value.Column.Name); }
             SqlList.Push(filedName);
             return m;
         }

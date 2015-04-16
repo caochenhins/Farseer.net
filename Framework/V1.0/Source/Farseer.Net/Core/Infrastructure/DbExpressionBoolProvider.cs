@@ -16,30 +16,44 @@ namespace FS.Core.Infrastructure
     public abstract class DbExpressionBoolProvider<TEntity> where TEntity : class, new()
     {
         /// <summary>
-        ///     实体类映射
+        ///  实体类映射
         /// </summary>
         protected readonly TableMap Map = typeof(TEntity);
-
         /// <summary>
-        ///     条件堆栈
+        ///  条件堆栈
         /// </summary>
         public readonly Stack<string> SqlList = new Stack<string>();
+        /// <summary>
+        ///  参数个数（标识）
+        /// </summary>
+        private int _paramsCount;
+        /// <summary>
+        /// 当前字段名称
+        /// </summary>
+        private string _currentFieldName;
+        /// <summary>
+        /// 当前值参数
+        /// </summary>
+        protected DbParameter CurrentDbParameter;
+        /// <summary>
+        /// 队列管理模块
+        /// </summary>
+        protected readonly IQueueManger QueueManger;
+        /// <summary>
+        /// 包含数据库SQL操作的队列
+        /// </summary>
+        protected readonly IQueueSql QueueSql;
 
         /// <summary>
-        ///     参数个数（标识）
+        /// 默认构造器
         /// </summary>
-        protected int m_ParamsCount;
-
-        protected readonly IQueue QueryQueue;
-        protected readonly IQuery Query;
-        private string currentFieldName;
-        protected DbParameter CurrentDbParameter;
-
-        public DbExpressionBoolProvider(IQuery query, IQueue queryQueue)
+        /// <param name="queueManger">队列管理模块</param>
+        /// <param name="queueSql">包含数据库SQL操作的队列</param>
+        public DbExpressionBoolProvider(IQueueManger queueManger, IQueueSql queueSql)
         {
-            QueryQueue = queryQueue;
-            Query = query;
-            if (QueryQueue.Param == null) { QueryQueue.Param = new List<DbParameter>(); }
+            QueueManger = queueManger;
+            QueueSql = queueSql;
+            if (QueueSql.Param == null) { QueueSql.Param = new List<DbParameter>(); }
         }
 
         /// <summary>
@@ -48,8 +62,8 @@ namespace FS.Core.Infrastructure
         public void Clear()
         {
             CurrentDbParameter = null;
-            currentFieldName = null;
-            m_ParamsCount = 0;
+            _currentFieldName = null;
+            _paramsCount = 0;
             SqlList.Clear();
         }
 
@@ -171,25 +185,25 @@ namespace FS.Core.Infrastructure
         protected virtual Expression CreateDbParam(ConstantExpression cexp)
         {
             if (cexp == null) return null;
-            if (string.IsNullOrWhiteSpace(currentFieldName)) { throw new Exception("当前字段名称为空，无法生成字段参数"); }
+            if (string.IsNullOrWhiteSpace(_currentFieldName)) { throw new Exception("当前字段名称为空，无法生成字段参数"); }
 
             // 非字符串，不使用参数
-            if (!(cexp.Value is string))
-            {
-                int len;
-                var type = Query.DbProvider.GetDbType(cexp.Value, out len);
-                SqlList.Push(Query.DbProvider.ParamConvertValue(cexp.Value, type).ToString());
+            //if (!(cexp.Value is string))
+            //{
+            //    int len;
+            //    var type = DbProvider.GetDbType(cexp.Value, out len);
+            //    SqlList.Push(DbProvider.ParamConvertValue(cexp.Value, type).ToString());
 
-            }
-            else
+            //}
+            //else
             {
-                m_ParamsCount++;
+                _paramsCount++;
                 //  查找组中是否存在已有的参数，有则直接取出
-                var newParam = Query.DbProvider.CreateDbParam(QueryQueue.Index + "_" + m_ParamsCount + "_" + currentFieldName, cexp.Value, Query.Param, QueryQueue.Param);
+                var newParam = QueueManger.DbProvider.CreateDbParam(QueueSql.Index + "_" + _paramsCount + "_" + _currentFieldName, cexp.Value, QueueManger.Param, QueueSql.Param);
                 CurrentDbParameter = newParam;
                 SqlList.Push(newParam.ParameterName);
             }
-            currentFieldName = string.Empty;
+            _currentFieldName = string.Empty;
             return cexp;
         }
 
@@ -222,8 +236,8 @@ namespace FS.Core.Infrastructure
                         }
 
                         // 加入Sql队列
-                        currentFieldName = keyValue.Value.Column.Name;
-                        var filedName = Query.DbProvider.KeywordAegis(keyValue.Value.Column.Name);
+                        _currentFieldName = keyValue.Value.Column.Name;
+                        var filedName = QueueManger.DbProvider.KeywordAegis(keyValue.Value.Column.Name);
                         SqlList.Push(filedName);
                         return m;
                     }
@@ -452,9 +466,9 @@ namespace FS.Core.Infrastructure
         /// </summary>
         protected virtual bool ClearCallSql()
         {
-            if (QueryQueue.Param != null && QueryQueue.Param.Count > 0 && string.IsNullOrWhiteSpace(QueryQueue.Param.Last().Value.ToString()))
+            if (QueueSql.Param != null && QueueSql.Param.Count > 0 && string.IsNullOrWhiteSpace(QueueSql.Param.Last().Value.ToString()))
             {
-                QueryQueue.Param.RemoveAt(QueryQueue.Param.Count - 1);
+                QueueSql.Param.RemoveAt(QueueSql.Param.Count - 1);
                 SqlList.Pop();
                 SqlList.Pop();
                 SqlList.Push("1<>1");
@@ -468,11 +482,11 @@ namespace FS.Core.Infrastructure
         /// </summary>
         protected virtual string SqlTrue(string sql)
         {
-            var dbParam = QueryQueue.Param.FirstOrDefault(o => o.ParameterName == sql);
+            var dbParam = QueueSql.Param.FirstOrDefault(o => o.ParameterName == sql);
             if (dbParam != null)
             {
                 var result = dbParam.Value.ToString().Equals("true");
-                QueryQueue.Param.RemoveAll(o => o.ParameterName == sql);
+                QueueSql.Param.RemoveAll(o => o.ParameterName == sql);
                 return result ? "1=1" : "1<>1";
             }
             return sql;

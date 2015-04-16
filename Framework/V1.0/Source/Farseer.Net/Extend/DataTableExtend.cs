@@ -123,7 +123,7 @@ namespace FS.Extend
         public static List<TResult> ToList<TResult>(this DataTable dt) where TResult : class, new()
         {
             var list = new List<TResult>();
-            var map = TableMapCache.GetMap<TResult>();
+            var map = TableMapCache.GetMap(typeof(TResult));
             TResult t;
             foreach (DataRow dr in dt.Rows)
             {
@@ -134,7 +134,7 @@ namespace FS.Extend
                 {
                     if (!kic.Key.CanWrite) { continue; }
                     string filedName;
-                    if (!DbFactory.GetDbProvider<TResult>().IsField(kic.Value.Column.Name)) { filedName = kic.Key.Name; }
+                    if (!DbFactory.CreateDbProvider<TResult>().IsField(kic.Value.Column.Name)) { filedName = kic.Key.Name; }
                     else { filedName = kic.Value.Column.Name; }
                     if (dr.Table.Columns.Contains(filedName))
                     {
@@ -168,7 +168,7 @@ namespace FS.Extend
         /// <param name="dr">源DataRow</param>
         public static T ToInfo<T>(this DataRow dr) where T : class,new()
         {
-            var map = TableMapCache.GetMap<T>();
+            var map = TableMapCache.GetMap(typeof(T));
             var t = (T)Activator.CreateInstance(typeof(T));
 
             //赋值字段

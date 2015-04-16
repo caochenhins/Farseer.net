@@ -190,10 +190,10 @@ namespace FS.Extend
         /// </summary>
         /// <param name="dicError">返回错误消息,key：属性名称；vakue：错误消息</param>
         /// <param name="info">要检测的实体</param>
-        public static bool Check<TInfo>(this TInfo info, out Dictionary<string, List<string>> dicError) where TInfo : IVerification
+        public static bool Check<TEntity>(this TEntity info, out Dictionary<string, List<string>> dicError) where TEntity : IVerification
         {
             dicError = new Dictionary<string, List<string>>();
-            var map = VerifyMapCache.GetMap(info);
+            var map = VerifyMapCache.GetMap(typeof(TEntity));
             foreach (var kic in map.ModelList)
             {
                 var lstError = new List<string>();
