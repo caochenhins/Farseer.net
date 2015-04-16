@@ -1,7 +1,9 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Data;
 using System.Data.Linq.Mapping;
 using FS.Configs;
+using FS.Mapping.Table;
 
 namespace FS.Core.Data.Table
 {
@@ -29,29 +31,7 @@ namespace FS.Core.Data.Table
         {
             IsMergeCommand = true;
             QueueManger = new TableQueueManger(database);
-        }
-
-        /// <summary>
-        /// 释放资源
-        /// </summary>
-        /// <param name="disposing">是否释放托管资源</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            //释放托管资源
-            if (disposing)
-            {
-                QueueManger.DataBase.Dispose();
-                QueueManger.DataBase = null;
-            }
-        }
-
-        /// <summary>
-        /// 释放资源
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            InstanceProperty();
         }
 
         /// <summary>
@@ -88,57 +68,67 @@ namespace FS.Core.Data.Table
         /// <summary>
         /// 实例化子类中，所有Set属性
         /// </summary>
-        public virtual void InstanceProperty()
+        protected virtual void InstanceProperty()
         {
             var types = this.GetType().GetProperties();
             foreach (var type in types)
             {
-                var a = type.PropertyType.Name == "TableSet`1";
-                var user = Activator.CreateInstance(type.PropertyType, true);
-
-
-                //var xx = this.GetType().InvokeMember(type.PropertyType);
-                //type.SetValue()
+                if (type.PropertyType.Name != "TableSet`1") { continue; }
+                var map = TableMapCache.GetMap(this.GetType());
+                var user = Activator.CreateInstance(type.PropertyType, this, map.GetFieldName(type));
+                type.SetValue(this, user, null);
             }
         }
-    }
 
-    public class UserXVO
-    {
-        /// <summary>
-        /// 用户ID
-        /// </summary>
-        [Column(IsDbGenerated = true)]
-        public int? ID { get; set; }
-        /// <summary>
-        /// 用户名
-        /// </summary>
-        public string UserName { get; set; }
+        #region 禁用智能提示
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
 
-        /// <summary>
-        /// 密码
-        /// </summary>
-        public string PassWord { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
 
-        /// <summary>
-        /// 登陆次数
-        /// </summary>
-        public int? LoginCount { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override string ToString()
+        {
+            return base.ToString();
+        }
 
-        /// <summary>
-        /// 登陆IP
-        /// </summary>
-        public string LoginIP { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public new Type GetType()
+        {
+            return base.GetType();
+        }
 
         /// <summary>
-        /// 登陆IP
+        /// 释放资源
         /// </summary>
-        [Column(Name = "getdate()")]
-        public string GetDate { get; set; }
+        /// <param name="disposing">是否释放托管资源</param>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        protected virtual void Dispose(bool disposing)
+        {
+            //释放托管资源
+            if (disposing)
+            {
+                QueueManger.DataBase.Dispose();
+                QueueManger.DataBase = null;
+            }
+        }
 
         /// <summary>
-        /// 创建时间
+        /// 释放资源
         /// </summary>
-        public DateTime CreateAt { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }

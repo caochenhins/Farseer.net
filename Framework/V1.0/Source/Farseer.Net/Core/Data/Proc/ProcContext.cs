@@ -1,6 +1,8 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Data;
 using FS.Configs;
+using FS.Mapping.Table;
 
 namespace FS.Core.Data.Proc
 {
@@ -28,28 +30,6 @@ namespace FS.Core.Data.Proc
         {
             IsMergeCommand = true;
             QueueManger = new ProcQueueManger(database);
-        }
-
-        /// <summary>
-        /// 释放资源
-        /// </summary>
-        /// <param name="disposing">是否释放托管资源</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            //释放托管资源
-            if (disposing)
-            {
-                QueueManger.DataBase.Dispose();
-            }
-        }
-
-        /// <summary>
-        /// 释放资源
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -82,5 +62,71 @@ namespace FS.Core.Data.Proc
             }
             return result;
         }
+
+        /// <summary>
+        /// 实例化子类中，所有Set属性
+        /// </summary>
+        protected virtual void InstanceProperty()
+        {
+            var types = this.GetType().GetProperties();
+            foreach (var type in types)
+            {
+                if (type.PropertyType.Name != "ProcSet`1") { continue; }
+                var map = TableMapCache.GetMap(this.GetType());
+                var user = Activator.CreateInstance(type.PropertyType, this, map.GetFieldName(type));
+                type.SetValue(this, user, null);
+            }
+        }
+
+        #region 禁用智能提示
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override string ToString()
+        {
+            return base.ToString();
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public new Type GetType()
+        {
+            return base.GetType();
+        }
+
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        /// <param name="disposing">是否释放托管资源</param>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        protected virtual void Dispose(bool disposing)
+        {
+            //释放托管资源
+            if (disposing)
+            {
+                QueueManger.DataBase.Dispose();
+                QueueManger.DataBase = null;
+            }
+        }
+
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }

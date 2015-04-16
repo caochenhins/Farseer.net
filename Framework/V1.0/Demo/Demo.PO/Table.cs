@@ -1,4 +1,5 @@
-﻿using Demo.VO.Members;
+﻿using System.Data.Linq.Mapping;
+using Demo.VO.Members;
 using FS.Core.Data.Table;
 using FS.Mapping.Table;
 
@@ -8,7 +9,7 @@ namespace Demo.PO
     {
         public Table() : base(0) { }
 
-        [DB(Name = "Members_User")]
+        [Column(Name = "Members_User")]
         public TableSet<UserVO> User { get; set; }
     }
 

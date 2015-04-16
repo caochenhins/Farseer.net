@@ -23,7 +23,7 @@ namespace FS.Core.Data.Proc
         /// <summary>
         /// 数据库操作
         /// </summary>
-        public DbExecutor DataBase { get; private set; }
+        public DbExecutor DataBase { get; internal set; }
         /// <summary>
         /// 数据库提供者（不同数据库的特性）
         /// </summary>

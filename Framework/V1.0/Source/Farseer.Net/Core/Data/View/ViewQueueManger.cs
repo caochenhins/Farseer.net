@@ -9,7 +9,7 @@ namespace FS.Core.Data.View
 {
     public class ViewQueueManger : IQueueManger
     {
-        public DbExecutor DataBase { get; set; }
+        public DbExecutor DataBase { get; internal set; }
         public DbProvider DbProvider { get; set; }
         public ViewQueueManger(DbExecutor database)
         {

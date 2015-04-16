@@ -1,4 +1,5 @@
-﻿using Demo.VO.Members;
+﻿using System.Data.Linq.Mapping;
+using Demo.VO.Members;
 using FS.Core.Data.View;
 using FS.Mapping.Table;
 
@@ -8,7 +9,7 @@ namespace Demo.PO
     {
         public View() : base(0) { }
 
-        [DB(Name = "View_Account")]
+        [Column(Name = "View_Account")]
         public ViewSet<AccountVO> Account { get; set; }
     }
 

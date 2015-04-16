@@ -27,7 +27,7 @@ namespace FS.Core.Data.Table
         /// 禁止外部实例化
         /// </summary>
         private TableSet() { }
-        internal TableSet(TableContext context, string name)
+        public TableSet(TableContext context, string name)
         {
             _context = context;
             _name = name;
