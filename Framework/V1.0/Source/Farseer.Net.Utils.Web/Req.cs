@@ -606,11 +606,11 @@ namespace FS.Utils
         /// <param name="request">NameValueCollection</param>
         /// <param name="prefix">控件前缀</param>
         /// <param name="dicError">返回错误消息,key：属性名称；value：错误消息</param>
-        public static TInfo Fill<TInfo>(NameValueCollection request, out Dictionary<string, List<string>> dicError, string prefix = "hl") where TInfo : class,IVerification, new()
+        public static TEntity Fill<TEntity>(NameValueCollection request, out Dictionary<string, List<string>> dicError, string prefix = "hl") where TEntity : class,IVerification, new()
         {
             dicError = new Dictionary<string, List<string>>();
-            var t = new TInfo();
-            foreach (var kic in VerifyMapCache.GetMap(t).ModelList)
+            var t = new TEntity();
+            foreach (var kic in VerifyMapCache.GetMap(typeof(TEntity)).ModelList)
             {
                 var lstError = new List<string>();
                 var reqName = prefix + kic.Key.Name;

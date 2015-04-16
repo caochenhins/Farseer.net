@@ -72,7 +72,7 @@ namespace FS.Extend
                 memberExpression = @select.Body as MemberExpression;
             }
 
-            var map = TableMapCache.GetMap<T1>();
+            var map = TableMapCache.GetMap(typeof(T1));
             var modelInfo = map.GetModelInfo((memberExpression.Member).Name);
 
             return modelInfo.Value.Column.Name;

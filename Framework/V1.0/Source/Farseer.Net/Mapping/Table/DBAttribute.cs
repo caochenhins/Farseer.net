@@ -6,7 +6,7 @@ namespace FS.Mapping.Table
     /// <summary>
     ///     实体类的属性标记
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class)]
     public sealed class DBAttribute : Attribute
     {
         /// <summary>

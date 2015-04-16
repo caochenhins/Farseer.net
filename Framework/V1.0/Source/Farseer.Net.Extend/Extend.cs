@@ -16,17 +16,17 @@ namespace FS.Extend
         /// <summary>
         ///     将XML转成实体
         /// </summary>
-        public static List<T> ToList<T>(this XElement element) where T : class
+        public static List<TEntity> ToList<TEntity>(this XElement element) where TEntity : class
         {
-            var orm = TableMapCache.GetMap<T>();
-            var list = new List<T>();
+            var orm = TableMapCache.GetMap(typeof(TEntity));
+            var list = new List<TEntity>();
             Type type;
 
-            T t;
+            TEntity t;
 
             foreach (var el in element.Elements())
             {
-                t = (T)Activator.CreateInstance(typeof(T));
+                t = (TEntity)Activator.CreateInstance(typeof(TEntity));
 
                 //赋值字段
                 foreach (var kic in orm.ModelList)
