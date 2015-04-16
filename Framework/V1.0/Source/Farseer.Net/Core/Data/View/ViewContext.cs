@@ -28,6 +28,7 @@ namespace FS.Core.Data.View
         protected ViewContext(DbExecutor database)
         {
             QueueManger = new ViewQueueManger(database);
+            InstanceProperty();
         }
 
         /// <summary>

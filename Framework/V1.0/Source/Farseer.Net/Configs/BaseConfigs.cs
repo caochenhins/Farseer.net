@@ -32,7 +32,12 @@ namespace FS.Configs
         /// <summary>
         ///     Config修改时间
         /// </summary>
-        protected static DateTime LoadAt;
+        protected static DateTime FileLastWriteTime;
+
+        /// <summary>
+        ///     加载配置文件的时间（60分钟重新加载）
+        /// </summary>
+        protected static DateTime LoadTime;
 
         /// <summary>
         ///     获取配置文件所在路径，支持自定义路径
@@ -82,7 +87,7 @@ namespace FS.Configs
         {
             get
             {
-                if (m_ConfigInfo == null || LoadAt != File.GetLastWriteTime(FilePath + FileName))
+                if (m_ConfigInfo == null || ((DateTime.Now - LoadTime).TotalMinutes > 60 && FileLastWriteTime != File.GetLastWriteTime(FilePath + FileName)))
                 {
                     LoadConfig();
                 }
@@ -93,7 +98,7 @@ namespace FS.Configs
         /// <summary>
         ///     加载(反序列化)指定对象类型的配置对象
         /// </summary>
-        protected static void LoadConfig()
+        public static void LoadConfig()
         {
             //不存在则自动接创建
             if (!File.Exists(FilePath + FileName))
@@ -101,11 +106,12 @@ namespace FS.Configs
                 SaveConfig(new T());
             }
 
-            LoadAt = File.GetLastWriteTime(FilePath + FileName);
+            FileLastWriteTime = File.GetLastWriteTime(FilePath + FileName);
 
             lock (m_LockHelper)
             {
                 m_ConfigInfo = Deserialize(FilePath + FileName);
+                LoadTime = DateTime.Now;
             }
         }
 

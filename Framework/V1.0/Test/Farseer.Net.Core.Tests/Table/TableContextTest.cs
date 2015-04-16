@@ -1,5 +1,8 @@
 ﻿using System;
 using Demo.PO;
+using FS.Configs;
+using FS.Core;
+using FS.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Farseer.Net.Core.Tests.Table
@@ -32,6 +35,28 @@ namespace Farseer.Net.Core.Tests.Table
 
                 context.SaveChanges();
             }
+        }
+
+        [TestMethod]
+        public void TestTime()
+        {
+            SpeedTest.Initialize();
+            new Demo.PO.Table();
+            DbFactory.CreateConnString(0);
+            var xx = DbConfigs.ConfigInfo.DbList[0].DataType;
+
+            SpeedTest.ConsoleTime("context", 100000, () =>
+            {
+                using (var context = new Demo.PO.Table()) { }
+            });
+            SpeedTest.ConsoleTime("CreateConnString", 100000, () =>
+            {
+                DbFactory.CreateConnString(0);
+            });
+            SpeedTest.ConsoleTime("DbConfigs", 100000, () =>
+            {
+                var x = DbConfigs.ConfigInfo.DbList[0].DataType;
+            });
         }
     }
 }

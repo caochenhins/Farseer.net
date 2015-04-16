@@ -115,12 +115,21 @@ namespace FS.Utils
             public Stopwatch Timer;
         }
 
+        /// <summary>
+        /// 初始化进程
+        /// </summary>
         public static void Initialize()
         {
             Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
             Thread.CurrentThread.Priority = ThreadPriority.Highest;
         }
 
+        /// <summary>
+        /// 计算运行方法耗时情况
+        /// </summary>
+        /// <param name="name">本次计算的名称</param>
+        /// <param name="iteration">计算次数</param>
+        /// <param name="action">要计算的方法</param>
         public static void ConsoleTime(string name, int iteration, Action action)
         {
             if (string.IsNullOrWhiteSpace(name )) { return; }

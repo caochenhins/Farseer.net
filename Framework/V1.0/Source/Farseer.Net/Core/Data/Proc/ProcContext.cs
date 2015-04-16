@@ -30,6 +30,7 @@ namespace FS.Core.Data.Proc
         {
             IsMergeCommand = true;
             QueueManger = new ProcQueueManger(database);
+            InstanceProperty();
         }
 
         /// <summary>
