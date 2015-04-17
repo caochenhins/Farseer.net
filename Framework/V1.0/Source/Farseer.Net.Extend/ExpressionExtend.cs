@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using FS.Core;
 using FS.Mapping.Table;
 
 namespace FS.Extend
@@ -72,7 +73,7 @@ namespace FS.Extend
                 memberExpression = @select.Body as MemberExpression;
             }
 
-            var map = TableMapCache.GetMap(typeof(T1));
+            var map = CacheManger.GetTableMap(typeof(T1));
             var modelInfo = map.GetModelInfo((memberExpression.Member).Name);
 
             return modelInfo.Value.Column.Name;

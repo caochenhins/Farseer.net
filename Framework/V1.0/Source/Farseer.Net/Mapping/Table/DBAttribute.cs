@@ -17,7 +17,7 @@ namespace FS.Mapping.Table
         /// </summary>
         /// <param name="name">表名/视图名/存储过程名/</param>
         /// <param name="dbIndex">数据库选项</param>
-        public DBAttribute(string name, int dbIndex = 0) : this(name, DbFactory.CreateConnString(dbIndex), DbConfigs.ConfigInfo.DbList[dbIndex].DataType, DbConfigs.ConfigInfo.DbList[dbIndex].DataVer, DbConfigs.ConfigInfo.DbList[dbIndex].CommandTimeout) { }
+        public DBAttribute(string name, int dbIndex = 0) : this(name, CacheManger.CreateConnString(dbIndex), DbConfigs.ConfigInfo.DbList[dbIndex].DataType, DbConfigs.ConfigInfo.DbList[dbIndex].DataVer, DbConfigs.ConfigInfo.DbList[dbIndex].CommandTimeout) { }
 
         /// <summary>
         ///     默认第一个数据库配置

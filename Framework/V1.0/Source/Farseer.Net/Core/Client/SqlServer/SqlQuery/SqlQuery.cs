@@ -23,7 +23,7 @@ namespace FS.Core.Client.SqlServer.SqlQuery
             // 不分页
             if (pageIndex == 1) { ToList(pageSize, isDistinct); return; }
 
-            var map = TableMapCache.GetMap(typeof(TEntity));
+            var map = CacheManger.GetTableMap(typeof(TEntity));
             var strSelectSql = Visit.Select(QueueSql.ExpSelect);
             var strWhereSql = Visit.Where(QueueSql.ExpWhere);
             var strOrderBySql = Visit.OrderBy(QueueSql.ExpOrderBy);

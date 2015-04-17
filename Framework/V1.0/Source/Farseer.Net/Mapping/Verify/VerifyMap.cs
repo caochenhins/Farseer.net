@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using FS.Core;
 
 namespace FS.Mapping.Verify
 {
@@ -123,7 +124,7 @@ namespace FS.Mapping.Verify
         /// </summary>
         public static implicit operator VerifyMap(Type type)
         {
-            return VerifyMapCache.GetMap(type);
+            return CacheManger.GetVerifyMap(type);
         }
     }
 }

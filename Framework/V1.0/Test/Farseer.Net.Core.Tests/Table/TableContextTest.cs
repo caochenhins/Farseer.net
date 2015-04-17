@@ -42,22 +42,9 @@ namespace Farseer.Net.Core.Tests.Table
         public void TestTime()
         {
             SpeedTest.Initialize();
-
             SpeedTest.ConsoleTime("context", 100000, () =>
             {
-                using (var context = new Demo.PO.Table()) { }
-            });
-            SpeedTest.ConsoleTime("CreateConnString", 100000, () =>
-            {
-                DbFactory.CreateConnString(0);
-            });
-            SpeedTest.ConsoleTime("DbConfigs", 100000, () =>
-            {
-                var x = DbConfigs.ConfigInfo.DbList[0].DataType;
-            });
-            SpeedTest.ConsoleTime("DbExecutor", 100000, () =>
-            {
-                new DbExecutor("", DataBaseType.SQLite, 60);
+                var context = new Demo.PO.Table();
             });
         }
     }

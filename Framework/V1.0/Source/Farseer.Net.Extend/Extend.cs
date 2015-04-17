@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using System.Xml.Linq;
+using FS.Core;
 using FS.Extend.Infrastructure;
 using FS.Mapping.Table;
 
@@ -18,7 +19,7 @@ namespace FS.Extend
         /// </summary>
         public static List<TEntity> ToList<TEntity>(this XElement element) where TEntity : class
         {
-            var orm = TableMapCache.GetMap(typeof(TEntity));
+            var orm = CacheManger.GetTableMap(typeof(TEntity));
             var list = new List<TEntity>();
             Type type;
 

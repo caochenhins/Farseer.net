@@ -27,7 +27,7 @@ namespace FS.Core.Client.Common.SqlQuery
             if (entity == null) { return; }
             QueueSql.Param = new List<System.Data.Common.DbParameter>();
 
-            var map = TableMapCache.GetMap(typeof(TEntity));
+            var map = CacheManger.GetTableMap(typeof(TEntity));
             foreach (var kic in map.ModelList.Where(o => o.Value.IsInParam || o.Value.IsOutParam))
             {
                 var obj = kic.Key.GetValue(entity, null);

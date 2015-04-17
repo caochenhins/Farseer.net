@@ -52,7 +52,8 @@ namespace FS.Mapping.Table
 
             #region 类属性
             var attrs = Type.GetCustomAttributes(typeof(DBAttribute), false);
-            ClassInfo = ((DBAttribute)attrs[0]);
+            foreach (var attr in attrs.OfType<DBAttribute>()) { ClassInfo = attr; }
+            if (ClassInfo == null) { ClassInfo = new DBAttribute(null); }
             if (string.IsNullOrEmpty(ClassInfo.Name)) { ClassInfo.Name = Type.Name; }
             #endregion
 
@@ -113,7 +114,7 @@ namespace FS.Mapping.Table
         /// </summary>
         public static implicit operator TableMap(Type type)
         {
-            return TableMapCache.GetMap(type);
+            return CacheManger.GetTableMap(type);
         }
 
         /// <summary>

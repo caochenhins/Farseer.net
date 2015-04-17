@@ -5,6 +5,7 @@ using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using FS.Core;
 using FS.Mapping.Table;
 
 namespace FS.Extend
@@ -393,7 +394,7 @@ namespace FS.Extend
         public static List<TEntity> ToList<TEntity>(this IDataReader reader) where TEntity : class, new()
         {
             var list = new List<TEntity>();
-            var Map = TableMapCache.GetMap(typeof(TEntity));
+            var Map = CacheManger.GetTableMap(typeof(TEntity));
             TEntity t;
 
             while (reader.Read())
@@ -424,7 +425,7 @@ namespace FS.Extend
         /// <typeparam name="TEntity">实体类</typeparam>
         public static TEntity ToInfo<TEntity>(this IDataReader reader) where TEntity : class, new()
         {
-            var map = TableMapCache.GetMap(typeof(TEntity));
+            var map = CacheManger.GetTableMap(typeof(TEntity));
 
             var t = (TEntity)Activator.CreateInstance(typeof(TEntity));
             var isHaveValue = false;

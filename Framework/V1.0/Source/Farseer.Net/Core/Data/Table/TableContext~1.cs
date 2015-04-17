@@ -10,9 +10,13 @@ namespace FS.Core.Data.Table
         /// <summary>
         /// 通过数据库配置，连接数据库
         /// </summary>
+        public TableContext() { Init(); }
+
+        /// <summary>
+        /// 通过数据库配置，连接数据库
+        /// </summary>
         /// <param name="dbIndex">数据库选项</param>
-        /// <param name="tableName">表名称</param>
-        public TableContext(string tableName = null,int dbIndex = 0) : base(dbIndex) { Init(tableName); }
+        public TableContext(int dbIndex) : base(dbIndex) { Init(); }
 
         /// <summary>
         /// 通过自定义数据链接符，连接数据库
@@ -20,8 +24,7 @@ namespace FS.Core.Data.Table
         /// <param name="connectionString">数据库连接字符串</param>
         /// <param name="dbType">数据库类型</param>
         /// <param name="commandTimeout">SQL执行超时时间</param>
-        /// <param name="tableName">表名称</param>
-        public TableContext(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, int commandTimeout = 30, string tableName = null) : base(connectionString, dbType, commandTimeout) { Init(tableName); }
+        public TableContext(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, int commandTimeout = 30) : base(connectionString, dbType, commandTimeout) { Init(); }
 
         /// <summary>
         /// 强类型实体对象
@@ -43,11 +46,10 @@ namespace FS.Core.Data.Table
         /// <summary>
         /// 设置表名
         /// </summary>
-        /// <param name="tableName">表名</param>
-        private void Init(string tableName)
+        private void Init()
         {
-            if (string.IsNullOrWhiteSpace(tableName)) { tableName = TableMapCache.GetMap(this.GetType()).ClassInfo.Name; }
-            Set = new TableSet<TEntity>(this, tableName);
+            var name = CacheManger.GetTableMap(this.GetType()).ClassInfo.Name;
+            Set = new TableSet<TEntity>(this, name);
         }
     }
 }

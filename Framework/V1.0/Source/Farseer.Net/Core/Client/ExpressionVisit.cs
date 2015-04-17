@@ -60,7 +60,7 @@ namespace FS.Core.Client
         {
             Clear();
 
-            var map = TableMapCache.GetMap(typeof(TEntity));
+            var map = CacheManger.GetTableMap(typeof(TEntity));
             var sb = new StringBuilder();
 
             //  迭代实体赋值情况
@@ -101,7 +101,7 @@ namespace FS.Core.Client
         {
             Clear();
 
-            var map = TableMapCache.GetMap(typeof(TEntity));
+            var map = CacheManger.GetTableMap(typeof(TEntity));
             //  字段
             var strFields = new StringBuilder();
             //  值

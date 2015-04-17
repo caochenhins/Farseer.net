@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using FS.Core;
 using FS.Core.Infrastructure;
 using FS.Mapping.Table;
 
@@ -219,7 +220,7 @@ namespace FS.Extend
         {
             var dt = new DataTable();
             if (lst.Count == 0) { return dt; }
-            var map = TableMapCache.GetMap(lst[0].GetType());
+            var map = CacheManger.GetTableMap(lst[0].GetType());
             var lstFields = map.ModelList.Where(o => o.Value.IsDbField);
             foreach (var field in lstFields)
             {

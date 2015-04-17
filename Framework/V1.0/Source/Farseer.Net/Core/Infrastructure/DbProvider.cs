@@ -197,7 +197,7 @@ namespace FS.Core.Infrastructure
         /// <param name="entity">实体类</param>
         public IList<DbParameter> GetParameter<TEntity>(TEntity entity) where TEntity : class,new()
         {
-            var map = TableMapCache.GetMap(typeof(TEntity));
+            var map = CacheManger.GetTableMap(typeof(TEntity));
             var lst = new List<DbParameter>();
 
             foreach (var kic in map.ModelList.Where(o => o.Value.IsDbField))

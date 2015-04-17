@@ -113,7 +113,7 @@ namespace FS.Core.Data.Proc
         private void SetParamToEntity<TEntity>(IQueue queue, TEntity entity) where TEntity : class,new()
         {
             if (entity == null) { return; }
-            var map = TableMapCache.GetMap(typeof(TEntity));
+            var map = CacheManger.GetTableMap(typeof(TEntity));
             foreach (var kic in map.ModelList.Where(o => o.Value.IsOutParam))
             {
                 kic.Key.SetValue(entity, queue.Param.Find(o => o.ParameterName == DbProvider.ParamsPrefix + kic.Value.Column.Name).Value.ConvertType(kic.Key.PropertyType), null);

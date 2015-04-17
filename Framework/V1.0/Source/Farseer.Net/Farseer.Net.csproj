@@ -53,6 +53,7 @@
     <Compile Include="Configs\GeneralConfigs.cs" />
     <Compile Include="Configs\RewriterConfigs.cs" />
     <Compile Include="Configs\SystemConfigs.cs" />
+    <Compile Include="Core\CacheManger.cs" />
     <Compile Include="Core\Client\Common\ExpressionBool.cs" />
     <Compile Include="Core\Client\Common\SqlQuery\SqlOper.cs" />
     <Compile Include="Core\Client\Common\SqlQuery\SqlProc.cs" />
@@ -130,6 +131,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Client\SqlServer\ExpressionNew.cs" />
+    <Compile Include="Core\Data\BaseContext.cs" />
     <Compile Include="Core\Infrastructure\IQueue.cs" />
     <Compile Include="Core\Infrastructure\IQueueSql.cs" />
     <Compile Include="Core\Data\Proc\ProcContext.cs">
@@ -193,11 +195,9 @@
     <Compile Include="Mapping\Table\FieldMapState.cs" />
     <Compile Include="Mapping\Table\ProcAttribute.cs" />
     <Compile Include="Mapping\Table\TableMap.cs" />
-    <Compile Include="Mapping\Table\TableMapCache.cs" />
     <Compile Include="Mapping\Verify\FieldMapState.cs" />
     <Compile Include="Mapping\Verify\IVerification.cs" />
     <Compile Include="Mapping\Verify\VerifyMap.cs" />
-    <Compile Include="Mapping\Verify\VerifyMapCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

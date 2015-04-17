@@ -123,7 +123,7 @@ namespace FS.Extend
         public static List<TResult> ToList<TResult>(this DataTable dt) where TResult : class, new()
         {
             var list = new List<TResult>();
-            var map = TableMapCache.GetMap(typeof(TResult));
+            var map = CacheManger.GetTableMap(typeof(TResult));
             TResult t;
             foreach (DataRow dr in dt.Rows)
             {
@@ -168,7 +168,7 @@ namespace FS.Extend
         /// <param name="dr">源DataRow</param>
         public static T ToInfo<T>(this DataRow dr) where T : class,new()
         {
-            var map = TableMapCache.GetMap(typeof(T));
+            var map = CacheManger.GetTableMap(typeof(T));
             var t = (T)Activator.CreateInstance(typeof(T));
 
             //赋值字段

@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Web;
 using FS.Configs;
+using FS.Core;
 using FS.Extend;
 using FS.Mapping.Verify;
 using FS.Utils.Web;
@@ -610,7 +611,7 @@ namespace FS.Utils
         {
             dicError = new Dictionary<string, List<string>>();
             var t = new TEntity();
-            foreach (var kic in VerifyMapCache.GetMap(typeof(TEntity)).ModelList)
+            foreach (var kic in CacheManger.GetVerifyMap(typeof(TEntity)).ModelList)
             {
                 var lstError = new List<string>();
                 var reqName = prefix + kic.Key.Name;

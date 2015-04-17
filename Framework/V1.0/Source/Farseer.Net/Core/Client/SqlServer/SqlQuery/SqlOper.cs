@@ -17,7 +17,7 @@ namespace FS.Core.Client.SqlServer.SqlQuery
         {
             base.Insert(entity);
 
-            var map = TableMapCache.GetMap(typeof(TEntity));
+            var map = CacheManger.GetTableMap(typeof(TEntity));
 
             // 主键如果有值，则需要 SET IDENTITY_INSERT ON
             var indexHaveValue = map.GetModelInfo().Key != null && map.GetModelInfo().Key.GetValue(entity, null) != null;

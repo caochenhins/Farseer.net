@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using FS.Core;
 using FS.Mapping.Verify;
 
 namespace FS.Extend
@@ -193,7 +194,7 @@ namespace FS.Extend
         public static bool Check<TEntity>(this TEntity info, out Dictionary<string, List<string>> dicError) where TEntity : IVerification
         {
             dicError = new Dictionary<string, List<string>>();
-            var map = VerifyMapCache.GetMap(typeof(TEntity));
+            var map = CacheManger.GetVerifyMap(typeof(TEntity));
             foreach (var kic in map.ModelList)
             {
                 var lstError = new List<string>();

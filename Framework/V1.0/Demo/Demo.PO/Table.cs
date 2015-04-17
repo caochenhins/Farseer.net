@@ -7,7 +7,7 @@ namespace Demo.PO
 {
     public class Table : TableContext
     {
-        public Table() : base(0) { }
+        //public Table() : base(0) { }
 
         [Column(Name = "Members_User")]
         public TableSet<UserVO> User { get; set; }

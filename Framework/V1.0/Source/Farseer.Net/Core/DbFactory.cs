@@ -13,7 +13,6 @@ using FS.Core.Client.SqLite;
 using FS.Core.Client.SqlServer;
 using FS.Core.Data;
 using FS.Core.Infrastructure;
-using FS.Mapping.Table;
 
 namespace FS.Core
 {
@@ -39,7 +38,7 @@ namespace FS.Core
         /// </summary>
         public static DbProvider CreateDbProvider<TEntity>(DataBaseType? db = null) where TEntity : class,new()
         {
-            var dbType = db ?? TableMapCache.GetMap(typeof(TEntity)).ClassInfo.DataType;
+            var dbType = db ?? CacheManger.GetTableMap(typeof(TEntity)).ClassInfo.DataType;
             switch (dbType)
             {
                 case DataBaseType.OleDb: return new OleDbProvider();
@@ -83,18 +82,6 @@ namespace FS.Core
             }
             conn.ConnectionString = connectionString;
             return conn;
-        }
-
-        /// <summary>
-        ///     创建数据库连接字符串
-        /// </summary>
-        /// <param name="dbIndex">数据库配置</param>
-        public static string CreateConnString(int dbIndex = 0)
-        {
-            DbInfo dbInfo = dbIndex;
-            return CreateConnString(dbInfo.DataType, dbInfo.UserID, dbInfo.PassWord, dbInfo.Server, dbInfo.Catalog,
-                                    dbInfo.DataVer, dbInfo.ConnectTimeout, dbInfo.PoolMinSize, dbInfo.PoolMaxSize,
-                                    dbInfo.Port);
         }
 
         /// <summary>
@@ -197,7 +184,7 @@ namespace FS.Core
         public static void Compression(int dbIndex)
         {
             DbInfo dbInfo = dbIndex;
-            Compression(CreateConnString(dbIndex), dbInfo.DataType);
+            Compression(CacheManger.CreateConnString(dbIndex), dbInfo.DataType);
         }
 
         /// <summary>
