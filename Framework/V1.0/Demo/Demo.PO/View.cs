@@ -5,7 +5,7 @@ using FS.Mapping.Table;
 
 namespace Demo.PO
 {
-    public class View : ViewContext
+    public class View : ViewContext<View>
     {
         public View() : base(0) { }
 

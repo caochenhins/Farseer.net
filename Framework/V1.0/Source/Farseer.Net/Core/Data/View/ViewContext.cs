@@ -4,7 +4,7 @@ using FS.Core.Infrastructure;
 
 namespace FS.Core.Data.View
 {
-    public class ViewContext : BaseContext, IDisposable
+    public class ViewContext : BaseContext
     {
         /// <summary>
         /// 使用DB特性设置数据库信息

@@ -131,10 +131,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Client\SqlServer\ExpressionNew.cs" />
+    <Compile Include="Core\Data\Proc\ProcContext.cs" />
+    <Compile Include="Core\Data\Table\TableContext.cs" />
+    <Compile Include="Core\Data\View\ViewContext.cs" />
     <Compile Include="Core\Infrastructure\BaseContext.cs" />
     <Compile Include="Core\Infrastructure\IQueue.cs" />
     <Compile Include="Core\Infrastructure\IQueueSql.cs" />
-    <Compile Include="Core\Data\Proc\ProcContext.cs">
+    <Compile Include="Core\Data\Proc\ProcContext`1.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Data\Proc\ProcQueue.cs">
@@ -146,7 +149,7 @@
     <Compile Include="Core\Data\Proc\ProcSet.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Data\Table\TableContext.cs" />
+    <Compile Include="Core\Data\Table\TableContext`1.cs" />
     <Compile Include="Core\Client\SqlServer\ExpressionBool.cs" />
     <Compile Include="Core\Client\ExpressionVisit.cs" />
     <Compile Include="Core\Client\Common\ExpressionNew.cs" />
@@ -168,7 +171,7 @@
     <Compile Include="Core\Infrastructure\IDbSqlProc.cs" />
     <Compile Include="Core\Infrastructure\IDbSqlQuery.cs" />
     <Compile Include="Core\Infrastructure\IDbSqlOper.cs" />
-    <Compile Include="Core\Data\View\ViewContext.cs">
+    <Compile Include="Core\Data\View\ViewContext`1.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Data\View\ViewQueue.cs">
@@ -180,9 +183,9 @@
     <Compile Include="Core\Data\View\ViewSet.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Data\Proc\ProcContext~1.cs" />
-    <Compile Include="Core\Data\Table\TableContext~1.cs" />
-    <Compile Include="Core\Data\View\ViewContext~1.cs" />
+    <Compile Include="Core\Data\Proc\ProcContext`2.cs" />
+    <Compile Include="Core\Data\Table\TableContext`2.cs" />
+    <Compile Include="Core\Data\View\ViewContext`2.cs" />
     <Compile Include="Extend\DataTableExtend.cs" />
     <Compile Include="Extend\IDataReaderExtend.cs" />
     <Compile Include="Extend\ListExtend.cs" />

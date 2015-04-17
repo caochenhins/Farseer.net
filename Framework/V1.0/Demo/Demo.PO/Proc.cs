@@ -5,7 +5,7 @@ using FS.Mapping.Table;
 
 namespace Demo.PO
 {
-    public class Proc : ProcContext
+    public class Proc : ProcContext<Proc>
     {
         [Column(Name = "sp_Info_User")]
         public ProcSet<InfoUserVO> InfoUser { get; set; }

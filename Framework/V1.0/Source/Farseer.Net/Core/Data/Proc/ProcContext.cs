@@ -1,14 +1,10 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Data;
-using FS.Configs;
-using FS.Core.Data.Table;
 using FS.Core.Infrastructure;
-using FS.Mapping.Table;
 
 namespace FS.Core.Data.Proc
 {
-    public class ProcContext : BaseContext, IDisposable
+    public class ProcContext : BaseContext
     {
         /// <summary>
         /// 使用DB特性设置数据库信息
