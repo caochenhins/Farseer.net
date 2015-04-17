@@ -21,72 +21,46 @@ namespace FS.Mapping.Table
         public readonly Dictionary<PropertyInfo, FieldMapState> ModelList;
 
         /// <summary>
+        /// 类关系映射
+        /// </summary>
+        /// <param name="dbIndex"></param>
+        public void Map(int dbIndex)
+        {
+            ClassInfo = new DBAttribute(null, dbIndex);
+        }
+
+        /// <summary>
+        /// 类关系映射
+        /// </summary>
+        /// <param name="connectionString"></param>
+        /// <param name="dbType"></param>
+        /// <param name="dataVer"></param>
+        /// <param name="commandTimeout"></param>
+        public void Map(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, string dataVer = "2008", int commandTimeout = 30)
+        {
+            ClassInfo = new DBAttribute(null, connectionString, dbType, dataVer, commandTimeout);
+        }
+
+        /// <summary>
         ///     关系映射
         /// </summary>
         /// <param name="type">实体类Type</param>
         public TableMap(Type type)
         {
+            Type = type;
             ModelList = new Dictionary<PropertyInfo, FieldMapState>();
 
-            //变量属性
-
             #region 类属性
-
-            //类属性
-            ClassInfo = new DBAttribute();
-
-            var attrs = type.GetCustomAttributes(typeof(DBAttribute), false);
-            ClassInfo = attrs.Length == 0 ? new DBAttribute() : ((DBAttribute)attrs[0]);
-
-            if (string.IsNullOrEmpty(ClassInfo.Name))
-            {
-                ClassInfo.Name = type.Name;
-            }
-
-            #region 自动创建数据库配置文件
-
-            if (DbConfigs.ConfigInfo.DbList.Count == 0 && ClassInfo.DbIndex == 0)
-            {
-                var db = new DbConfig();
-                db.DbList.Add(new DbInfo
-                                  {
-                                      Catalog = "数据库名称",
-                                      CommandTimeout = 60,
-                                      ConnectTimeout = 30,
-                                      DataType = DataBaseType.SqlServer,
-                                      DataVer = "2008",
-                                      PassWord = "123456",
-                                      PoolMaxSize = 100,
-                                      PoolMinSize = 16,
-                                      Server = ".",
-                                      UserID = "sa"
-                                  });
-                DbConfigs.SaveConfig(db);
-            }
-            else if (DbConfigs.ConfigInfo.DbList.Count - 1 < ClassInfo.DbIndex)
-            {
-                throw new Exception("数据库配置(索引项：" + ClassInfo.DbIndex + ")不存在！");
-            }
-
-            #endregion
-
-            #region 获取DbConfig的配置
-
-            DbInfo dbInfo = ClassInfo.DbIndex;
-            ClassInfo.ConnStr = DbFactory.CreateConnString(ClassInfo.DbIndex);
-            ClassInfo.DataType = dbInfo.DataType;
-            ClassInfo.DataVer = dbInfo.DataVer;
-            ClassInfo.CommandTimeout = dbInfo.CommandTimeout;
-
-            #endregion
-
+            var attrs = Type.GetCustomAttributes(typeof(DBAttribute), false);
+            ClassInfo = ((DBAttribute)attrs[0]);
+            if (string.IsNullOrEmpty(ClassInfo.Name)) { ClassInfo.Name = Type.Name; }
             #endregion
 
             #region 变量属性
 
             //遍历所有属性变量,取得对应使用标记名称
             //无加标记时，则为不使用该变量。
-            foreach (var propertyInfo in type.GetProperties())
+            foreach (var propertyInfo in Type.GetProperties())
             {
                 var fieldMapState = new FieldMapState();
 
@@ -117,8 +91,6 @@ namespace FS.Mapping.Table
                 ModelList.Add(propertyInfo, fieldMapState);
             }
             #endregion
-
-            Type = type;
         }
 
         /// <summary>

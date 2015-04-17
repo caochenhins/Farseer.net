@@ -13,6 +13,6 @@ namespace Demo.PO
         public ViewSet<AccountVO> Account { get; set; }
     }
 
-    [DB(Name = "View_Account")]
+    [DB("View_Account")]
     public class AccountPO : ViewContext<AccountVO> { }
 }

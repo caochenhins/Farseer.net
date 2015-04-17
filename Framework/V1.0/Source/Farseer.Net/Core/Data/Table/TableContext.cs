@@ -10,10 +10,20 @@ namespace FS.Core.Data.Table
     public class TableContext : IDisposable
     {
         /// <summary>
+        /// 使用DB特性设置数据库信息
+        /// </summary>
+        protected TableContext()
+        {
+            var map = TableMapCache.GetMap(this.GetType());
+            var database = new DbExecutor(map.ClassInfo.ConnStr, map.ClassInfo.DataType, map.ClassInfo.CommandTimeout);
+            InstanceProperty(database);
+        }
+
+        /// <summary>
         /// 通过数据库配置，连接数据库
         /// </summary>
         /// <param name="dbIndex">数据库选项</param>
-        protected TableContext(int dbIndex = 0) : this(DbFactory.CreateConnString(dbIndex), DbConfigs.ConfigInfo.DbList[dbIndex].DataType, DbConfigs.ConfigInfo.DbList[dbIndex].CommandTimeout) { }
+        protected TableContext(int dbIndex) : this(DbFactory.CreateConnString(dbIndex), DbConfigs.ConfigInfo.DbList[dbIndex].DataType, DbConfigs.ConfigInfo.DbList[dbIndex].CommandTimeout) { }
 
         /// <summary>
         /// 通过自定义数据链接符，连接数据库
@@ -21,17 +31,10 @@ namespace FS.Core.Data.Table
         /// <param name="connectionString">数据库连接字符串</param>
         /// <param name="dbType">数据库类型</param>
         /// <param name="commandTimeout">SQL执行超时时间</param>
-        protected TableContext(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, int commandTimeout = 30) : this(new DbExecutor(connectionString, dbType, commandTimeout)) { }
-
-        /// <summary>
-        /// 数据库
-        /// </summary>
-        /// <param name="database">数据库执行</param>
-        protected TableContext(DbExecutor database)
+        protected TableContext(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, int commandTimeout = 30)
         {
-            IsMergeCommand = true;
-            QueueManger = new TableQueueManger(database);
-            InstanceProperty();
+            var database = new DbExecutor(connectionString, dbType, commandTimeout);
+            InstanceProperty(database);
         }
 
         /// <summary>
@@ -68,8 +71,11 @@ namespace FS.Core.Data.Table
         /// <summary>
         /// 实例化子类中，所有Set属性
         /// </summary>
-        protected virtual void InstanceProperty()
+        private void InstanceProperty(DbExecutor database)
         {
+            IsMergeCommand = true;
+            QueueManger = new TableQueueManger(database);
+
             var types = this.GetType().GetProperties();
             foreach (var type in types)
             {

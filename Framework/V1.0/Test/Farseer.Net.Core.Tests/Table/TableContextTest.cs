@@ -2,6 +2,7 @@
 using Demo.PO;
 using FS.Configs;
 using FS.Core;
+using FS.Core.Data;
 using FS.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -41,9 +42,6 @@ namespace Farseer.Net.Core.Tests.Table
         public void TestTime()
         {
             SpeedTest.Initialize();
-            new Demo.PO.Table();
-            DbFactory.CreateConnString(0);
-            var xx = DbConfigs.ConfigInfo.DbList[0].DataType;
 
             SpeedTest.ConsoleTime("context", 100000, () =>
             {
@@ -56,6 +54,10 @@ namespace Farseer.Net.Core.Tests.Table
             SpeedTest.ConsoleTime("DbConfigs", 100000, () =>
             {
                 var x = DbConfigs.ConfigInfo.DbList[0].DataType;
+            });
+            SpeedTest.ConsoleTime("DbExecutor", 100000, () =>
+            {
+                new DbExecutor("", DataBaseType.SQLite, 60);
             });
         }
     }

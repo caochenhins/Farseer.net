@@ -134,12 +134,12 @@ namespace FS.Utils
         {
             if (string.IsNullOrWhiteSpace(name )) { return; }
 
-            // 1.
+            // 设置控制台前景色
             var currentForeColor = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(name);
 
-            // 2.
+            // 强制进去垃圾回收
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
             var gcCounts = new int[GC.MaxGeneration + 1];
             for (var i = 0; i <= GC.MaxGeneration; i++)
@@ -147,7 +147,7 @@ namespace FS.Utils
                 gcCounts[i] = GC.CollectionCount(i);
             }
 
-            // 3.
+            // 开始计时
             var watch = new Stopwatch();
             watch.Start();
             var cycleCount = GetCycleCount();
@@ -155,12 +155,12 @@ namespace FS.Utils
             var cpuCycles = GetCycleCount() - cycleCount;
             watch.Stop();
 
-            // 4.
+            // 输出计时结果
             Console.ForegroundColor = currentForeColor;
             Console.WriteLine("\tTime Elapsed:\t" + watch.ElapsedMilliseconds.ToString("N0") + "ms");
             Console.WriteLine("\tCPU Cycles:\t" + cpuCycles.ToString("N0"));
 
-            // 5.
+            // 输出垃圾回收结果
             for (var i = 0; i <= GC.MaxGeneration; i++)
             {
                 var count = GC.CollectionCount(i) - gcCounts[i];

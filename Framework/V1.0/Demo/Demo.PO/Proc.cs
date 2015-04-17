@@ -20,15 +20,15 @@ namespace Demo.PO
         public ProcSet<ValueUserVO> ValueUser { get; set; }
     }
 
-    [DB(Name = "sp_Info_User")]
+    [DB("sp_Info_User")]
     public class InfoUserPO : ProcContext<InfoUserVO> { }
 
-    [DB(Name = "sp_Insert_User")]
+    [DB("sp_Insert_User")]
     public class InsertUserPO : ProcContext<InsertUserVO> { }
 
-    [DB(Name = "sp_List_User")]
+    [DB("sp_List_User")]
     public class ListUserPO : ProcContext<ListUserVO> { }
 
-    [DB(Name = "sp_Value_User")]
+    [DB("sp_Value_User")]
     public class ValueUserPO : ProcContext<ValueUserVO> { }
 }

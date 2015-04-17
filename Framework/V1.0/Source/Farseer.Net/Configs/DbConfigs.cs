@@ -7,7 +7,7 @@ namespace FS.Configs
     /// <summary>
     ///     全局
     /// </summary>
-    public class DbConfigs : BaseConfigs<DbConfig> { }
+    public abstract class DbConfigs : BaseConfigs<DbConfig> { }
 
     /// <summary>
     ///     默认数据库路径
@@ -18,7 +18,7 @@ namespace FS.Configs
         /// <summary>
         ///     数据库连接列表，从/App_Data/Db.Configs读取回来
         /// </summary>
-        public List<DbInfo> DbList = new List<DbInfo>();
+        public readonly List<DbInfo> DbList = new List<DbInfo>();
     }
 
     /// <summary>
@@ -26,6 +26,17 @@ namespace FS.Configs
     /// </summary>
     public class DbInfo
     {
+        public DbInfo()
+        {
+            Server = ".";
+            UserID = "sa";
+            PassWord = "123456";
+            Port = "1433";
+            DataType = DataBaseType.SqlServer;
+            DataVer = "2008";
+            Catalog = "数据库名称";
+        }
+
         /// <summary>
         ///     数据库连接串
         /// </summary>

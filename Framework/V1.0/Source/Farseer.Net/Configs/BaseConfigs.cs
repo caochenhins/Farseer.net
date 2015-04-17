@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Xml.Serialization;
 
 namespace FS.Configs
@@ -32,17 +35,17 @@ namespace FS.Configs
         /// <summary>
         ///     Config修改时间
         /// </summary>
-        protected static DateTime FileLastWriteTime;
+        private static DateTime FileLastWriteTime;
 
         /// <summary>
         ///     加载配置文件的时间（60分钟重新加载）
         /// </summary>
-        protected static DateTime LoadTime;
+        private static DateTime LoadTime;
 
         /// <summary>
         ///     获取配置文件所在路径，支持自定义路径
         /// </summary>
-        public static string FilePath
+        private static string FilePath
         {
             get
             {
@@ -65,7 +68,7 @@ namespace FS.Configs
         /// <summary>
         ///     获取配置文件所在路径
         /// </summary>
-        protected static string FileName
+        private static string FileName
         {
             get
             {
@@ -103,9 +106,11 @@ namespace FS.Configs
             //不存在则自动接创建
             if (!File.Exists(FilePath + FileName))
             {
-                SaveConfig(new T());
+                var t = new T();
+                foreach (var fieldInfo in t.GetType().GetFields()) { DynamicAddItem(fieldInfo, t); }
+                foreach (var propertyInfo in t.GetType().GetProperties()) { DynamicAddItem(propertyInfo, t); }
+                SaveConfig(t);
             }
-
             FileLastWriteTime = File.GetLastWriteTime(FilePath + FileName);
 
             lock (m_LockHelper)
@@ -113,6 +118,60 @@ namespace FS.Configs
                 m_ConfigInfo = Deserialize(FilePath + FileName);
                 LoadTime = DateTime.Now;
             }
+        }
+
+        /// <summary>
+        /// 动态添加List元素
+        /// </summary>
+        /// <param name="fieldInfo">字段类型</param>
+        /// <param name="entity">所属实体变量</param>
+        /// <param name="methodName">方法名称，默认是Add</param>
+        private static void DynamicAddItem(FieldInfo fieldInfo, object entity, string methodName = "Add")
+        {
+            // 非泛型，退出执行
+            if (!fieldInfo.FieldType.IsGenericType) { return; }
+            var lstVal = fieldInfo.GetValue(entity);
+            // 空时，反射创建
+            if (lstVal == null) { lstVal = Activator.CreateInstance(fieldInfo.FieldType); fieldInfo.SetValue(entity, lstVal); }
+
+            // 获取执行方法
+            var method = fieldInfo.FieldType.GetMethod(methodName);
+            if (method == null) { return; }
+
+            // 反射创建子元素
+            var item = Activator.CreateInstance(fieldInfo.FieldType.GetGenericArguments()[0]);
+            method.Invoke(lstVal, new[] { item });
+
+            // 添加子元素到List中
+            foreach (var field in lstVal.GetType().GetFields()) { DynamicAddItem(field, lstVal); }
+            foreach (var property in lstVal.GetType().GetProperties()) { DynamicAddItem(property, lstVal); }
+        }
+
+        /// <summary>
+        /// 动态添加List元素
+        /// </summary>
+        /// <param name="propertyInfo">字段类型</param>
+        /// <param name="entity">所属实体变量</param>
+        /// <param name="methodName">方法名称，默认是Add</param>
+        private static void DynamicAddItem(PropertyInfo propertyInfo, object entity, string methodName = "Add")
+        {
+            // 非泛型，退出执行
+            if (!propertyInfo.PropertyType.IsGenericType) { return; }
+            var lstVal = propertyInfo.GetValue(entity, null);
+            // 空时，反射创建
+            if (lstVal == null) { lstVal = Activator.CreateInstance(propertyInfo.PropertyType); propertyInfo.SetValue(entity, lstVal, null); }
+
+            // 获取执行方法
+            var method = propertyInfo.PropertyType.GetMethod(methodName);
+            if (method == null) { return; }
+
+            // 反射创建子元素
+            var item = Activator.CreateInstance(propertyInfo.PropertyType.GetGenericArguments()[0]);
+
+            // 添加子元素到List中
+            method.Invoke(lstVal, new[] { item });
+            foreach (var field in lstVal.GetType().GetFields()) { DynamicAddItem(field, lstVal); }
+            foreach (var property in lstVal.GetType().GetProperties()) { DynamicAddItem(property, lstVal); }
         }
 
         /// <summary>

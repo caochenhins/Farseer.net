@@ -56,7 +56,7 @@ namespace FS.Core.Data
         /// <param name="tranLevel">开启事务等级</param>
         public DbExecutor(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, int commandTimeout = 30, IsolationLevel tranLevel = IsolationLevel.Unspecified)
         {
-            _connectionString = Regex.Replace(connectionString, "|RootDirectory|".Replace("|", "\\|"), AppDomain.CurrentDomain.BaseDirectory, RegexOptions.IgnoreCase);
+            _connectionString = connectionString;
             _commandTimeout = commandTimeout;
             DataType = dbType;
 

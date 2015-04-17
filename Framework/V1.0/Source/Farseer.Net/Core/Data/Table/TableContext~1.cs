@@ -8,16 +8,11 @@ namespace FS.Core.Data.Table
     public class TableContext<TEntity> : TableContext where TEntity : class, new()
     {
         /// <summary>
-        /// 通过TEntity的特性，获取数据库配置
-        /// </summary>
-        public TableContext(string tableName = null) : this(0, tableName) { }
-
-        /// <summary>
         /// 通过数据库配置，连接数据库
         /// </summary>
         /// <param name="dbIndex">数据库选项</param>
         /// <param name="tableName">表名称</param>
-        public TableContext(int dbIndex, string tableName = null) : base(dbIndex) { Init(tableName); }
+        public TableContext(string tableName = null,int dbIndex = 0) : base(dbIndex) { Init(tableName); }
 
         /// <summary>
         /// 通过自定义数据链接符，连接数据库
@@ -27,13 +22,6 @@ namespace FS.Core.Data.Table
         /// <param name="commandTimeout">SQL执行超时时间</param>
         /// <param name="tableName">表名称</param>
         public TableContext(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, int commandTimeout = 30, string tableName = null) : base(connectionString, dbType, commandTimeout) { Init(tableName); }
-
-        /// <summary>
-        /// 事务
-        /// </summary>
-        /// <param name="database">数据库执行</param>
-        /// <param name="tableName">表名称</param>
-        public TableContext(DbExecutor database, string tableName = null) : base(database) { Init(tableName); }
 
         /// <summary>
         /// 强类型实体对象
