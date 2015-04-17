@@ -28,6 +28,6 @@ namespace FS.Core.Data.View
         /// <summary>
         /// 静态实例
         /// </summary>
-        public static ViewContext Data { get { return new TPo(); } }
+        public static TPo Instance { get { return new TPo(); } }
     }
 }

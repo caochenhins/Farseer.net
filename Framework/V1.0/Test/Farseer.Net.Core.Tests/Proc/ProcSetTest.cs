@@ -13,6 +13,7 @@ namespace Farseer.Net.Core.Tests.Proc
         {
             var info = new InsertUserVO { UserName = "now111", PassWord = "old222" };
             InsertUserPO.Data.Execute(info);
+            Demo.PO.Proc.Instance.InsertUser.Execute(info);
             Assert.IsTrue(info.ID > 1);
         }
 

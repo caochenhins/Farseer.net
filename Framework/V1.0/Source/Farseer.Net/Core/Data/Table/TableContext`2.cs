@@ -37,7 +37,7 @@ namespace FS.Core.Data.Table
         /// 提供快捷的数据库执行
         /// 根据实体类设置的特性，访问数据库
         /// </summary>
-        public new static TableSet<TVo> Data
+        public static TableSet<TVo> Data
         {
             get
             {

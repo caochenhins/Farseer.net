@@ -37,11 +37,11 @@ namespace FS.Core.Data.View
         /// 提供快捷的数据库执行
         /// 根据实体类设置的特性，访问数据库
         /// </summary>
-        public new static ViewSet<TVo> Data
+        public static ViewSet<TVo> Data
         {
             get
             {
-                return new TPo() .Set;
+                return new TPo().Set;
             }
         }
 

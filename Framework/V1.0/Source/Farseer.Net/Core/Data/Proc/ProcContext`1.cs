@@ -24,6 +24,6 @@
         /// <summary>
         /// 静态实例
         /// </summary>
-        public static ProcContext Data { get { return new TPo { IsMergeCommand = false }; } }
+        public static TPo Instance { get { return new TPo { IsMergeCommand = false }; } }
     }
 }
