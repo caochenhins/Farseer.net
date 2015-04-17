@@ -54,6 +54,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="TableContextTest.cs" />
     <Compile Include="Table\TableContext~1Test.cs" />
     <Compile Include="Proc\ProcSetTest.cs" />
     <Compile Include="Table\TableContextTest.cs" />

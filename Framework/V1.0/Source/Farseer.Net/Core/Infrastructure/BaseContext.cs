@@ -45,8 +45,9 @@ namespace FS.Core.Infrastructure
             {
                 if (!type.CanWrite || type.PropertyType.Name != propertyName) { continue; }
                 var map = CacheManger.GetTableMap(this.GetType());
-                var user = Activator.CreateInstance(type.PropertyType, entity, map.GetFieldName(type));
-                type.SetValue(entity, user, null);
+                //var set = CacheManger.GetInstance(type.PropertyType, entity, map.GetFieldName(type));
+                var set = Activator.CreateInstance(type.PropertyType, entity, map.GetFieldName(type));
+                type.SetValue(entity, set, null);
             }
         }
 
@@ -93,44 +94,5 @@ namespace FS.Core.Infrastructure
             GC.SuppressFinalize(this);
         }
         #endregion
-    }
-
-    public class InstanceCachesEx
-    {
-        private Dictionary<Type, Func<object>> dicEx = new Dictionary<Type, Func<object>>();
-        public object InstanceCache(Type key)
-        {
-
-            Func<object> value = null;
-
-            if (dicEx.TryGetValue(key, out value))
-            {
-                return value();
-            }
-            else
-            {
-                value = CreateInstance(key);
-                dicEx[key] = value;
-                return value();
-            }
-        }
-
-        static Func<object> CreateInstance(Type type)
-        {
-            var newExp = Expression.New(type);
-            var lambdaExp = Expression.Lambda<Func<object>>(newExp, null);
-            var func = lambdaExp.Compile();
-            return func;
-        }
-    }
-
-    public static class GetCache
-    {
-        static GetCache()
-        {
-            InstanceCacheEx = new InstanceCachesEx();
-        }
-
-        public static InstanceCachesEx InstanceCacheEx { get; set; }
     }
 }

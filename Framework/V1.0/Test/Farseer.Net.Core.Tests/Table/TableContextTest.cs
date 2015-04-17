@@ -37,15 +37,5 @@ namespace Farseer.Net.Core.Tests.Table
                 context.SaveChanges();
             }
         }
-
-        [TestMethod]
-        public void TestTime()
-        {
-            SpeedTest.Initialize();
-            SpeedTest.ConsoleTime("context", 100000, () =>
-            {
-                var context = new Demo.PO.Table();
-            });
-        }
     }
 }

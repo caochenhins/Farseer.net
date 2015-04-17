@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using FS.Configs;
 using FS.Mapping.Table;
 using FS.Mapping.Verify;
@@ -85,6 +86,20 @@ namespace FS.Core
 
         }
 
+        private static InstanceCache InstanceCacheEx { get; set; }
+
+        /// <summary>
+        /// 获取缓存的反射结构
+        /// </summary>
+        /// <param name="key">对象类型</param>
+        /// <param name="param">构造函数参数</param>
+        /// <returns></returns>
+        public static object GetInstance(Type key, params object[] param)
+        {
+            if (InstanceCacheEx == null) { InstanceCacheEx = new InstanceCache(); }
+            return InstanceCacheEx.Cache(key, param);
+        }
+
         /// <summary>
         ///     清除缓存
         /// </summary>
@@ -92,6 +107,37 @@ namespace FS.Core
         {
             MapList.Clear();
             VerifyMapList.Clear();
+        }
+    }
+
+    /// <summary>
+    /// 缓存反射结构
+    /// </summary>
+    class InstanceCache
+    {
+        private readonly Dictionary<Type, Func<object>> _dicEx = new Dictionary<Type, Func<object>>();
+        public object Cache(Type key, params object[] param)
+        {
+            Func<object> value = null;
+
+            if (_dicEx.TryGetValue(key, out value))
+            {
+                return value();
+            }
+            else
+            {
+                value = CreateInstance(key, param);
+                _dicEx[key] = value;
+                return value();
+            }
+        }
+
+        private static Func<object> CreateInstance(Type type, params object[] param)
+        {
+            var newExp = Expression.New(type);
+            var lambdaExp = Expression.Lambda<Func<object>>(newExp, null);
+            var func = lambdaExp.Compile();
+            return func;
         }
     }
 }
