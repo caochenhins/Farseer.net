@@ -14,5 +14,5 @@ namespace Demo.PO
     }
 
     [DB("Members_User")]
-    public class UserPO : TableContext<UserVO> { }
+    public class UserPO : TableContext<UserPO, UserVO> { }
 }

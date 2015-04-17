@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Data;
 using FS.Configs;
 using FS.Core.Data.Table;
+using FS.Core.Infrastructure;
 using FS.Mapping.Table;
 
 namespace FS.Core.Data.Proc
@@ -14,14 +15,14 @@ namespace FS.Core.Data.Proc
         /// </summary>
         protected ProcContext()
         {
-            InstanceProperty("ProcSet`1");
+            InstanceProperty();
         }
 
         /// <summary>
         /// 通过数据库配置，连接数据库
         /// </summary>
         /// <param name="dbIndex">数据库选项</param>
-        protected ProcContext(int dbIndex) : base(dbIndex) { InstanceProperty("ProcSet`1"); }
+        protected ProcContext(int dbIndex) : base(dbIndex) { InstanceProperty(); }
 
         /// <summary>
         /// 通过自定义数据链接符，连接数据库
@@ -29,7 +30,7 @@ namespace FS.Core.Data.Proc
         /// <param name="connectionString">数据库连接字符串</param>
         /// <param name="dbType">数据库类型</param>
         /// <param name="commandTimeout">SQL执行超时时间</param>
-        protected ProcContext(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, int commandTimeout = 30) : base(connectionString, dbType, commandTimeout) { InstanceProperty("TableSet`1"); }
+        protected ProcContext(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, int commandTimeout = 30) : base(connectionString, dbType, commandTimeout) { InstanceProperty(); }
 
         /// <summary>
         /// 队列管理
@@ -65,11 +66,11 @@ namespace FS.Core.Data.Proc
         /// <summary>
         /// 实例化子类中，所有Set属性
         /// </summary>
-        protected override sealed void InstanceProperty(string propertyName)
+        private void InstanceProperty()
         {
             IsMergeCommand = true;
             QueueManger = new ProcQueueManger(DataBase);
-            base.InstanceProperty(propertyName);
+            InstanceProperty(this, "ProcSet`1");
         }
 
         /// <summary>

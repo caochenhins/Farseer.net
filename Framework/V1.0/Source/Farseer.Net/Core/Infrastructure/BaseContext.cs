@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using FS.Configs;
-using FS.Mapping.Table;
+using FS.Core.Data;
 
-namespace FS.Core.Data
+namespace FS.Core.Infrastructure
 {
-    public abstract class BaseContext: IDisposable
+    public abstract class BaseContext : IDisposable
     {
         /// <summary>
         /// 使用DB特性设置数据库信息
@@ -38,15 +38,15 @@ namespace FS.Core.Data
         /// <summary>
         /// 实例化子类中，所有Set属性
         /// </summary>
-        protected virtual void InstanceProperty(string propertyName)
+        protected void InstanceProperty(object entity, string propertyName)
         {
             var types = this.GetType().GetProperties();
             foreach (var type in types)
             {
-                if (type.PropertyType.Name != propertyName) { continue; }
+                if (!type.CanWrite || type.PropertyType.Name != propertyName) { continue; }
                 var map = CacheManger.GetTableMap(this.GetType());
-                var user = Activator.CreateInstance(type.PropertyType, this, map.GetFieldName(type));
-                type.SetValue(this, user, null);
+                var user = Activator.CreateInstance(type.PropertyType, entity, map.GetFieldName(type));
+                type.SetValue(entity, user, null);
             }
         }
 

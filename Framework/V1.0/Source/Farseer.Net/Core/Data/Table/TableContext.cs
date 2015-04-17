@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Data;
+using FS.Core.Infrastructure;
 
 namespace FS.Core.Data.Table
 {
@@ -10,14 +11,14 @@ namespace FS.Core.Data.Table
         /// </summary>
         protected TableContext()
         {
-            InstanceProperty("TableSet`1");
+            InstanceProperty();
         }
 
         /// <summary>
         /// 通过数据库配置，连接数据库
         /// </summary>
         /// <param name="dbIndex">数据库选项</param>
-        protected TableContext(int dbIndex) : base(dbIndex) { InstanceProperty("TableSet`1"); }
+        protected TableContext(int dbIndex) : base(dbIndex) { InstanceProperty(); }
 
         /// <summary>
         /// 通过自定义数据链接符，连接数据库
@@ -25,7 +26,7 @@ namespace FS.Core.Data.Table
         /// <param name="connectionString">数据库连接字符串</param>
         /// <param name="dbType">数据库类型</param>
         /// <param name="commandTimeout">SQL执行超时时间</param>
-        protected TableContext(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, int commandTimeout = 30) : base(connectionString, dbType, commandTimeout) { InstanceProperty("TableSet`1"); }
+        protected TableContext(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, int commandTimeout = 30) : base(connectionString, dbType, commandTimeout) { InstanceProperty(); }
 
         /// <summary>
         /// 队列管理
@@ -61,11 +62,11 @@ namespace FS.Core.Data.Table
         /// <summary>
         /// 实例化子类中，所有Set属性
         /// </summary>
-        protected override sealed void InstanceProperty(string propertyName)
+        private void InstanceProperty()
         {
             IsMergeCommand = true;
             QueueManger = new TableQueueManger(DataBase);
-            base.InstanceProperty(propertyName);
+            InstanceProperty(this, "TableSet`1");
         }
 
         /// <summary>

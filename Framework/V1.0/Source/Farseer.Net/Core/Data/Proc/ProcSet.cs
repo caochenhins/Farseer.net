@@ -25,7 +25,7 @@ namespace FS.Core.Data.Proc
         /// 禁止外部实例化
         /// </summary>
         private ProcSet() { }
-        internal ProcSet(ProcContext context, string name)
+        public ProcSet(ProcContext context, string name)
         {
             _context = context;
             _name = name;

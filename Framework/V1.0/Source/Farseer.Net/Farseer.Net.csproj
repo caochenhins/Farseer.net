@@ -131,7 +131,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Client\SqlServer\ExpressionNew.cs" />
-    <Compile Include="Core\Data\BaseContext.cs" />
+    <Compile Include="Core\Infrastructure\BaseContext.cs" />
     <Compile Include="Core\Infrastructure\IQueue.cs" />
     <Compile Include="Core\Infrastructure\IQueueSql.cs" />
     <Compile Include="Core\Data\Proc\ProcContext.cs">

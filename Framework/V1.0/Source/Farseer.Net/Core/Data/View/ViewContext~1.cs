@@ -5,11 +5,13 @@ namespace FS.Core.Data.View
     /// <summary>
     /// 视图上下文
     /// </summary>
-    public class ViewContext<TEntity> : ViewContext where TEntity : class, new()
+    public class ViewContext<TPo, TVo> : ViewContext
+        where TVo : class, new()
+        where TPo : ViewContext<TPo, TVo>, new()
     {
         /// <summary>
         /// 通过数据库配置，连接数据库
-        /// </summary>
+        /// </summary> 
         public ViewContext() { Init(); }
 
         /// <summary>
@@ -29,17 +31,17 @@ namespace FS.Core.Data.View
         /// <summary>
         /// 强类型实体对象
         /// </summary>
-        public ViewSet<TEntity> Set { get; private set; }
+        public ViewSet<TVo> Set { get; private set; }
 
         /// <summary>
         /// 提供快捷的数据库执行
         /// 根据实体类设置的特性，访问数据库
         /// </summary>
-        public static ViewSet<TEntity> Data
+        public static ViewSet<TVo> Data
         {
             get
             {
-                return new ViewContext<TEntity>().Set;
+                return new TPo() .Set;
             }
         }
 
@@ -49,7 +51,7 @@ namespace FS.Core.Data.View
         private void Init()
         {
             var name = CacheManger.GetTableMap(this.GetType()).ClassInfo.Name;
-            Set = new ViewSet<TEntity>(this, name);
+            Set = new ViewSet<TVo>(this, name);
         }
     }
 }

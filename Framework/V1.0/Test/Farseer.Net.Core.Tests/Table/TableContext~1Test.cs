@@ -16,12 +16,6 @@ namespace Farseer.Net.Core.Tests.Table
         }
 
         [TestMethod]
-        public void StaticTableContextTestMethod()
-        {
-            Assert.AreEqual(TableContext<UserVO>.Data != null, true);
-        }
-
-        [TestMethod]
         public void NewAndSaveChangeTableContextTestMethod()
         {
             using (var context = new UserPO())

@@ -5,7 +5,9 @@ namespace FS.Core.Data.Proc
     /// <summary>
     /// 存储过程上下文
     /// </summary>
-    public class ProcContext<TEntity> : ProcContext where TEntity : class, new()
+    public class ProcContext<TPo, TVo> : ProcContext
+        where TVo : class, new()
+        where TPo : ProcContext<TPo, TVo>, new()
     {
         /// <summary>
         /// 通过数据库配置，连接数据库
@@ -29,17 +31,17 @@ namespace FS.Core.Data.Proc
         /// <summary>
         /// 强类型实体对象
         /// </summary>
-        public ProcSet<TEntity> Set { get; private set; }
+        public ProcSet<TVo> Set { get; private set; }
 
         /// <summary>
         /// 提供快捷的数据库执行
         /// 根据实体类设置的特性，访问数据库
         /// </summary>
-        public static ProcSet<TEntity> Data
+        public static ProcSet<TVo> Data
         {
             get
             {
-                return new ProcContext<TEntity>().Set;
+                return new TPo() { IsMergeCommand = false }.Set;
             }
         }
 
@@ -49,7 +51,7 @@ namespace FS.Core.Data.Proc
         private void Init()
         {
             var name = CacheManger.GetTableMap(this.GetType()).ClassInfo.Name;
-            Set = new ProcSet<TEntity>(this, name);
+            Set = new ProcSet<TVo>(this, name);
         }
     }
 }

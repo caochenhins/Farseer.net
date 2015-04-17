@@ -5,7 +5,9 @@ namespace FS.Core.Data.Table
     /// <summary>
     /// 表上下文
     /// </summary>
-    public class TableContext<TEntity> : TableContext where TEntity : class, new()
+    public class TableContext<TPo, TVo> : TableContext
+        where TVo : class, new()
+        where TPo : TableContext<TPo, TVo>, new()
     {
         /// <summary>
         /// 通过数据库配置，连接数据库
@@ -29,17 +31,17 @@ namespace FS.Core.Data.Table
         /// <summary>
         /// 强类型实体对象
         /// </summary>
-        public TableSet<TEntity> Set { get; private set; }
+        public TableSet<TVo> Set { get; private set; }
 
         /// <summary>
         /// 提供快捷的数据库执行
         /// 根据实体类设置的特性，访问数据库
         /// </summary>
-        public static TableSet<TEntity> Data
+        public static TableSet<TVo> Data
         {
             get
             {
-                return new TableContext<TEntity>() { IsMergeCommand = false }.Set;
+                return new TPo() { IsMergeCommand = false }.Set;
             }
         }
 
@@ -49,7 +51,7 @@ namespace FS.Core.Data.Table
         private void Init()
         {
             var name = CacheManger.GetTableMap(this.GetType()).ClassInfo.Name;
-            Set = new TableSet<TEntity>(this, name);
+            Set = new TableSet<TVo>(this, name);
         }
     }
 }

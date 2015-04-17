@@ -14,5 +14,5 @@ namespace Demo.PO
     }
 
     [DB("View_Account")]
-    public class AccountPO : ViewContext<AccountVO> { }
+    public class AccountPO : ViewContext<AccountPO, AccountVO> { }
 }

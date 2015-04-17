@@ -60,7 +60,6 @@
     <Compile Include="View\ViewSetTest.cs" />
     <Compile Include="Table\TableSetTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DbFactoryTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Demo\Demo.Common\Demo.Common.csproj">

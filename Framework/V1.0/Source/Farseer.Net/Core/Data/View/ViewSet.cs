@@ -27,7 +27,7 @@ namespace FS.Core.Data.View
         /// 禁止外部实例化
         /// </summary>
         private ViewSet() { }
-        internal ViewSet(ViewContext context, string name)
+        public ViewSet(ViewContext context, string name)
         {
             _context = context;
             _name = name;
