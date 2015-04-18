@@ -263,5 +263,20 @@ namespace FS.Utils
             wc.Headers[HttpRequestHeader.Cookie] = list.ToString(";");
         }
 
+        /// <summary>
+        /// 获取网络IP
+        /// </summary>
+        public static string GetIP()
+        {
+            var ip = "127.0.0.1";
+            var strHostName = Dns.GetHostName();
+            var ipHost = Dns.GetHostEntry(strHostName);
+            foreach (var item in ipHost.AddressList)
+            {
+                if (item.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork) { ip = item.ToString(); }
+            }
+            return ip;
+        }
+
     }
 }

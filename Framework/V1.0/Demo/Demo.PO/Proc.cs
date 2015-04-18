@@ -20,6 +20,9 @@ namespace Demo.PO
         public ProcSet<ValueUserVO> ValueUser { get; set; }
     }
 
+
+
+
     [DB("sp_Info_User")]
     public class InfoUserPO : ProcContext<InfoUserPO, InfoUserVO> { }
 
