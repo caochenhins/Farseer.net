@@ -5,6 +5,9 @@ using System.Net.Sockets;
 
 namespace FS.Utils.SocketHelper
 {
+    /// <summary>
+    /// 服务端（监听）Socker
+    /// </summary>
     public class ServerSocket
     {
         /// <summary>
@@ -14,7 +17,7 @@ namespace FS.Utils.SocketHelper
         /// <summary>
         /// 端口
         /// </summary>
-        private int Point { get; set; }
+        public int Port { get; private set; }
         /// <summary>
         /// 监听排队数
         /// </summary>
@@ -32,6 +35,9 @@ namespace FS.Utils.SocketHelper
         /// </summary>
         public int CurrentNum { get { return LstClient.Count; } }
 
+        /// <summary>
+        /// 缓存区大小
+        /// </summary>
         public int BufferSize { get; set; }
 
         /// <summary>
@@ -43,9 +49,15 @@ namespace FS.Utils.SocketHelper
         /// </summary>
         public Action<StateObject> ActReceive { get; set; }
 
-        public ServerSocket(int point, int listen, int bufferSize = 1024)
+        /// <summary>
+        /// 服务端（监听）Socker
+        /// </summary>
+        /// <param name="port">端口</param>
+        /// <param name="listen">监听排队数</param>
+        /// <param name="bufferSize">缓存区大小</param>
+        public ServerSocket(int port, int listen, int bufferSize = 1024)
         {
-            Point = point;
+            Port = port;
             Listen = listen;
             BufferSize = bufferSize;
         }
@@ -57,7 +69,7 @@ namespace FS.Utils.SocketHelper
         {
             LstClient = new Dictionary<IPEndPoint, Socket>();
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            socket.Bind(new IPEndPoint(IPAddress.Any, Point));
+            socket.Bind(new IPEndPoint(IPAddress.Any, Port));
             socket.Listen(Listen);
             socket.BeginAccept(new AsyncCallback(AcceptEnd), new StateObject(BufferSize));
         }
