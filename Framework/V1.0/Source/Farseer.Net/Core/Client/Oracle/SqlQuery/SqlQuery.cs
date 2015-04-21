@@ -72,7 +72,7 @@ namespace FS.Core.Client.Oracle.SqlQuery
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
             if (!string.IsNullOrWhiteSpace(strOrderBySql)) { strOrderBySql = "ORDER BY " + strOrderBySql; }
 
-            QueueSql.Sql.AppendFormat("SELECT * FROM ( SELECT A.*, ROWNUM RN FROM (SELECT {0} {1} FROM {4} {5} {6}) A WHERE ROWNUM <= {3} ) WHERE RN > {2};", strDistinctSql, strSelectSql, pageSize * (pageIndex - 1), pageSize * pageIndex, QueueManger.DbProvider.KeywordAegis(QueueSql.Name), strWhereSql, strOrderBySql);
+            QueueSql.Sql.AppendFormat("SELECT * FROM ( SELECT A.*, ROWNUM RN FROM (SELECT {0} {1} FROM {4} {5} {6}) A WHERE ROWNUM <= {3} ) WHERE RN > {2}", strDistinctSql, strSelectSql, pageSize * (pageIndex - 1), pageSize * pageIndex, QueueManger.DbProvider.KeywordAegis(QueueSql.Name), strWhereSql, strOrderBySql);
         }
 
         public override void Value()

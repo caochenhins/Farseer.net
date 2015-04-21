@@ -17,7 +17,7 @@ namespace FS.Core.Client.Oracle.SqlQuery
         public override void InsertIdentity(TEntity entity)
         {
             base.InsertIdentity(entity);
-            QueueSql.Sql.AppendFormat("SELECT @@IDENTITY;");
+            QueueSql.Sql.AppendFormat("SELECT @@IDENTITY ");
         }
     }
 }

@@ -24,7 +24,7 @@ namespace FS.Core.Bean
             if (WhereString.Length == 0) { WhereString.Append("WHERE "); }
             else { WhereString.Append(" AND "); }
 
-            return string.Format("select {0} from {1} {2} rownum <=1 {3};", GetFields(), TableName, WhereString, SortString);
+            return string.Format("select {0} from {1} {2} rownum <=1 {3}", GetFields(), TableName, WhereString, SortString);
         }
 
         public override string GetValue()
@@ -32,7 +32,7 @@ namespace FS.Core.Bean
             if (WhereString.Length == 0)   { WhereString.Append("WHERE ");    }
             else { WhereString.Append(" AND ");    }
 
-            return string.Format("SELECT {0} FROM {1} {2} rownum <=1 {3};", GetFields(), TableName, WhereString,
+            return string.Format("SELECT {0} FROM {1} {2} rownum <=1 {3}", GetFields(), TableName, WhereString,
                                  SortString);
         }
 
@@ -41,7 +41,7 @@ namespace FS.Core.Bean
             if (pageIndex == 1)    { return ToTable(pageSize);    }
 
             return string.Format(
-                    "SELECT * FROM ( SELECT A.*, ROWNUM RN FROM (SELECT {0} FROM {3} {4} {5}) A WHERE ROWNUM <= {2} ) WHERE RN > {1};",
+                    "SELECT * FROM ( SELECT A.*, ROWNUM RN FROM (SELECT {0} FROM {3} {4} {5}) A WHERE ROWNUM <= {2} ) WHERE RN > {1}",
                     GetFields(), pageSize * (pageIndex - 1), pageSize * pageIndex, TableName, WhereString, SortString);
         }
 
@@ -55,14 +55,14 @@ namespace FS.Core.Bean
                 if (WhereString.Length > 0)   {  topString.Append(" AND ");  }
                 topString.Append(string.Format("ROWNUM <= {0}", top));
             }
-            return string.Format("SELECT {0} FROM {1} {2} {3} {4};", GetFields(), TableName, WhereString, topString,
+            return string.Format("SELECT {0} FROM {1} {2} {3} {4}", GetFields(), TableName, WhereString, topString,
                                  SortString);
         }
 
         public override string ToTableByRand(int top = 0)
         {
             var topString = top > 0 ? string.Format("WHERE ROWNUM <= {0}", top) : string.Empty;
-            return string.Format("SELECT * FROM (SELECT {0} FROM {1} {2} ORDER BY dbms_random.value) {3};", GetFields(),
+            return string.Format("SELECT * FROM (SELECT {0} FROM {1} {2} ORDER BY dbms_random.value) {3}", GetFields(),
                                  TableName, WhereString, topString);
         }
     }

@@ -55,7 +55,7 @@ namespace FS.Core.Client.Common.SqlQuery
         {
             QueueSql.Sql = new StringBuilder();
             var strinsertAssemble = Visit.Insert(entity);
-            QueueSql.Sql.AppendFormat("INSERT INTO {0} {1};", QueueSql.Name, strinsertAssemble);
+            QueueSql.Sql.AppendFormat("INSERT INTO {0} {1}", QueueSql.Name, strinsertAssemble);
         }
 
         public virtual void Update(TEntity entity)

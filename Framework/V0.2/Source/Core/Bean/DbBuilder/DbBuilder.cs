@@ -203,7 +203,7 @@ namespace FS.Core.Bean
 
             #endregion
 
-            return sql.ToString() + ";";
+            return sql.ToString();
         }
 
         public virtual string LastIdentity()
@@ -213,17 +213,17 @@ namespace FS.Core.Bean
 
         public virtual string Count()
         {
-            return string.Format("SELECT Count(0) FROM {0} {1};", TableName, WhereString);
+            return string.Format("SELECT Count(0) FROM {0} {1}", TableName, WhereString);
         }
 
         public virtual string Delete()
         {
-            return string.Format("DELETE FROM {0} {1};", TableName, WhereString);
+            return string.Format("DELETE FROM {0} {1}", TableName, WhereString);
         }
 
         public virtual string ToInfo()
         {
-            return string.Format("select top 1 {0} from {1} {2} {3};", GetFields(), TableName, WhereString, SortString);
+            return string.Format("select top 1 {0} from {1} {2} {3}", GetFields(), TableName, WhereString, SortString);
         }
 
         public virtual string ToTable(int pageSize, int pageIndex)
@@ -237,20 +237,20 @@ namespace FS.Core.Bean
             }
             var sort2 = SortString.ToString().Replace(" DESC", " [倒序]").Replace("ASC", "DESC").Replace("[倒序]", "ASC");
 
-            return string.Format("SELECT TOP {1} {0} FROM (SELECT TOP {2} {0} FROM {3} {4} {5}) a  {6};", GetFields(), pageSize, pageSize * pageIndex, TableName, WhereString, SortString, sort2);
+            return string.Format("SELECT TOP {1} {0} FROM (SELECT TOP {2} {0} FROM {3} {4} {5}) a  {6}", GetFields(), pageSize, pageSize * pageIndex, TableName, WhereString, SortString, sort2);
         }
 
         public virtual string ToTable(int top = 0)
         {
             var topString = top > 0 ? string.Format("TOP {0}", top) : string.Empty;
-            return string.Format("SELECT {0} {1} FROM {2} {3} {4};", topString, GetFields(), TableName, WhereString,
+            return string.Format("SELECT {0} {1} FROM {2} {3} {4}", topString, GetFields(), TableName, WhereString,
                                  SortString);
         }
 
         public virtual string ToTableByRand(int top = 0)
         {
             var topString = top > 0 ? string.Format("TOP {0}", top) : string.Empty;
-            return string.Format("SELECT {0} {1} FROM {2} {3} ORDER BY NEWID();", topString, GetFields(), TableName,
+            return string.Format("SELECT {0} {1} FROM {2} {3} ORDER BY NEWID()", topString, GetFields(), TableName,
                                  WhereString);
         }
 
@@ -272,34 +272,34 @@ namespace FS.Core.Bean
 
             ParamsList.AddRange(param);
 
-            return sql.ToString().DelEndOf(",") + WhereString + ";";
+            return sql.ToString().DelEndOf(",") + WhereString ;
         }
 
         public virtual string UpdateValue<T>(T fieldValue)
         {
             var lst = SelectString.ToString().ToList("");
             for (var i = 0; i < lst.Count; i++) { lst[i] = string.Format("{0} = {0} + {1},", lst[i], fieldValue); }
-            return string.Format("UPDATE {0} SET {1} {2};", TableName, lst.ToString("").DelEndOf(","), WhereString);
+            return string.Format("UPDATE {0} SET {1} {2}", TableName, lst.ToString("").DelEndOf(","), WhereString);
         }
 
         public virtual string GetSum()
         {
-            return string.Format("SELECT SUM({0}) FROM {1} {2};", SelectString, TableName, WhereString);
+            return string.Format("SELECT SUM({0}) FROM {1} {2}", SelectString, TableName, WhereString);
         }
 
         public virtual string GetMax()
         {
-            return string.Format("SELECT MAX({0}) FROM {1} {2};", SelectString, TableName, WhereString);
+            return string.Format("SELECT MAX({0}) FROM {1} {2}", SelectString, TableName, WhereString);
         }
 
         public virtual string GetMin()
         {
-            return string.Format("SELECT MIN({0}) FROM {1} {2};", SelectString, TableName, WhereString);
+            return string.Format("SELECT MIN({0}) FROM {1} {2}", SelectString, TableName, WhereString);
         }
 
         public virtual string GetValue()
         {
-            return string.Format("SELECT TOP 1 {0} FROM {1} {2};", SelectString, TableName, WhereString);
+            return string.Format("SELECT TOP 1 {0} FROM {1} {2}", SelectString, TableName, WhereString);
         }
 
         public virtual string ResetIdentity()
