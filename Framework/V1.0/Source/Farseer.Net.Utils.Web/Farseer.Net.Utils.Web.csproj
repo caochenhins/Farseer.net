@@ -101,15 +101,6 @@
     <Compile Include="..\Farseer.Net.Utils\SmtpMail.cs">
       <Link>SmtpMail.cs</Link>
     </Compile>
-    <Compile Include="..\Farseer.Net.Utils\SocketHelper\ClientSocket.cs">
-      <Link>SocketHelper\ClientSocket.cs</Link>
-    </Compile>
-    <Compile Include="..\Farseer.Net.Utils\SocketHelper\ServerSocket.cs">
-      <Link>SocketHelper\ServerSocket.cs</Link>
-    </Compile>
-    <Compile Include="..\Farseer.Net.Utils\SocketHelper\StateObject.cs">
-      <Link>SocketHelper\StateObject.cs</Link>
-    </Compile>
     <Compile Include="..\Farseer.Net.Utils\SpeedTest.cs">
       <Link>SpeedTest.cs</Link>
     </Compile>
@@ -130,6 +121,15 @@
     </Compile>
     <Compile Include="..\Farseer.Net.Utils\WinRAR.cs">
       <Link>WinRAR.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\WinSocket\ClientSocket.cs">
+      <Link>WinSocket\ClientSocket.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\WinSocket\ServerSocket.cs">
+      <Link>WinSocket\ServerSocket.cs</Link>
+    </Compile>
+    <Compile Include="..\Farseer.Net.Utils\WinSocket\StateObject.cs">
+      <Link>WinSocket\StateObject.cs</Link>
     </Compile>
     <Compile Include="Cookies.cs" />
     <Compile Include="Excel.cs" />

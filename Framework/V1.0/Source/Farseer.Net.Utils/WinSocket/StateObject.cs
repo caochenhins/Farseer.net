@@ -1,7 +1,8 @@
-﻿using System.Net.Sockets;
+﻿using System;
+using System.Net.Sockets;
 using System.Text;
 
-namespace FS.Utils.SocketHelper
+namespace FS.Utils.WinSocket
 {
     public class StateObject
     {
@@ -16,7 +17,7 @@ namespace FS.Utils.SocketHelper
         /// <summary>
         /// 
         /// </summary>
-        public string Msg { get { return Encoding.ASCII.GetString(Buffer).Replace("\\0", ""); } }
+        public string Msg { get { return Encoding.ASCII.GetString(Buffer).Replace("\\0", "").Trim('\0'); } }
         /// <summary>
         /// 接收的最大值
         /// </summary>
@@ -27,14 +28,30 @@ namespace FS.Utils.SocketHelper
         public int ByteCount { get; set; }
 
         /// <summary>
+        /// 发送成功的回调
+        /// </summary>
+        private readonly Action<StateObject> _sendCallBack;
+
+        /// <summary>
+        /// 发送成功的回调
+        /// </summary>
+        public void SendCallBack()
+        {
+            if (_sendCallBack != null) { _sendCallBack(this); }
+        }
+
+        /// <summary>
         /// 接收的最大值
         /// </summary>
         /// <param name="bufferSize">接收的最大值</param>
-        public StateObject(int bufferSize, Socket socket = null)
+        /// <param name="socket">当前的Socket</param>
+        /// <param name="sendCallBack">发送成功的回调</param>
+        public StateObject(int bufferSize, Socket socket = null, Action<StateObject> sendCallBack = null)
         {
             BufferSize = bufferSize;
             Buffer = new byte[bufferSize];
             WorkSocket = socket;
+            _sendCallBack = sendCallBack;
         }
 
         /// <summary>

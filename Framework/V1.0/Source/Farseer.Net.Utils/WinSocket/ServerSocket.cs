@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
-namespace FS.Utils.SocketHelper
+namespace FS.Utils.WinSocket
 {
     /// <summary>
     /// 服务端（监听）Socker
@@ -13,7 +14,7 @@ namespace FS.Utils.SocketHelper
         /// <summary>
         /// 套接字
         /// </summary>
-        private Socket socket;
+        private Socket _socket;
         /// <summary>
         /// 端口
         /// </summary>
@@ -43,11 +44,23 @@ namespace FS.Utils.SocketHelper
         /// <summary>
         /// 接收客户端请求连接时执行
         /// </summary>
-        public Action<StateObject> ActAccept { get; set; }
+        private Action<StateObject> _actAccept;
+
         /// <summary>
         /// 接收信息时执行
         /// </summary>
-        public Action<StateObject> ActReceive { get; set; }
+        private Action<StateObject> _actReceive;
+
+        /// <summary>
+        /// 服务端（监听）Socker
+        /// </summary>
+        /// <param name="socket">套接字</param>
+        public ServerSocket(Socket socket)
+        {
+            _socket = socket;
+            var server = (IPEndPoint)_socket.LocalEndPoint;
+            Port = server.Port;
+        }
 
         /// <summary>
         /// 服务端（监听）Socker
@@ -63,15 +76,26 @@ namespace FS.Utils.SocketHelper
         }
 
         /// <summary>
+        /// 初始化Socket的监听、接收回调
+        /// </summary>
+        /// <param name="actAccept">监听请求连接时触发</param>
+        /// <param name="actReceive">接收信息时触发</param>
+        public void Init(Action<StateObject> actAccept, Action<StateObject> actReceive)
+        {
+            _actAccept = actAccept;
+            _actReceive = actReceive;
+        }
+
+        /// <summary>
         /// 开启服务
         /// </summary>
         public void Start()
         {
             LstClient = new Dictionary<IPEndPoint, Socket>();
-            socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            socket.Bind(new IPEndPoint(IPAddress.Any, Port));
-            socket.Listen(Listen);
-            socket.BeginAccept(new AsyncCallback(AcceptEnd), new StateObject(BufferSize));
+            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            _socket.Bind(new IPEndPoint(IPAddress.Any, Port));
+            _socket.Listen(Listen);
+            _socket.BeginAccept(AcceptEnd, new StateObject(BufferSize));
         }
 
         /// <summary>
@@ -79,10 +103,10 @@ namespace FS.Utils.SocketHelper
         /// </summary>
         public void Stop()
         {
-            if (socket != null)
+            if (_socket != null)
             {
-                if (socket.Connected) { socket.Shutdown(SocketShutdown.Both); }
-                socket.Close(); socket.Dispose(); socket = null;
+                if (_socket.Connected) { _socket.Shutdown(SocketShutdown.Both); }
+                _socket.Close(); _socket.Dispose(); _socket = null;
             }
             foreach (var item in LstClient) { item.Value.Close(); item.Value.Dispose(); }
             LstClient.Clear();
@@ -91,16 +115,16 @@ namespace FS.Utils.SocketHelper
         /// <summary>
         /// 接收客户机连接的方法
         /// </summary>
-        /// <param name="ar"></param>
+        /// <param name="ar">回调参数</param>
         private void AcceptEnd(IAsyncResult ar)
         {
             try
             {
-                if (socket == null) { return; }
+                if (_socket == null) { return; }
 
                 var state = ar.AsyncState as StateObject;
                 // 获取客户端的Socket
-                state.WorkSocket = socket.EndAccept(ar);
+                state.WorkSocket = _socket.EndAccept(ar);
 
                 // 添加到客户端列表
                 var ep = state.WorkSocket.RemoteEndPoint as IPEndPoint;
@@ -109,14 +133,14 @@ namespace FS.Utils.SocketHelper
                 AllNum++;
 
                 // 执行传入的委托
-                if (ActAccept != null) { ActAccept(state); }
+                if (_actAccept != null) { _actAccept(state); }
 
                 // 客户端接受消息
                 state.WorkSocket.BeginReceive(state.Buffer, 0, state.BufferSize, 0, new AsyncCallback(ReceiveEnd), ar.AsyncState);
 
 
                 // 继续接收下一个客户机连接
-                socket.BeginAccept(new AsyncCallback(AcceptEnd), new StateObject(BufferSize));
+                _socket.BeginAccept(AcceptEnd, new StateObject(BufferSize));
             }
             catch { }
         }
@@ -124,10 +148,12 @@ namespace FS.Utils.SocketHelper
         /// <summary>
         /// 接收线程
         /// </summary>
-        /// <param name="o"></param>
+        /// <param name="ar">回调参数</param>
         private void ReceiveEnd(IAsyncResult ar)
         {
             var state = ar.AsyncState as StateObject;
+            if (state == null) { return; }
+
             try { state.ByteCount = state.WorkSocket.EndReceive(ar); }
             catch { state.ByteCount = 0; state.Buffer = new byte[0]; }
 
@@ -143,7 +169,41 @@ namespace FS.Utils.SocketHelper
             }
 
             // 执行传入的委托
-            if (ActReceive != null) { ActReceive(state); }
+            if (_actReceive != null) { _actReceive(state); }
+        }
+
+        /// <summary>
+        /// 发送消息
+        /// </summary>
+        /// <param name="msg">要发送的消息</param>
+        /// <param name="sendCallBack">发送成功之后的回调</param>
+        public void Send(string msg, Action<StateObject> sendCallBack = null)
+        {
+            var byteData = Encoding.ASCII.GetBytes(msg);
+            Send(byteData, sendCallBack);
+        }
+
+        /// <summary>
+        /// 发送消息
+        /// </summary>
+        /// <param name="msg">要发送的消息</param>
+        /// <param name="sendCallBack">发送成功之后的回调</param>
+        public void Send(byte[] msg, Action<StateObject> sendCallBack = null)
+        {
+            _socket.BeginSend(msg, 0, msg.Length, 0, SendCallback, new StateObject(BufferSize, _socket, sendCallBack));
+        }
+
+        /// <summary>
+        /// 发送成功之后的回调
+        /// </summary>
+        /// <param name="ar"></param>
+        private void SendCallback(IAsyncResult ar)
+        {
+            var state = ar.AsyncState as StateObject;
+            try { state.ByteCount = state.WorkSocket.EndSend(ar); }
+            catch { state.ByteCount = 0; state.Buffer = new byte[0]; }
+
+            state.SendCallBack();
         }
     }
 }
