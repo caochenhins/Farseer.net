@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using FS.Extend;
+using System.Data;
 
 namespace FS.Core.Data.Table
 {
@@ -92,10 +93,51 @@ namespace FS.Core.Data.Table
         /// <param name="top">限制显示的数量</param>
         /// <param name="isDistinct">返回当前条件下非重复数据</param>
         /// <param name="isRand">返回当前条件下随机的数据</param>
-        public List<TEntity> ToList(int top = 0, bool isDistinct = false, bool isRand = false)
+        public DataTable ToTable(int top = 0, bool isDistinct = false, bool isRand = false)
         {
             QueueManger.SqlQuery<TEntity>(Queue).ToList(top, isDistinct, isRand);
-            return QueueManger.ExecuteList<TEntity>(Queue);
+            return QueueManger.ExecuteTable(Queue);
+        }
+
+        /// <summary>
+        /// 查询多条记录（不支持延迟加载）
+        /// </summary>
+        /// <param name="pageSize">每页显示数量</param>
+        /// <param name="pageIndex">分页索引</param>
+        /// <param name="isDistinct">返回当前条件下非重复数据</param>
+        /// <returns></returns>
+        public DataTable ToTable(int pageSize, int pageIndex, bool isDistinct = false)
+        {
+            QueueManger.SqlQuery<TEntity>(Queue).ToList(pageSize, pageIndex, isDistinct);
+            return QueueManger.ExecuteTable(Queue);
+        }
+
+        /// <summary>
+        /// 查询多条记录（不支持延迟加载）
+        /// </summary>
+        /// <param name="pageSize">每页显示数量</param>
+        /// <param name="pageIndex">分页索引</param>
+        /// <param name="recordCount">总记录数量</param>
+        /// <param name="isDistinct">返回当前条件下非重复数据</param>
+        public DataTable ToTable(int pageSize, int pageIndex, out int recordCount, bool isDistinct = false)
+        {
+            var queue = Queue;
+            recordCount = Count();
+            Queue.ExpOrderBy = queue.ExpOrderBy;
+            Queue.ExpSelect = queue.ExpSelect;
+            Queue.ExpWhere = queue.ExpWhere;
+            return ToTable(pageSize, pageIndex, isDistinct);
+        }
+
+        /// <summary>
+        /// 查询多条记录（不支持延迟加载）
+        /// </summary>
+        /// <param name="top">限制显示的数量</param>
+        /// <param name="isDistinct">返回当前条件下非重复数据</param>
+        /// <param name="isRand">返回当前条件下随机的数据</param>
+        public List<TEntity> ToList(int top = 0, bool isDistinct = false, bool isRand = false)
+        {
+            return ToTable(top, isDistinct, isRand).ToList<TEntity>();
         }
 
         /// <summary>
@@ -107,9 +149,9 @@ namespace FS.Core.Data.Table
         /// <returns></returns>
         public List<TEntity> ToList(int pageSize, int pageIndex, bool isDistinct = false)
         {
-            QueueManger.SqlQuery<TEntity>(Queue).ToList(pageSize, pageIndex, isDistinct);
-            return QueueManger.ExecuteList<TEntity>(Queue);
+            return ToTable(pageSize, pageIndex, isDistinct).ToList<TEntity>();
         }
+
         /// <summary>
         /// 查询多条记录（不支持延迟加载）
         /// </summary>
@@ -119,13 +161,9 @@ namespace FS.Core.Data.Table
         /// <param name="isDistinct">返回当前条件下非重复数据</param>
         public List<TEntity> ToList(int pageSize, int pageIndex, out int recordCount, bool isDistinct = false)
         {
-            var queue = Queue;
-            recordCount = Count();
-            Queue.ExpOrderBy = queue.ExpOrderBy;
-            Queue.ExpSelect = queue.ExpSelect;
-            Queue.ExpWhere = queue.ExpWhere;
-            return ToList(pageSize, pageIndex, isDistinct);
+            return ToTable(pageSize, pageIndex, out recordCount, isDistinct).ToList<TEntity>();
         }
+
         /// <summary>
         /// 查询单条记录（不支持延迟加载）
         /// </summary>

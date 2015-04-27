@@ -129,19 +129,14 @@ namespace FS.Core.Data.Table
             Clear();
             return result;
         }
-        public List<TEntity> ExecuteList<TEntity>(IQueueSql queue) where TEntity : class, new()
+        public DataTable ExecuteTable(IQueueSql queue)
         {
             var param = queue.Param == null ? null : queue.Param.ToArray();
-            List<TEntity> lst;
-            using (var reader = DataBase.GetReader(CommandType.Text, queue.Sql.ToString(), param))
-            {
-                lst = reader.ToList<TEntity>();
-                reader.Close();
-            }
+            var table = DataBase.GetDataTable(CommandType.Text, queue.Sql.ToString(), param);
             DataBase.Close(false);
 
             Clear();
-            return lst;
+            return table;
         }
         public TEntity ExecuteInfo<TEntity>(IQueueSql queue) where TEntity : class, new()
         {

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Data.Linq.Mapping;
 using Demo.Common;
+using FS.Core.Infrastructure;
 using FS.Mapping.Table;
 
 namespace Demo.VO.Members
 {
-    public class UserVO
+    public class UserVO : IEntity
     {
         /// <summary>
         /// 用户ID

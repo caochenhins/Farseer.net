@@ -79,23 +79,5 @@ namespace FS.Extend
             }
             return dic;
         }
-
-
-        ///// <summary>
-        /////     枚举转ListItem
-        ///// </summary>
-        //public static List<SelectListItem> ToSelectListItem(this Type enumType)
-        //{
-        //    var lst = new List<SelectListItem>();
-        //    foreach (int value in Enum.GetValues(enumType))
-        //    {
-        //        lst.Add(new SelectListItem
-        //                    {
-        //                        Value = value.ToString(),
-        //                        Text = GetName((Enum) Enum.ToObject(enumType, value))
-        //                    });
-        //    }
-        //    return lst;
-        //}
     }
 }

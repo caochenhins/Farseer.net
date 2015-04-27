@@ -1,4 +1,5 @@
 ﻿using FS.Mapping.Table;
+using System.ComponentModel;
 
 namespace FS.Core.Data.Table
 {
@@ -44,6 +45,11 @@ namespace FS.Core.Data.Table
                 return new TPo() { IsMergeCommand = false }.Set;
             }
         }
+        /// <summary>
+        /// 静态实例
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        private new static TPo Instance { get; set; }
 
         /// <summary>
         /// 设置表名
