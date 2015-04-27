@@ -3,10 +3,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using Demo.PO;
 using Demo.VO.Members;
-using FS.Core.Data.Table;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Farseer.Net.Core.Tests.Table
+namespace Farseer.Net.Core.Tests.TableTest
 {
     [TestClass]
     public class TableSetTest

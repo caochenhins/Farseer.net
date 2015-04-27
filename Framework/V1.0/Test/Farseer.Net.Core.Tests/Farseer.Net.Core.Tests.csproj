@@ -55,11 +55,11 @@
   </Choose>
   <ItemGroup>
     <Compile Include="TableContextTest.cs" />
-    <Compile Include="Table\TableContext~1Test.cs" />
-    <Compile Include="Proc\ProcSetTest.cs" />
-    <Compile Include="Table\TableContextTest.cs" />
-    <Compile Include="View\ViewSetTest.cs" />
-    <Compile Include="Table\TableSetTest.cs" />
+    <Compile Include="TableTest\TableContext~1Test.cs" />
+    <Compile Include="ProcTest\ProcSetTest.cs" />
+    <Compile Include="TableTest\TableContextTest.cs" />
+    <Compile Include="ViewTest\ViewSetTest.cs" />
+    <Compile Include="TableTest\TableSetTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

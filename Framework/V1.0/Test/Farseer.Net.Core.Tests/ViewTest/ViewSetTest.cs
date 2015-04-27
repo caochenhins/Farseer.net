@@ -3,10 +3,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using Demo.PO;
 using Demo.VO.Members;
-using FS.Core.Data.View;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Farseer.Net.Core.Tests.View
+namespace Farseer.Net.Core.Tests.ViewTest
 {
     [TestClass]
     public class ViewSetTest

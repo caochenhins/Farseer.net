@@ -1,9 +1,8 @@
 ﻿using Demo.PO;
 using Demo.VO.Members;
-using FS.Core.Data.Proc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Farseer.Net.Core.Tests.Proc
+namespace Farseer.Net.Core.Tests.ProcTest
 {
     [TestClass]
     public class ProcSetTest
