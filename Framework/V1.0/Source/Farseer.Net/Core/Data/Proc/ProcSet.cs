@@ -34,7 +34,7 @@ namespace FS.Core.Data.Proc
         /// <summary>
         /// 执行存储过程（不返回值）
         /// </summary>
-        public T Value<T>(TEntity entity = null, T t = default(T))
+        public T GetValue<T>(TEntity entity = null, T t = default(T))
         {
             QueueManger.SqlQuery<TEntity>(Queue).CreateParam(entity);
             return QueueManger.ExecuteValue(Queue, entity, t);

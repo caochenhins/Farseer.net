@@ -161,7 +161,7 @@ namespace FS.Extend
         /// <param name="defValue">不存在时默认值</param>
         public static T Value<TEntity, T>(this ViewSet<TEntity> ts, int? ID, Expression<Func<TEntity, object>> fieldName, T defValue = default(T)) where TEntity : class, Core.Infrastructure.IEntity, new()
         {
-            return ts.Where(o => o.ID == ID).Value(fieldName, defValue);
+            return ts.Where(o => o.ID == ID).GetValue(fieldName, defValue);
         }
     }
 }

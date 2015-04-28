@@ -41,7 +41,7 @@ namespace FS.Core.Client.OleDb.SqlQuery
             }
         }
 
-        public override void Value()
+        public override void GetValue()
         {
             QueueSql.Sql = new StringBuilder();
             var strSelectSql = Visit.Select(QueueSql.ExpSelect);

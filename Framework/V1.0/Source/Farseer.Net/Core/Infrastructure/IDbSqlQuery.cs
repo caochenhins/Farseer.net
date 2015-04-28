@@ -43,6 +43,6 @@
         /// <summary>
         /// 查询单个值
         /// </summary>
-        void Value();
+        void GetValue();
     }
 }

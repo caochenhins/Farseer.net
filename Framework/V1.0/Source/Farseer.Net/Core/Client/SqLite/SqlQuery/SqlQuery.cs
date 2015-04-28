@@ -75,7 +75,7 @@ namespace FS.Core.Client.SqLite.SqlQuery
             QueueSql.Sql.AppendFormat("SELECT {0} {1} FROM {2} {3} {4} LIMIT {5},{6}", strDistinctSql, strSelectSql, QueueManger.DbProvider.KeywordAegis(QueueSql.Name), strWhereSql, strOrderBySql, pageSize * (pageIndex - 1), pageSize);
         }
 
-        public override void Value()
+        public override void GetValue()
         {
             QueueSql.Sql = new StringBuilder();
             var strSelectSql = Visit.Select(QueueSql.ExpSelect);

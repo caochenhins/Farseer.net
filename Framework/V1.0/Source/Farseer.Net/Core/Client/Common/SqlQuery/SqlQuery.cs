@@ -146,7 +146,7 @@ namespace FS.Core.Client.Common.SqlQuery
             QueueSql.Sql.AppendFormat("SELECT MIN({0}) FROM {1} {2}", strSelectSql, QueueManger.DbProvider.KeywordAegis(QueueSql.Name), strWhereSql);
         }
 
-        public virtual void Value()
+        public virtual void GetValue()
         {
             QueueSql.Sql = new StringBuilder();
             var strSelectSql = Visit.Select(QueueSql.ExpSelect);

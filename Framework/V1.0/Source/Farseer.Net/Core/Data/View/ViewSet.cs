@@ -220,12 +220,12 @@ namespace FS.Core.Data.View
         /// <summary>
         /// 查询单个值（不支持延迟加载）
         /// </summary>
-        public T Value<T>(Expression<Func<TEntity, object>> fieldName, T defValue = default(T))
+        public T GetValue<T>(Expression<Func<TEntity, object>> fieldName, T defValue = default(T))
         {
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Value操作时，fieldName参数不能为空！"); }
             Select(fieldName);
 
-            QueueManger.SqlQuery<TEntity>(Queue).Value();
+            QueueManger.SqlQuery<TEntity>(Queue).GetValue();
             return QueueManger.ExecuteQuery(Queue, defValue);
         }
         #endregion

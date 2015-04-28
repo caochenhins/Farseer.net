@@ -87,6 +87,7 @@
     </Compile>
     <Compile Include="WebCheckBoxListExtend.cs" />
     <Compile Include="WebDataTableExtend.cs" />
+    <Compile Include="WebDropDownList.cs" />
     <Compile Include="WebEnumExtend.cs" />
     <Compile Include="WebExtends.cs" />
     <Compile Include="WebModelExtend.cs" />

@@ -2,6 +2,9 @@
 {
     public interface IEntity<T>
     {
+        /// <summary>
+        /// 主键ID
+        /// </summary>
         T ID { get; set; }
     }
 

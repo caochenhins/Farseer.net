@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4F393E31-DFCD-434A-A350-53D635A99317}</ProjectGuid>
+    <ProjectGuid>{F6345D1B-C5DC-464C-A417-C02D7CD37E52}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>FS</RootNamespace>
@@ -135,6 +135,7 @@
     <Compile Include="Core\Data\Table\TableContext.cs" />
     <Compile Include="Core\Data\View\ViewContext.cs" />
     <Compile Include="Core\Infrastructure\BaseContext.cs" />
+    <Compile Include="Core\Infrastructure\ICate.cs" />
     <Compile Include="Core\Infrastructure\IQueue.cs" />
     <Compile Include="Core\Infrastructure\IQueueSql.cs" />
     <Compile Include="Core\Data\Proc\ProcContext`1.cs">
