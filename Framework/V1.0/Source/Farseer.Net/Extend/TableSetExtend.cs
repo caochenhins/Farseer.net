@@ -69,7 +69,7 @@ namespace FS.Extend
         /// <param name="ts">TableSet</param>
         /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="ID">条件，等同于：o=>o.ID == ID 的操作</param>
-        public static TEntity Update<TEntity>(this TableSet<TEntity> ts, int? ID, TEntity info) where TEntity : class, Core.Infrastructure.IEntity, new()
+        public static TEntity Update<TEntity>(this TableSet<TEntity> ts, TEntity info, int? ID) where TEntity : class, Core.Infrastructure.IEntity, new()
         {
             return ts.Where(o => o.ID == ID).Update(info);
         }
@@ -81,9 +81,21 @@ namespace FS.Extend
         /// <param name="ts">TableSet</param>
         /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="IDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
-        public static TEntity Update<TEntity>(this TableSet<TEntity> ts, List<int> IDs, TEntity info) where TEntity : class, Core.Infrastructure.IEntity, new()
+        public static TEntity Update<TEntity>(this TableSet<TEntity> ts, TEntity info, List<int> IDs) where TEntity : class, Core.Infrastructure.IEntity, new()
         {
             return ts.Where(o => IDs.Contains(o.ID.GetValueOrDefault())).Update(info);
+        }
+
+        /// <summary>
+        ///     更改实体类
+        /// </summary>
+        /// <param name="info">实体类</param>
+        /// <param name="ts">TableSet</param>
+        /// <typeparam name="TEntity">实体类</typeparam>
+        /// <param name="where">查询条件</param>
+        public static TEntity Update<TEntity>(this TableSet<TEntity> ts, TEntity info, Expression<Func<TEntity, bool>> where) where TEntity : class, Core.Infrastructure.IEntity, new()
+        {
+            return ts.Where(where).Update(info);
         }
 
         /// <summary>
