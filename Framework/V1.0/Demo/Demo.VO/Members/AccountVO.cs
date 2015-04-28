@@ -1,4 +1,4 @@
-﻿using System.Data.Linq.Mapping;
+﻿using FS.Mapping.Table.Attribute;
 
 namespace Demo.VO.Members
 {
@@ -7,7 +7,7 @@ namespace Demo.VO.Members
         /// <summary>
         /// 用户ID
         /// </summary>
-        [Column(IsDbGenerated = true)]
+        [Column(IsPrimaryKey = true)]
         public int? ID { get; set; }
         /// <summary>
         /// 用户名

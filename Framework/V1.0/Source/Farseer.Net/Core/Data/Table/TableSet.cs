@@ -78,7 +78,35 @@ namespace FS.Core.Data.Table
         /// <typeparam name="T">值类型</typeparam>
         /// <param name="fieldName">字段选择器</param>
         /// <param name="fieldValue">值</param>
-        public TableSet<TEntity> Append<T>(Expression<Func<TEntity, object>> fieldName, T fieldValue) where T : struct
+        public TableSet<TEntity> Append<T>(Expression<Func<TEntity, T>> fieldName, T fieldValue) where T : struct
+        {
+            if (Queue.ExpAssign == null) { Queue.ExpAssign = new Dictionary<Expression, object>(); }
+            if (fieldName != null) { Queue.ExpAssign.Add(fieldName, fieldValue); }
+            return this;
+        }
+
+        /// <summary>
+        /// 字段累加（字段 = 字段 + 值）
+        /// </summary>
+        /// <typeparam name="T">值类型</typeparam>
+        /// <param name="fieldName">字段选择器</param>
+        /// <param name="fieldValue">值</param>
+        public TableSet<TEntity> Append<T>(Expression<Func<TEntity, T?>> fieldName, T fieldValue)
+            where T : struct
+        {
+            if (Queue.ExpAssign == null) { Queue.ExpAssign = new Dictionary<Expression, object>(); }
+            if (fieldName != null) { Queue.ExpAssign.Add(fieldName, fieldValue); }
+            return this;
+        }
+
+        /// <summary>
+        /// 字段累加（字段 = 字段 + 值）
+        /// </summary>
+        /// <typeparam name="T">值类型</typeparam>
+        /// <param name="fieldName">字段选择器</param>
+        /// <param name="fieldValue">值</param>
+        public TableSet<TEntity> Append<T>(Expression<Func<TEntity, object>> fieldName, T fieldValue)
+            where T : struct
         {
             if (Queue.ExpAssign == null) { Queue.ExpAssign = new Dictionary<Expression, object>(); }
             if (fieldName != null) { Queue.ExpAssign.Add(fieldName, fieldValue); }
@@ -190,7 +218,7 @@ namespace FS.Core.Data.Table
         /// <summary>
         /// 累计和（不支持延迟加载）
         /// </summary>
-        public T Sum<T>(Expression<Func<TEntity, object>> fieldName, T defValue = default(T))
+        public T Sum<T>(Expression<Func<TEntity, T>> fieldName, T defValue = default(T))
         {
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Sum操作时，fieldName参数不能为空！"); }
             Select(fieldName);
@@ -201,7 +229,7 @@ namespace FS.Core.Data.Table
         /// <summary>
         /// 查询最大数（不支持延迟加载）
         /// </summary>
-        public T Max<T>(Expression<Func<TEntity, object>> fieldName, T defValue = default(T))
+        public T Max<T>(Expression<Func<TEntity, T>> fieldName, T defValue = default(T))
         {
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Max操作时，fieldName参数不能为空！"); }
             Select(fieldName);
@@ -212,7 +240,7 @@ namespace FS.Core.Data.Table
         /// <summary>
         /// 查询最小数（不支持延迟加载）
         /// </summary>
-        public T Min<T>(Expression<Func<TEntity, object>> fieldName, T defValue = default(T))
+        public T Min<T>(Expression<Func<TEntity, T>> fieldName, T defValue = default(T))
         {
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Min操作时，fieldName参数不能为空！"); }
             Select(fieldName);
@@ -225,7 +253,7 @@ namespace FS.Core.Data.Table
         /// </summary>
         /// <param name="fieldName">筛选字段</param>
         /// <param name="defValue">不存在时默认值</param>
-        public T GetValue<T>(Expression<Func<TEntity, object>> fieldName, T defValue = default(T))
+        public T GetValue<T>(Expression<Func<TEntity, T>> fieldName, T defValue = default(T))
         {
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Value操作时，fieldName参数不能为空！"); }
             Select(fieldName);
@@ -333,7 +361,19 @@ namespace FS.Core.Data.Table
         /// </summary>
         /// <param name="fieldName">字段名称</param>
         /// <param name="fieldValue">要+=的值</param>
-        public void AddUp<T>(Expression<Func<TEntity, object>> fieldName, T fieldValue) where T : struct
+        public void AddUp<T>(Expression<Func<TEntity, T>> fieldName, T fieldValue) where T : struct
+        {
+            Append(fieldName, fieldValue).AddUp();
+        }
+
+        /// <summary>
+        /// 添加或者减少某个字段（支持延迟加载）
+        /// </summary>
+        /// <param name="ts"></param>
+        /// <param name="fieldName">字段名称</param>
+        /// <param name="fieldValue">要+=的值</param>
+        public void AddUp< T>(Expression<Func<TEntity, T?>> fieldName, T fieldValue)
+            where T : struct
         {
             Append(fieldName, fieldValue).AddUp();
         }

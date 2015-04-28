@@ -195,7 +195,7 @@ namespace FS.Extend
         /// <param name="fieldValue">要更新的值</param>
         /// <param name="ts"></param>
         /// <param name="ID">o => o.ID == ID</param>
-        public static void AddUp<TEntity, T>(this TableSet<TEntity> ts, int? ID, Expression<Func<TEntity, object>> select, T fieldValue)
+        public static void AddUp<TEntity, T>(this TableSet<TEntity> ts, int? ID, Expression<Func<TEntity, T>> select, T fieldValue)
             where T : struct
             where TEntity : class, Core.Infrastructure.IEntity, new()
         {
@@ -291,7 +291,7 @@ namespace FS.Extend
         /// <param name="ID">条件，等同于：o=>o.ID == ID 的操作</param>
         /// <param name="fieldName">筛选字段</param>
         /// <param name="defValue">不存在时默认值</param>
-        public static T Value<TEntity, T>(this TableSet<TEntity> ts, int? ID, Expression<Func<TEntity, object>> fieldName, T defValue = default(T)) where TEntity : class, Core.Infrastructure.IEntity, new()
+        public static T GetValue<TEntity, T>(this TableSet<TEntity> ts, int? ID, Expression<Func<TEntity, T>> fieldName, T defValue = default(T)) where TEntity : class, Core.Infrastructure.IEntity, new()
         {
             return ts.Where(o => o.ID == ID).GetValue(fieldName, defValue);
         }

@@ -61,8 +61,6 @@ namespace FS.Core.Data.View
         {
             var param = queue.Param == null ? null : queue.Param.ToArray();
             var table = DataBase.GetDataTable(CommandType.Text, queue.Sql.ToString(), param);
-            DataBase.Close(false);
-
             Clear();
             return table;
         }

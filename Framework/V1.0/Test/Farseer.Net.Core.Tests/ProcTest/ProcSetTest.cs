@@ -19,7 +19,7 @@ namespace Farseer.Net.Core.Tests.ProcTest
         public void ValueTestMethod()
         {
             var info = new ValueUserVO { ID = 1 };
-            var value = Proc.Data.ValueUser.Value(info, "");
+            var value = Proc.Data.ValueUser.GetValue(info, "");
             Assert.IsTrue(!string.IsNullOrWhiteSpace(value));
         }
 
