@@ -22,10 +22,10 @@ namespace Farseer.Net.Core.Tests.TableTest
             
             new Table().User.Where(o => o.ID > 0).ToList();
 
-            Table.Instance.User.AddUp(o => o.LoginCount, 1);
-            Table.Instance.User.Where(o => o.ID > 0).ToList();
+            Table.Data.User.AddUp(o => o.LoginCount, 1);
+            Table.Data.User.Where(o => o.ID > 0).ToList();
 
-            Table.Instance.User.Where(o => o.ID > 0).ToList();
+            Table.Data.User.Where(o => o.ID > 0).ToList();
         }
     }
 }

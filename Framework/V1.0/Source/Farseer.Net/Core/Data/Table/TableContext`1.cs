@@ -32,6 +32,6 @@ namespace FS.Core.Data.Table
         /// <summary>
         /// 静态实例
         /// </summary>
-        public static TPo Instance { get { return new TPo { IsMergeCommand = false }; } }
+        public static TPo Data { get { return new TPo { IsMergeCommand = false }; } }
     }
 }
