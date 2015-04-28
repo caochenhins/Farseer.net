@@ -64,10 +64,10 @@ namespace FS.Core.Client
             var sb = new StringBuilder();
 
             //  迭代实体赋值情况
-            foreach (var kic in map.ModelList.Where(o => o.Value.IsDbField))
+            foreach (var kic in map.ModelList.Where(o => o.Value.Column.IsMap))
             {
                 // 如果主键有值，则取消修改主键的SQL
-                if (kic.Value.Column.IsDbGenerated) { continue; }
+                if (kic.Value.Column.IsPrimaryKey) { continue; }
                 var obj = kic.Key.GetValue(entity, null);
                 if (obj == null || obj is TableSet<TEntity>) { continue; }
 
@@ -110,7 +110,7 @@ namespace FS.Core.Client
             //var lstParam = QueryQueue.Param;
 
             //  迭代实体赋值情况
-            foreach (var kic in map.ModelList.Where(o => o.Value.IsDbField))
+            foreach (var kic in map.ModelList.Where(o => o.Value.Column.IsMap))
             {
                 var obj = kic.Key.GetValue(entity, null);
                 if (obj == null || obj is TableSet<TEntity>) { continue; }

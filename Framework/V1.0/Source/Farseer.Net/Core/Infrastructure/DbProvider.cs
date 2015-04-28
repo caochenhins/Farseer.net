@@ -200,7 +200,7 @@ namespace FS.Core.Infrastructure
             var map = CacheManger.GetTableMap(typeof(TEntity));
             var lst = new List<DbParameter>();
 
-            foreach (var kic in map.ModelList.Where(o => o.Value.IsDbField))
+            foreach (var kic in map.ModelList.Where(o => o.Value.Column.IsMap))
             {
                 var obj = kic.Key.GetValue(entity, null);
                 if (obj == null || obj is TableSet<TEntity>) { continue; }

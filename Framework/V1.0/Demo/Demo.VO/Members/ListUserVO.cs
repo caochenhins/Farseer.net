@@ -1,4 +1,5 @@
 ﻿using FS.Mapping.Table;
+using FS.Mapping.Table.Attribute;
 
 namespace Demo.VO.Members
 {

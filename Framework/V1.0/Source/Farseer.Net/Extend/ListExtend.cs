@@ -79,7 +79,7 @@ namespace FS.Extend
             var dt = new DataTable();
             if (lst.Count == 0) { return dt; }
             var map = CacheManger.GetTableMap(lst[0].GetType());
-            var lstFields = map.ModelList.Where(o => o.Value.IsDbField);
+            var lstFields = map.ModelList.Where(o => o.Value.Column.IsMap);
             foreach (var field in lstFields)
             {
                 var type = field.Key.PropertyType;

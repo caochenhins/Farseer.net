@@ -3,14 +3,14 @@ using FS.Configs;
 using FS.Core;
 using FS.Core.Data;
 
-namespace FS.Mapping.Table
+namespace FS.Mapping.Table.Attribute
 {
     /// <summary>
     ///     实体类的属性标记
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     // ReSharper disable once InconsistentNaming
-    public sealed class DBAttribute : Attribute
+    public sealed class DBAttribute : System.Attribute
     {
         /// <summary>
         ///     默认第一个数据库配置

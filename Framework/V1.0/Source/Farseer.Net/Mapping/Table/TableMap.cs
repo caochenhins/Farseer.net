@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Reflection;
 using FS.Configs;
 using FS.Core;
 using FS.Core.Data;
+using FS.Mapping.Table.Attribute;
 
 namespace FS.Mapping.Table
 {
@@ -69,8 +69,6 @@ namespace FS.Mapping.Table
                 attrs = propertyInfo.GetCustomAttributes(false);
                 foreach (var item in attrs)
                 {
-                    // 加入属性
-                    fieldMapState.IsDbField = !(item is NotJoinAttribute);
                     // 数据类型
                     if (item is DataTypeAttribute) { fieldMapState.DataType = (DataTypeAttribute)item; continue; }
                     // 字段映射
@@ -85,8 +83,7 @@ namespace FS.Mapping.Table
 
                 if (fieldMapState.Column == null) { fieldMapState.Column = new ColumnAttribute { Name = propertyInfo.Name }; }
                 if (string.IsNullOrEmpty(fieldMapState.Column.Name)) { fieldMapState.Column.Name = propertyInfo.Name; }
-
-                if (fieldMapState.IsDbField && fieldMapState.Column.IsDbGenerated) { IndexName = fieldMapState.Column.Name; } else { fieldMapState.Column.IsDbGenerated = false; }
+                if (fieldMapState.Column.IsMap && fieldMapState.Column.IsPrimaryKey) { IndexName = fieldMapState.Column.Name; } else { fieldMapState.Column.IsPrimaryKey = false; }
 
                 //添加属变量标记名称
                 ModelList.Add(propertyInfo, fieldMapState);
@@ -123,7 +120,7 @@ namespace FS.Mapping.Table
         /// <param name="fieldName">属性名称</param>
         public KeyValuePair<PropertyInfo, FieldMapState> GetModelInfo(string fieldName = "")
         {
-            return string.IsNullOrEmpty(fieldName) ? ModelList.FirstOrDefault(oo => oo.Value.Column.IsDbGenerated) : ModelList.FirstOrDefault(oo => oo.Key.Name == fieldName);
+            return string.IsNullOrEmpty(fieldName) ? ModelList.FirstOrDefault(oo => oo.Value.Column.IsPrimaryKey) : ModelList.FirstOrDefault(oo => oo.Key.Name == fieldName);
         }
 
         /// <summary>

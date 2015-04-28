@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Data.Linq.Mapping;
+using FS.Mapping.Table.Attribute;
 
 namespace FS.Mapping.Table
 {
@@ -9,11 +9,6 @@ namespace FS.Mapping.Table
     /// </summary>
     public class FieldMapState
     {
-        public FieldMapState()
-        {
-            IsDbField = true;
-        }
-
         /// <summary>
         ///     数据类型
         /// </summary>
@@ -23,11 +18,6 @@ namespace FS.Mapping.Table
         ///     字段映射
         /// </summary>
         public ColumnAttribute Column { get; set; }
-
-        /// <summary>
-        ///     是否为ORM属性
-        /// </summary>
-        public bool IsDbField { get; set; }
 
         /// <summary>
         ///     扩展类型
@@ -43,32 +33,6 @@ namespace FS.Mapping.Table
         ///     指示字段是否为存储过程中输出的参数
         /// </summary>
         public bool IsOutParam { get; set; }
-    }
-
-    /// <summary>
-    ///     设置为非字段映射
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Property)]
-    public class NotJoinAttribute : Attribute { }
-
-    /// <summary>
-    ///     设置变量的扩展属性
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Property)]
-    public class PropertyExtendAttribute : Attribute
-    {
-        /// <summary>
-        ///     设置变量的扩展属性
-        /// </summary>
-        public PropertyExtendAttribute(eumPropertyExtend propertyExtend)
-        {
-            PropertyExtend = propertyExtend;
-        }
-
-        /// <summary>
-        ///     设置变量的扩展属性
-        /// </summary>
-        internal eumPropertyExtend PropertyExtend { get; set; }
     }
 
     /// <summary>

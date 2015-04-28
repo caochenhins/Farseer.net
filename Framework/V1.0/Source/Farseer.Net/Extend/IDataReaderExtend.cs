@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using FS.Core;
 using FS.Mapping.Table;
+using FS.Mapping.Table.Attribute;
 
 namespace FS.Extend
 {

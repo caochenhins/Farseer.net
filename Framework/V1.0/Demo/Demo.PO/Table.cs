@@ -1,7 +1,6 @@
-﻿using System.Data.Linq.Mapping;
-using Demo.VO.Members;
+﻿using Demo.VO.Members;
 using FS.Core.Data.Table;
-using FS.Mapping.Table;
+using FS.Mapping.Table.Attribute;
 
 namespace Demo.PO
 {

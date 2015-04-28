@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace FS.Mapping.Table
+namespace FS.Mapping.Table.Attribute
 {
     /// <summary>
     /// 设置存储过程参数
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class ProcAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Property)]
+    public class ProcAttribute : System.Attribute
     {
         /// <summary>
         /// 设置存储过程参数
