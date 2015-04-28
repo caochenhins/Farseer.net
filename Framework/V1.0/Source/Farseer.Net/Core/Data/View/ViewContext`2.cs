@@ -3,7 +3,7 @@
 namespace FS.Core.Data.View
 {
     /// <summary>
-    /// 视图上下文
+    /// 单张视图的上下文
     /// </summary>
     public class ViewContext<TPo, TVo> : ViewContext<TPo>
         where TVo : class, new()

@@ -3,7 +3,7 @@
 namespace FS.Core.Data.Proc
 {
     /// <summary>
-    /// 存储过程上下文
+    /// 单个存储过程的上下文
     /// </summary>
     public class ProcContext<TPo, TVo> : ProcContext<TPo>
         where TVo : class, new()

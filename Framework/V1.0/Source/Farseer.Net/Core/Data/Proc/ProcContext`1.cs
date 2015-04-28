@@ -1,5 +1,9 @@
 ﻿namespace FS.Core.Data.Proc
 {
+    /// <summary>
+    /// 多条存储过程带静态实例化的上下文
+    /// </summary>
+    /// <typeparam name="TPo"></typeparam>
     public class ProcContext<TPo> : ProcContext where TPo : ProcContext<TPo>, new()
     {
         /// <summary>

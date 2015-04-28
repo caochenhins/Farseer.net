@@ -25,7 +25,7 @@ namespace Farseer.Net.Core.Tests.TableTest
             Table.Instance.User.AddUp(o => o.LoginCount, 1);
             Table.Instance.User.Where(o => o.ID > 0).ToList();
 
-            UserPO.Data.Where(o => o.ID > 0).ToList();
+            Table.Instance.User.Where(o => o.ID > 0).ToList();
         }
     }
 }

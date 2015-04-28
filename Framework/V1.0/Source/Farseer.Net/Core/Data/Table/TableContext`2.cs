@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace FS.Core.Data.Table
 {
     /// <summary>
-    /// 表上下文
+    /// 单张表的上下文
     /// </summary>
     public class TableContext<TPo, TVo> : TableContext<TPo>
         where TVo : class, new()

@@ -31,5 +31,11 @@ namespace FS.Mapping.Table.Attribute
         /// 是否映射到数据库字段中(默认为true)
         /// </summary>
         public bool IsMap { get; set; }
+
+        /// <summary>
+        /// 是否缓存TableSet、ViewSet、ProcSet类型的属性
+        /// 开启后，会缓存整张表、视图
+        /// </summary>
+        public bool IsCache { get; set; }
     }
 }

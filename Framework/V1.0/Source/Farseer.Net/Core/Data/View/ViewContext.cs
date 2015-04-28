@@ -4,6 +4,9 @@ using FS.Core.Infrastructure;
 
 namespace FS.Core.Data.View
 {
+    /// <summary>
+    /// 多张视图上下文
+    /// </summary>
     public class ViewContext : BaseContext
     {
         /// <summary>

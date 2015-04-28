@@ -9,10 +9,4 @@ namespace Demo.PO
         [Column(Name = "Members_User")]
         public TableSet<UserVO> User { get; set; }
     }
-
-
-
-
-    [DB("Members_User")]
-    public class UserPO : TableContext<UserPO, UserVO> { }
 }

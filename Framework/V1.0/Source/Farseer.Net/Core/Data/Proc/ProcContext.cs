@@ -4,6 +4,9 @@ using FS.Core.Infrastructure;
 
 namespace FS.Core.Data.Proc
 {
+    /// <summary>
+    /// 多张存储过程上下文
+    /// </summary>
     public class ProcContext : BaseContext
     {
         /// <summary>

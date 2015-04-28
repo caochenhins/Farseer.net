@@ -5,7 +5,7 @@ using FS.Core.Infrastructure;
 namespace FS.Core.Data.Table
 {
     /// <summary>
-    /// 表容器上下文
+    /// 多张表上下文
     /// </summary>
     public class TableContext : BaseContext
     {

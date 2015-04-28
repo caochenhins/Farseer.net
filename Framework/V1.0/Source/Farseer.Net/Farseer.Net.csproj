@@ -183,9 +183,6 @@
     <Compile Include="Core\Data\View\ViewSet.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Data\Proc\ProcContext`2.cs" />
-    <Compile Include="Core\Data\Table\TableContext`2.cs" />
-    <Compile Include="Core\Data\View\ViewContext`2.cs" />
     <Compile Include="Extend\DataTableExtend.cs" />
     <Compile Include="Extend\IDataReaderExtend.cs" />
     <Compile Include="Extend\ListExtend.cs" />

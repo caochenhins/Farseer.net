@@ -11,7 +11,4 @@ namespace Demo.PO
         [Column(Name = "View_Account")]
         public ViewSet<AccountVO> Account { get; set; }
     }
-
-    [DB("View_Account")]
-    public class AccountPO : ViewContext<AccountPO, AccountVO> { }
 }
