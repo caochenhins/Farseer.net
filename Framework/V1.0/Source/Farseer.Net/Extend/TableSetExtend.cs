@@ -206,6 +206,22 @@ namespace FS.Extend
         ///     更新单个字段值
         /// </summary>
         /// <typeparam name="T">更新的值类型</typeparam>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="select"></param>
+        /// <param name="fieldValue">要更新的值</param>
+        /// <param name="ts"></param>
+        /// <param name="ID">o => o.ID == ID</param>
+        public static void AddUp<TEntity, T>(this TableSet<TEntity> ts, int? ID, Expression<Func<TEntity, T?>> select, T fieldValue)
+            where T : struct
+            where TEntity : class, Core.Infrastructure.IEntity, new()
+        {
+            ts.Where(o => o.ID == ID).AddUp(select, fieldValue);
+        }
+
+        /// <summary>
+        ///     更新单个字段值
+        /// </summary>
+        /// <typeparam name="T">更新的值类型</typeparam>
         /// <param name="fieldValue">要更新的值</param>
         /// <param name="ts">TableSet</param>
         /// <typeparam name="TEntity">实体类</typeparam>
@@ -214,7 +230,7 @@ namespace FS.Extend
             where T : struct
             where TEntity : class, Core.Infrastructure.IEntity, new()
         {
-            ts.AddUp(ID, null, fieldValue);
+            ts.AddUp(ID, (Expression<Func<TEntity, T>>)null, fieldValue);
         }
 
         /// <summary>

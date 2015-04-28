@@ -121,6 +121,7 @@ namespace Farseer.Net.Core.Tests.TableTest
             Table.Data.User.Where(o => o.ID == ID).Update(new UserVO() { UserName = "bb" });
             Assert.IsTrue(Table.Data.User.Desc(o => o.ID).ToInfo().UserName == "bb");
 
+            Table.Data.User.Update(new UserVO() { UserName = "bb", ID = ID });
         }
 
         [TestMethod]

@@ -60,10 +60,22 @@ namespace FS.Core.Client.Common.SqlQuery
 
         public virtual void Update(TEntity entity)
         {
+            var map = CacheManger.GetTableMap(typeof(TEntity));
+
             QueueSql.Sql = new StringBuilder();
             var strWhereSql = Visit.Where(QueueSql.ExpWhere);
             var strAssemble = Visit.Assign(entity);
 
+            // 主键如果有值，则需要 去掉主键的赋值、并且加上主键的条件
+            if (map.GetModelInfo().Key != null)
+            {
+                var value = map.GetModelInfo().Key.GetValue(entity, null);
+                if (value != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql += " AND "; }
+                    strWhereSql += string.Format("{0} = {1}", map.IndexName, value);
+                }
+            }
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
 
             QueueSql.Sql.AppendFormat("UPDATE {0} SET {1} {2}", QueueManger.DbProvider.KeywordAegis(QueueSql.Name), strAssemble, strWhereSql);
