@@ -44,7 +44,7 @@ namespace FS.Core.Infrastructure
             foreach (var type in types)
             {
                 if (!type.CanWrite || type.PropertyType.Name != propertyName) { continue; }
-                var map = CacheManger.GetTableMap(this.GetType());
+                var map = CacheManger.GetTableMap(type.PropertyType);
                 //var set = CacheManger.GetInstance(type.PropertyType, entity, map.GetFieldName(type));
                 var set = Activator.CreateInstance(type.PropertyType, entity, map.GetFieldName(type));
                 type.SetValue(entity, set, null);
