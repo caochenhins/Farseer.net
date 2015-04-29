@@ -105,6 +105,7 @@ namespace FS.Core.Data
             if (conn.State == ConnectionState.Closed)
             {
                 conn.Open();
+                comm.Parameters.Clear();
             }
         }
 
@@ -138,29 +139,12 @@ namespace FS.Core.Data
         }
 
         /// <summary>
-        ///     添加参数
-        /// </summary>
-        /// <param name="parameters">SqlParameterCollection的参数对像</param>
-        /// <param name="parmsCollection">参数值</param>
-        private DbParameterCollection AddParms(DbParameterCollection parmsCollection, DbParameter[] parameters)
-        {
-            parmsCollection.Clear();
-            if (parameters != null)
-            {
-                foreach (var parms in parameters)
-                {
-                    parmsCollection.Add(parms);
-                }
-            }
-            return parmsCollection;
-        }
-
-        /// <summary>
         ///     返回第一行第一列数据
         /// </summary>
         /// <param name="cmdType">执行方式</param>
         /// <param name="cmdText">SQL或者存储过程名称</param>
         /// <param name="parameters">参数</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:检查 SQL 查询是否存在安全漏洞")]
         public object ExecuteScalar(CommandType cmdType, string cmdText, params DbParameter[] parameters)
         {
             if (string.IsNullOrWhiteSpace(cmdText)) { return null; }
@@ -169,7 +153,7 @@ namespace FS.Core.Data
                 Open();
                 comm.CommandType = cmdType;
                 comm.CommandText = cmdText;
-                AddParms(comm.Parameters, parameters);
+                if (parameters != null) { comm.Parameters.AddRange(parameters); }
 
                 return comm.ExecuteScalar();
             }
@@ -185,6 +169,7 @@ namespace FS.Core.Data
         /// <param name="cmdType">执行方式</param>
         /// <param name="cmdText">SQL或者存储过程名称</param>
         /// <param name="parameters">参数</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:检查 SQL 查询是否存在安全漏洞")]
         public int ExecuteNonQuery(CommandType cmdType, string cmdText, params DbParameter[] parameters)
         {
             if (string.IsNullOrWhiteSpace(cmdText)) { return 0; }
@@ -193,7 +178,7 @@ namespace FS.Core.Data
                 Open();
                 comm.CommandType = cmdType;
                 comm.CommandText = cmdText;
-                AddParms(comm.Parameters, parameters);
+                if (parameters != null) { comm.Parameters.AddRange(parameters); }
 
                 return comm.ExecuteNonQuery();
             }
@@ -209,6 +194,7 @@ namespace FS.Core.Data
         /// <param name="cmdType">执行方式</param>
         /// <param name="cmdText">SQL或者存储过程名称</param>
         /// <param name="parameters">参数</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:检查 SQL 查询是否存在安全漏洞")]
         public IDataReader GetReader(CommandType cmdType, string cmdText, params DbParameter[] parameters)
         {
             if (string.IsNullOrWhiteSpace(cmdText)) { return null; }
@@ -217,7 +203,7 @@ namespace FS.Core.Data
                 Open();
                 comm.CommandType = cmdType;
                 comm.CommandText = cmdText;
-                AddParms(comm.Parameters, parameters);
+                if (parameters != null) { comm.Parameters.AddRange(parameters); }
 
                 return IsTransaction ? comm.ExecuteReader() : comm.ExecuteReader(CommandBehavior.CloseConnection);
             }
@@ -240,7 +226,7 @@ namespace FS.Core.Data
                 Open();
                 comm.CommandType = cmdType;
                 comm.CommandText = cmdText;
-                AddParms(comm.Parameters, parameters);
+                if (parameters != null) { comm.Parameters.AddRange(parameters); }
                 var ada = Factory.CreateDataAdapter();
                 ada.SelectCommand = comm;
                 var ds = new DataSet();
@@ -284,7 +270,7 @@ namespace FS.Core.Data
                     bulkCopy.BulkCopyTimeout = 3600;
                     bulkCopy.WriteToServer(dt);
 
-                    bulkCopy.Close();
+                    //bulkCopy.Close();
                 }
             }
             finally

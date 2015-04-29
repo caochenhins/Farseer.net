@@ -51,7 +51,7 @@ namespace FS.Core.Infrastructure
             }
         }
 
-        protected virtual DbExecutor DataBase { get; private set; }
+        protected DbExecutor DataBase { get; private set; }
         #region 禁用智能提示
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj)
@@ -82,7 +82,7 @@ namespace FS.Core.Infrastructure
         /// </summary>
         /// <param name="disposing">是否释放托管资源</param>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public abstract void Dispose(bool disposing);
+        protected abstract void Dispose(bool disposing);
 
         /// <summary>
         /// 释放资源

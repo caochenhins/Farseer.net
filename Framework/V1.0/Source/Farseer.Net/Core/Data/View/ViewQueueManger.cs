@@ -71,7 +71,7 @@ namespace FS.Core.Data.View
             using (var reader = DataBase.GetReader(CommandType.Text, queue.Sql.ToString(), param))
             {
                 t = reader.ToInfo<TEntity>();
-                reader.Close();
+                //reader.Close();
             }
             DataBase.Close(false);
 

@@ -192,6 +192,7 @@
     <Compile Include="Extend\StringExtend.cs" />
     <Compile Include="Extend\ViewSetExtend.cs" />
     <Compile Include="Extend\TableSetExtend.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Mapping\Table\Attribute\ColumnAttribute.cs" />
     <Compile Include="Mapping\Table\Attribute\DBAttribute.cs" />
     <Compile Include="Mapping\Table\Attribute\PropertyExtendAttribute.cs" />

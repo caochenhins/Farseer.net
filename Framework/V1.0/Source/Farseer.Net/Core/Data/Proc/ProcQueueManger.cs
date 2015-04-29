@@ -135,7 +135,7 @@ namespace FS.Core.Data.Proc
             using (var reader = DataBase.GetReader(CommandType.StoredProcedure, queue.Name, param))
             {
                 lst = reader.ToList<TEntity>();
-                reader.Close();
+                //reader.Close();
             }
             DataBase.Close(false);
             SetParamToEntity(queue, entity);
@@ -149,7 +149,7 @@ namespace FS.Core.Data.Proc
             using (var reader = DataBase.GetReader(CommandType.StoredProcedure, queue.Name, param))
             {
                 t = reader.ToInfo<TEntity>();
-                reader.Close();
+                //reader.Close();
             }
             DataBase.Close(false);
 

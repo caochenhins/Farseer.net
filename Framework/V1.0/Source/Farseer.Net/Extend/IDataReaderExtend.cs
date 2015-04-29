@@ -414,7 +414,7 @@ namespace FS.Extend
                 list.Add(t);
             }
             reader.Close();
-            reader.Dispose();
+            //reader.Dispose();
             return list;
         }
 
@@ -444,7 +444,7 @@ namespace FS.Extend
                 }
             }
             reader.Close();
-            reader.Dispose();
+            //reader.Dispose();
             return isHaveValue ? t : null;
         }
 

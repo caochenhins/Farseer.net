@@ -141,7 +141,7 @@ namespace FS.Core.Client
                 _expNewProvider.Visit(keyValue.Key, false);
                 _expNewProvider.SqlList.Reverse().ToList().ForEach(o => sb.Append(o + ","));
                 if (sb.Length <= 0) continue;
-                sb = sb.Remove(sb.Length - 1, 1); sb.Append(string.Format(" {0}", keyValue.Value ? "ASC," : "DESC,"));
+                sb = sb.Remove(sb.Length - 1, 1).Append(string.Format(" {0}", keyValue.Value ? "ASC," : "DESC,"));
             }
 
             return sb.Length > 0 ? sb.Remove(sb.Length - 1, 1).ToString() : sb.ToString();

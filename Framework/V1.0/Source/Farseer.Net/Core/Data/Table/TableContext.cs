@@ -77,7 +77,7 @@ namespace FS.Core.Data.Table
         /// </summary>
         /// <param name="disposing">是否释放托管资源</param>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public override void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             //释放托管资源
             if (disposing)

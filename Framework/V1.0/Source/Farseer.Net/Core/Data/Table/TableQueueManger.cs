@@ -143,7 +143,7 @@ namespace FS.Core.Data.Table
             using (var reader = DataBase.GetReader(CommandType.Text, queue.Sql.ToString(), param))
             {
                 t = reader.ToInfo<TEntity>();
-                reader.Close();
+                //reader.Close();
             }
             DataBase.Close(false);
 
