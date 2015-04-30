@@ -1,13 +1,11 @@
-﻿using System.Web.UI;
-
-namespace FS.Utils.Web
+﻿namespace FS.Utils.Script
 {
     /// <summary>
     ///     JS提示框
     /// </summary>
     public class LhgDialog
     {
-        private readonly Page page;
+        private readonly System.Web.UI.Page page;
         /// <summary>
         /// 对话框脚本
         /// </summary>
@@ -18,7 +16,7 @@ namespace FS.Utils.Web
         /// </summary>
         /// <param name="page"></param>
         /// <param name="scriptPre"></param>
-        public LhgDialog(Page page, string scriptPre = "frameElement.api.opener.$$")
+        public LhgDialog(System.Web.UI.Page page, string scriptPre = "frameElement.api.opener.$$")
         {
             this.page = page;
             DialogScript = scriptPre;

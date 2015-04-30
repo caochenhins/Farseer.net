@@ -120,7 +120,7 @@ namespace FS.Utils
         /// </summary>
         /// <param name="p">Ò³Ãæ</param>
         /// <param name="message">¾¯¸æÄÚÈÝ</param>
-        public virtual void Alert(Page p, string message)
+        public virtual void Alert(System.Web.UI.Page p, string message)
         {
             var scriptKey = "AlertKey";
             var scripText = "alert('" + message.Replace("'", @"\'").Replace("<br />", "\\r") + "');";

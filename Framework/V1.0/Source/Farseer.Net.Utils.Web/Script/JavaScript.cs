@@ -10,13 +10,13 @@ namespace FS.Utils.Web
     /// </summary>
     public class JavaScript
     {
-        private readonly Page page;
+        private readonly System.Web.UI.Page page;
 
         /// <summary>
         /// 构造
         /// </summary>
         /// <param name="page"></param>
-        public JavaScript(Page page)
+        public JavaScript(System.Web.UI.Page page)
         {
             this.page = page;
         }
