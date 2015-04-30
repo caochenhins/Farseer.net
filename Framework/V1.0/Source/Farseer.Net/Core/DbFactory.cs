@@ -13,11 +13,38 @@ using FS.Core.Client.SqLite;
 using FS.Core.Client.SqlServer;
 using FS.Core.Data;
 using FS.Core.Infrastructure;
+using FS.Mapping.Table;
 
 namespace FS.Core
 {
     public static class DbFactory
     {
+
+        /// <summary>
+        ///     创建数据库操作
+        /// </summary>
+        /// <typeparam name="TInfo">实体类</typeparam>
+        /// <param name="tranLevel">开启事务等级</param>
+        public static DbExecutor CreateDbExecutor<TInfo>(IsolationLevel tranLevel = IsolationLevel.Serializable)
+        {
+            TableMap map = typeof(TInfo);
+            var dataType = map.EntityProperty.DataType;
+            var connetionString = map.EntityProperty.ConnStr;
+            var commandTimeout = map.EntityProperty.CommandTimeout;
+
+            return new DbExecutor(connetionString, dataType, commandTimeout, tranLevel);
+        }
+
+        /// <summary>
+        ///     创建数据库操作
+        /// </summary>
+        /// <param name="dbIndex">数据库配置</param>
+        /// <param name="tranLevel">开启事务等级</param>
+        public static DbExecutor CreateDbExecutor(int dbIndex = 0, IsolationLevel tranLevel = IsolationLevel.Unspecified)
+        {
+            DbInfo dbInfo = dbIndex;
+            return new DbExecutor(CreateConnString(dbIndex), dbInfo.DataType, dbInfo.CommandTimeout, tranLevel);
+        }
         /// <summary>
         /// 返回数据库类型名称
         /// </summary>
@@ -155,6 +182,19 @@ namespace FS.Core
                     }
                 default: return string.Empty;
             }
+        }
+
+
+        /// <summary>
+        ///     创建数据库连接字符串
+        /// </summary>
+        /// <param name="dbIndex">数据库配置</param>
+        public static string CreateConnString(int dbIndex = 0)
+        {
+            DbInfo dbInfo = dbIndex;
+            return CreateConnString(dbInfo.DataType, dbInfo.UserID, dbInfo.PassWord, dbInfo.Server, dbInfo.Catalog,
+                                    dbInfo.DataVer, dbInfo.ConnectTimeout, dbInfo.PoolMinSize, dbInfo.PoolMaxSize,
+                                    dbInfo.Port);
         }
 
         /// <summary>
