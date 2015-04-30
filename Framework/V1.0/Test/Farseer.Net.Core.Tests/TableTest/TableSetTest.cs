@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Demo.Common;
 using Demo.PO;
 using Demo.VO.Members;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,30 +17,60 @@ namespace Farseer.Net.Core.Tests.TableTest
         {
             using (var context = new Table())
             {
+                // 取前十条 随机 非重复的数据
                 Assert.IsTrue(context.User.Desc(o => o.ID).ToList(10, true, true).Count <= 10);
+                // 取 随机 非重复的数据
                 context.User.ToList(0, true, true);
+                // 取 随机 的数据
                 context.User.ToList(0, true);
+                // 取 非重复 的数据
                 context.User.ToList(0, false, true);
-
+                // 只取ID
                 var ID = context.User.Select(o => new { o.ID }).ToList(1)[0].ID.GetValueOrDefault();
-
+                // 筛选字段、条件、正序、倒序
                 var lst = context.User.Select(o => new { o.ID, o.PassWord, o.GetDate }).Where(o => o.ID == ID).Desc(o => new { o.LoginCount, o.GenderType }).Asc(o => o.ID).Desc(o => o.GetDate).ToList();
                 Assert.IsTrue(lst.Count == 1);
                 Assert.IsTrue(lst[0].PassWord != null && lst[0].GenderType == null && lst[0].LoginIP == null && lst[0].UserName == null && lst[0].ID != null && lst[0].LoginCount == null && lst[0].ID == ID);
-
+                // 取第2页的数据（每页显示3条数据）
                 Assert.IsTrue(context.User.ToList(3, 2).Count <= 3);
 
-                var count = context.User.Where(o => o.ID > 10).Count();
                 var recordCount = 0;
+                // 取前99999条数据，并返回总数据
                 Assert.IsTrue(context.User.Where(o => o.ID > 10).ToList(99999, 1, out recordCount).ToList().Count == recordCount);
+                // 取ID为：1、2、3 的数据
                 Assert.IsTrue(context.User.ToList(new List<int> { 1, 2, 3 }).Count <= 3);
-                var lstIDs = new List<int> {1, 2, 3};
+                var lstIDs = new List<int> { 1, 2, 3 };
                 Assert.IsTrue(context.User.ToList(lstIDs).Count <= 3);
+
+                // 来一个复杂条件的数据
+                context.User.Select(o => new { o.ID, o.PassWord, o.GetDate })
+                    .Where(
+                        o =>
+                            o.ID == ID ||
+                            o.LoginCount < 1 ||
+                            o.CreateAt < DateTime.Now ||
+                            o.CreateAt > DateTime.Now.AddDays(-365) ||
+                            o.UserName.Contains("x") ||
+                            o.UserName.StartsWith("x") ||
+                            o.UserName.EndsWith("x") ||
+                            o.UserName.Length > 0 ||
+                            o.GenderType == eumGenderType.Man || 
+                            !o.PassWord.Contains("x"))
+                    .Desc(o => new { o.LoginCount, o.GenderType })
+                    .Asc(o => o.ID)
+                    .Desc(o => o.GetDate)
+                    .ToList();
             }
         }
 
         [TestMethod]
-        public void ToSelectList() { }
+        public void ToSelectList()
+        {
+            using (var context = new Table())
+            {
+
+            }
+        }
 
         [TestMethod]
         public void ToEntity()

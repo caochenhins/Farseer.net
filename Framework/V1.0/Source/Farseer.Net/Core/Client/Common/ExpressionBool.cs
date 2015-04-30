@@ -60,6 +60,7 @@ namespace FS.Core.Client.Common
                         throw new Exception(string.Format("暂不支持该方法的SQL转换：" + m.Method.Name.ToUpper()));
                     }
             }
+            IsNot = false;
             return m;
         }
 
@@ -72,6 +73,7 @@ namespace FS.Core.Client.Common
         /// <param name="paramName"></param>
         protected virtual void VisitMethodContains(Type fieldType, string fieldName, Type paramType, string paramName)
         {
+
             // 非List<>形式
             if (paramType != null && (!paramType.IsGenericType || paramType.GetGenericTypeDefinition() == typeof(Nullable<>)))
             {
@@ -86,7 +88,7 @@ namespace FS.Core.Client.Common
                 }
                 #endregion
 
-                SqlList.Push(String.Format("CHARINDEX({0},{1}) > 0", paramName, fieldName));
+                SqlList.Push(String.Format("CHARINDEX({0},{1}) {2} 0", paramName, fieldName, IsNot ? "<=" : ">"));
             }
             else
             {
@@ -95,13 +97,10 @@ namespace FS.Core.Client.Common
                 var paramValue = CurrentDbParameter.Value;
                 QueueSql.Param.RemoveAt(QueueSql.Param.Count - 1);
 
-                // not 非条件
-                var notOper = "";
-                if (SqlList.Count > 0 && SqlList.First().Equals("Not")) { notOper = SqlList.Pop(); }
                 // 字段是字符类型的，需要加入''符号
                 if (Type.GetTypeCode(fieldType) == TypeCode.String) { paramValue = "'" + paramValue.ToString().Replace(",", "','") + "'"; }
 
-                SqlList.Push(String.Format("{0} {1} IN ({2})", fieldName, notOper, paramValue));
+                SqlList.Push(String.Format("{0} {1} IN ({2})", fieldName, IsNot ? "Not" : "", paramValue));
             }
         }
 
@@ -114,11 +113,7 @@ namespace FS.Core.Client.Common
         /// <param name="paramName"></param>
         protected virtual void VisitMethodStartswith(Type fieldType, string fieldName, Type paramType, string paramName)
         {
-            // !=
-            var notValue = "1";
-            if (SqlList.First().Equals("Not")) { SqlList.Pop(); notValue = "-1"; }
-
-            SqlList.Push(String.Format("CHARINDEX({1},{0}) = {2}", fieldName, notValue, paramName));
+            SqlList.Push(String.Format("CHARINDEX({0},{1}) {2} 1", paramName, fieldName, IsNot ? ">" : "="));
         }
 
         /// <summary>
@@ -130,11 +125,7 @@ namespace FS.Core.Client.Common
         /// <param name="paramName"></param>
         protected virtual void VisitMethodEndswith(Type fieldType, string fieldName, Type paramType, string paramName)
         {
-            // not
-            var notValue = "";
-            if (SqlList.First().Equals("Not")) { notValue = SqlList.Pop(); }
-
-            SqlList.Push(String.Format("{0} {1} LIKE {2}", fieldName, notValue, paramName));
+            SqlList.Push(String.Format("{0} {1} LIKE {2}", fieldName, IsNot ? "Not" : "", paramName));
             CurrentDbParameter.Value = string.Format("%{0}", CurrentDbParameter.Value);
         }
 
@@ -147,11 +138,7 @@ namespace FS.Core.Client.Common
         /// <param name="paramName"></param>
         protected virtual void VisitMethodIsEquals(Type fieldType, string fieldName, Type paramType, string paramName)
         {
-            // !=
-            var notValue = "=";
-            if (SqlList.First().Equals("Not")) { SqlList.Pop(); notValue = "<>"; }
-
-            SqlList.Push(String.Format("{0} {1} {2}", fieldName, notValue, paramName));
+            SqlList.Push(String.Format("{0} {1} {2}", fieldName, IsNot ? "<>" : "", paramName));
         }
     }
 }

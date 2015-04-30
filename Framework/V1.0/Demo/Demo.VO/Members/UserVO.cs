@@ -42,11 +42,11 @@ namespace Demo.VO.Members
         /// 登陆IP
         /// </summary>
         [Column(Name = "getdate()")]
-        public string GetDate { get; set; }
+        public DateTime? GetDate { get; set; }
 
         /// <summary>
         /// 创建时间
         /// </summary>
-        public DateTime CreateAt { get; set; }
+        public DateTime? CreateAt { get; set; }
     }
 }

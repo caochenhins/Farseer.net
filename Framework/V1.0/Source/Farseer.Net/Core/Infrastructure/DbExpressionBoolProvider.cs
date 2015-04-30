@@ -45,6 +45,11 @@ namespace FS.Core.Infrastructure
         protected readonly IQueueSql QueueSql;
 
         /// <summary>
+        /// 是否包括Not条件
+        /// </summary>
+        protected bool IsNot;
+
+        /// <summary>
         /// 默认构造器
         /// </summary>
         /// <param name="queueManger">队列管理模块</param>
@@ -249,7 +254,7 @@ namespace FS.Core.Infrastructure
         /// </summary>
         protected virtual Expression VisitUnary(UnaryExpression u)
         {
-            if (u.NodeType == ExpressionType.Not) { SqlList.Push("Not"); }
+            if (u.NodeType == ExpressionType.Not) { IsNot = true; }
             return Visit((u).Operand);
         }
 
