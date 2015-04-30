@@ -16,14 +16,14 @@ namespace Farseer.Net.Core.Tests.TableTest
         {
             var lst = Table.Data.User.Select(o => o.ID).Where(o => o.ID > 0).Asc(o => o.ID).ToList();
 
-            var info = Table.Data.User.Select(o => o.ID).Select(o => o.LoginCount).Where(o => o.ID > 1).ToInfo();
+            var info = Table.Data.User.Select(o => o.ID).Select(o => o.LoginCount).Where(o => o.ID > 1).ToEntity();
             Assert.IsNotNull(info);
             Assert.IsTrue(info.ID > 1);
             Assert.IsTrue(info.PassWord == null && info.GenderType == null && info.LoginIP == null && info.UserName == null && info.ID != null && info.LoginCount != null);
             Assert.IsTrue(info.ID == lst.Find(o => o.ID > 1).ID);
 
 
-            info = Table.Data.User.Select(o => new { o.ID, o.PassWord }).ToInfo();
+            info = Table.Data.User.Select(o => new { o.ID, o.PassWord }).ToEntity();
             Assert.IsNotNull(info);
             Assert.IsTrue(info.PassWord != null && info.GenderType == null && info.LoginIP == null && info.UserName == null && info.ID != null && info.LoginCount == null);
             Assert.IsTrue(info.ID == lst[0].ID);
@@ -31,14 +31,14 @@ namespace Farseer.Net.Core.Tests.TableTest
 
 
             Expression<Func<UserVO, object>> select = o => new { o.ID, o.PassWord };
-            info = Table.Data.User.Select(select).ToInfo();
+            info = Table.Data.User.Select(select).ToEntity();
             Assert.IsNotNull(info);
             Assert.IsTrue(info.PassWord != null && info.GenderType == null && info.LoginIP == null && info.UserName == null && info.ID != null && info.LoginCount == null);
             Assert.IsTrue(info.ID == lst[0].ID);
 
 
 
-            info = Table.Data.User.Select(select).ToInfo();
+            info = Table.Data.User.Select(select).ToEntity();
             Assert.IsNotNull(info);
             Assert.IsTrue(info.PassWord != null && info.GenderType == null && info.LoginIP == null && info.UserName == null && info.ID != null && info.LoginCount == null);
             Assert.IsTrue(info.ID == lst[0].ID);
@@ -87,7 +87,7 @@ namespace Farseer.Net.Core.Tests.TableTest
                 context.User.Insert(new UserVO() { UserName = "xx" });
                 context.SaveChanges();
 
-                info = context.User.Desc(o => o.ID).ToInfo();
+                info = context.User.Desc(o => o.ID).ToEntity();
                 Assert.IsTrue(info.UserName == "xx");
 
                 currentCount = context.User.Count();
@@ -97,7 +97,7 @@ namespace Farseer.Net.Core.Tests.TableTest
             Table.Data.User.Insert(new UserVO() { UserName = "yy" });
 
 
-            info = Table.Data.User.Desc(o => o.ID).ToInfo();
+            info = Table.Data.User.Desc(o => o.ID).ToEntity();
             Assert.IsTrue(info.UserName == "yy");
 
             currentCount = Table.Data.User.Count();
@@ -112,15 +112,15 @@ namespace Farseer.Net.Core.Tests.TableTest
             var ID = 0;
             using (var context = new Table())
             {
-                ID = context.User.Desc(o => o.ID).ToInfo().ID.GetValueOrDefault();
+                ID = context.User.Desc(o => o.ID).ToEntity().ID.GetValueOrDefault();
 
                 context.User.Where(o => o.ID == ID).Update(new UserVO() { UserName = "zz" });
                 context.SaveChanges();
-                Assert.IsTrue(context.User.Desc(o => o.ID).ToInfo().UserName == "zz");
+                Assert.IsTrue(context.User.Desc(o => o.ID).ToEntity().UserName == "zz");
             }
 
             Table.Data.User.Where(o => o.ID == ID).Update(new UserVO() { UserName = "bb" });
-            Assert.IsTrue(Table.Data.User.Desc(o => o.ID).ToInfo().UserName == "bb");
+            Assert.IsTrue(Table.Data.User.Desc(o => o.ID).ToEntity().UserName == "bb");
 
             Table.Data.User.Update(new UserVO() { UserName = "bb", ID = ID });
         }
@@ -131,16 +131,16 @@ namespace Farseer.Net.Core.Tests.TableTest
             UserVO info;
             using (var context = new Table())
             {
-                info = context.User.Desc(o => o.ID).ToInfo();
+                info = context.User.Desc(o => o.ID).ToEntity();
 
                 context.User.Where(o => o.ID == info.ID).Append(o => new { o.LoginCount }, 4).AddUp();
                 context.SaveChanges();
-                var info2 = context.User.Desc(o => o.ID).ToInfo();
+                var info2 = context.User.Desc(o => o.ID).ToEntity();
                 Assert.IsTrue(info2.LoginCount == info.LoginCount + 4);
             }
 
             Table.Data.User.Where(o => o.ID == info.ID).Update(new UserVO() { UserName = "bb" });
-            Assert.IsTrue(Table.Data.User.Desc(o => o.ID).ToInfo().UserName == "bb");
+            Assert.IsTrue(Table.Data.User.Desc(o => o.ID).ToEntity().UserName == "bb");
 
         }
     }

@@ -1,4 +1,6 @@
-﻿namespace FS.Core.Infrastructure
+﻿using System;
+
+namespace FS.Core.Infrastructure
 {
     public interface IEntity<T>
     {

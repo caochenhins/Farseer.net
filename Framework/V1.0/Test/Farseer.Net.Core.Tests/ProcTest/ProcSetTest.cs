@@ -35,7 +35,7 @@ namespace Farseer.Net.Core.Tests.ProcTest
         public void ToInfoTestMethod()
         {
             var info = new InfoUserVO { ID = 3 };
-            info = Proc.Data.InfoUser.ToInfo(info);
+            info = Proc.Data.InfoUser.ToEntity(info);
             Assert.IsNotNull(info);
             Assert.IsTrue(info.ID == 3);
         }

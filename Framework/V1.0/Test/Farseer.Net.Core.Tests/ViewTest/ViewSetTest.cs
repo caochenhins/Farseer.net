@@ -15,14 +15,14 @@ namespace Farseer.Net.Core.Tests.ViewTest
         {
             var lst = View.Data.Account.Select(o => o.ID).Where(o => o.ID > 0).Asc(o => o.ID).ToList();
 
-            var info = View.Data.Account.Select(o => o.ID).Select(o => o.Name).Where(o => o.ID > 1).ToInfo();
+            var info = View.Data.Account.Select(o => o.ID).Select(o => o.Name).Where(o => o.ID > 1).ToEntity();
             Assert.IsNotNull(info);
             Assert.IsTrue(info.ID > 1);
             Assert.IsTrue(info.Pwd == null && info.Name != null && info.ID != null);
             Assert.IsTrue(info.ID == lst.Find(o => o.ID > 1).ID);
 
 
-            info = View.Data.Account.Select(o => new { o.ID, o.Pwd }).ToInfo();
+            info = View.Data.Account.Select(o => new { o.ID, o.Pwd }).ToEntity();
             Assert.IsNotNull(info);
             Assert.IsTrue(info.Pwd != null &&  info.Name == null && info.ID != null);
             Assert.IsTrue(info.ID == lst[0].ID);
@@ -30,14 +30,14 @@ namespace Farseer.Net.Core.Tests.ViewTest
 
 
             Expression<Func<AccountVO, object>> select = o => new { o.ID, o.Pwd };
-            info = View.Data.Account.Select(select).ToInfo();
+            info = View.Data.Account.Select(select).ToEntity();
             Assert.IsNotNull(info);
             Assert.IsTrue(info.Pwd != null &&  info.Name == null && info.ID != null);
             Assert.IsTrue(info.ID == lst[0].ID);
 
 
 
-            info = View.Data.Account.Select(select).ToInfo();
+            info = View.Data.Account.Select(select).ToEntity();
             Assert.IsNotNull(info);
             Assert.IsTrue(info.Pwd != null &&  info.Name == null && info.ID != null);
             Assert.IsTrue(info.ID == lst[0].ID);

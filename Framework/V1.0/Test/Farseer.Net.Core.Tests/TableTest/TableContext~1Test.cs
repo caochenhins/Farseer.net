@@ -18,7 +18,7 @@ namespace Farseer.Net.Core.Tests.TableTest
         {
             using (var context = new Table())
             {
-                var info = context.User.Where(o => o.ID > 0 && o.CreateAt < DateTime.Now).Desc(o => new { o.ID, o.LoginCount }).Asc(o => o.GenderType).ToInfo();
+                var info = context.User.Where(o => o.ID > 0 && o.CreateAt < DateTime.Now).Desc(o => new { o.ID, o.LoginCount }).Asc(o => o.GenderType).ToEntity();
                 info.PassWord = "77777";
                 context.User.Where(o => o.ID == 1).Update(info);
 
