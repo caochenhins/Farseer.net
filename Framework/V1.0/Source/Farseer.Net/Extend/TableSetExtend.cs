@@ -8,7 +8,6 @@ namespace FS.Extend
 {
     public static class TableSetExtend
     {
-        #region ToEntity
         /// <summary>
         ///     获取下一条记录
         /// </summary>
@@ -30,7 +29,5 @@ namespace FS.Extend
         {
             return ts.Where(o => o.ID < ID).Desc(o => o.ID).ToEntity();
         }
-
-        #endregion
     }
 }

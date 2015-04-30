@@ -289,7 +289,7 @@ namespace FS.Core.Infrastructure
                         //if (memExp.Expression.NodeType == ExpressionType.MemberAccess) { return IsCanCompile(memExp.Expression); }
                         //break;
                     }
-                case ExpressionType.Parameter: return !exp.Type.IsClass;
+                case ExpressionType.Parameter: return !exp.Type.IsClass && !exp.Type.IsAbstract && !exp.Type.IsInterface;
                 case ExpressionType.Convert: return IsFieldValue(((UnaryExpression)exp).Operand);
                 case ExpressionType.ArrayIndex:
                 case ExpressionType.ListInit:

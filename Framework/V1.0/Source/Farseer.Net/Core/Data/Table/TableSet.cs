@@ -264,7 +264,7 @@ namespace FS.Core.Data.Table
         }
         #endregion
 
-        #region TEntity
+        #region ToEntity
         /// <summary>
         /// 获取单条记录
         /// </summary>
@@ -295,12 +295,13 @@ namespace FS.Core.Data.Table
             QueueManger.SqlQuery<TEntity>(Queue).Count();
             return QueueManger.ExecuteQuery<int>(Queue);
         }
+
         /// <summary>
         ///     获取数量
         /// </summary>
         /// <typeparam name="T">ID</typeparam>
         /// <param name="ID">条件，等同于：o=>o.ID.Equals(ID) 的操作</param>
-        public int Count<T>(int? ID)
+        public int Count<T>(T ID)
         {
             return Where<T>(o => o.ID.Equals(ID)).Count();
         }
@@ -373,7 +374,7 @@ namespace FS.Core.Data.Table
         /// </summary>
         /// <typeparam name="T">ID</typeparam>
         /// <param name="ID">条件，等同于：o=>o.ID == ID 的操作</param>
-        public bool IsHaving<T>(int? ID) 
+        public bool IsHaving<T>(T ID) 
         {
             return Where<T>(o => o.ID.Equals(ID)).IsHaving();
         }

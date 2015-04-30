@@ -24,6 +24,7 @@ namespace FS.Core.Client.Common
 
             if (m.Arguments.Count > 0)
             {
+                // 静态方法 Object = null
                 if (m.Object == null)
                 {
                     if (!m.Arguments[0].Type.IsGenericType || m.Arguments[0].Type.GetGenericTypeDefinition() == typeof(Nullable<>)) { fieldType = m.Arguments[0].Type; paramType = m.Arguments[1].Type; fieldName = SqlList.Pop(); paramName = SqlList.Pop(); }
@@ -31,6 +32,7 @@ namespace FS.Core.Client.Common
                 }
                 else
                 {
+                    // 非List类型
                     if (!m.Object.Type.IsGenericType || m.Object.Type.GetGenericTypeDefinition() == typeof(Nullable<>))
                     {
                         fieldType = m.Object.Type;
@@ -70,6 +72,7 @@ namespace FS.Core.Client.Common
         /// <param name="paramName"></param>
         protected virtual void VisitMethodContains(Type fieldType, string fieldName, Type paramType, string paramName)
         {
+            // 非List<>形式
             if (paramType != null && (!paramType.IsGenericType || paramType.GetGenericTypeDefinition() == typeof(Nullable<>)))
             {
                 #region 搜索值串的处理
@@ -88,12 +91,17 @@ namespace FS.Core.Client.Common
             else
             {
 
-                // not
-                var notValue = "";
-                if (SqlList.First().Equals("Not")) { notValue = SqlList.Pop(); }
+                // 不使用参数化形式，同时移除参数
+                var paramValue = CurrentDbParameter.Value;
+                QueueSql.Param.RemoveAt(QueueSql.Param.Count - 1);
 
-                if (Type.GetTypeCode(fieldType) == TypeCode.String) { CurrentDbParameter.Value = "'" + CurrentDbParameter.Value.ToString().Replace(",", "','") + "'"; }
-                SqlList.Push(String.Format("{0} {1} IN ({2})", fieldName, notValue, paramName));
+                // not 非条件
+                var notOper = "";
+                if (SqlList.Count > 0 && SqlList.First().Equals("Not")) { notOper = SqlList.Pop(); }
+                // 字段是字符类型的，需要加入''符号
+                if (Type.GetTypeCode(fieldType) == TypeCode.String) { paramValue = "'" + paramValue.ToString().Replace(",", "','") + "'"; }
+
+                SqlList.Push(String.Format("{0} {1} IN ({2})", fieldName, notOper, paramValue));
             }
         }
 

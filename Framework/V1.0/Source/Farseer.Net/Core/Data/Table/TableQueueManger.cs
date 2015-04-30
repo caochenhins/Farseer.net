@@ -38,7 +38,10 @@ namespace FS.Core.Data.Table
             get
             {
                 var lst = new List<DbParameter>();
-                _groupQueueList.Where(o => o.Param != null).Select(o => o.Param).ToList().ForEach(lst.AddRange);
+                _groupQueueList.Where(o => o.Param != null).Select(o => o.Param).ToList().ForEach(o => o.ForEach(oo =>
+                {
+                    if (!lst.Exists(x => oo.ParameterName == x.ParameterName)) { lst.Add(oo); }
+                }));
                 return lst;
             }
         }

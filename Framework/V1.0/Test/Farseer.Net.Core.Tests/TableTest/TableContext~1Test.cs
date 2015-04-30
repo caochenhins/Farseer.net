@@ -10,7 +10,11 @@ namespace Farseer.Net.Core.Tests.TableTest
         [TestMethod]
         public void NewTableContextTestMethod()
         {
-            using (new Table()) { }
+            using (var context = new Table()) { }
+
+            new Table().User.Where(o => o.ID > 0).ToList();
+            Table.Data.User.AddUp(o => o.LoginCount, 1);
+            Table.Data.User.Where(o => o.ID > 0).ToList();
         }
 
         [TestMethod]
@@ -22,16 +26,13 @@ namespace Farseer.Net.Core.Tests.TableTest
                 info.PassWord = "77777";
                 context.User.Where(o => o.ID == 1).Update(info);
 
-
-                info.LoginIP = "bbbbb";
-                context.User.Where(o => o.ID == 1).Update(info);
-
                 info.ID = null;
                 info.PassWord = "00000New";
                 context.User.Insert(info);
 
 
                 context.User.Where(o => o.ID == 1).Append(o => o.LoginCount, 1).AddUp();
+                context.User.AddUp(o => o.LoginCount, 1);
 
                 var lst = context.User.Where(o => o.ID > 0).Desc(o => new { o.ID, o.LoginCount }).Asc(o => o.GenderType).ToList();
 
