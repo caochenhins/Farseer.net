@@ -256,7 +256,7 @@ namespace FS.Core.Data.View
         /// </summary>
         /// <typeparam name="T">ID</typeparam>
         /// <param name="ID">条件，等同于：o=>o.ID.Equals(ID) 的操作</param>
-        public TEntity ToEntity<T>(int? ID)
+        public TEntity ToEntity<T>(T ID)
         {
             return Where<T>(o => o.ID.Equals(ID)).ToEntity();
         }

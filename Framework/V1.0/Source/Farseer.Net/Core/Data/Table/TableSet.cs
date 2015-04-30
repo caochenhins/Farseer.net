@@ -279,7 +279,7 @@ namespace FS.Core.Data.Table
         /// </summary>
         /// <typeparam name="T">ID</typeparam>
         /// <param name="ID">条件，等同于：o=>o.ID.Equals(ID) 的操作</param>
-        public TEntity ToEntity<T>(int? ID)
+        public TEntity ToEntity<T>(T ID)
         {
             return Where<T>(o => o.ID.Equals(ID)).ToEntity();
         }
@@ -354,7 +354,7 @@ namespace FS.Core.Data.Table
         /// <param name="lstIDs">o => IDs.Contains(o.ID)</param>
         public void Copy<T>(List<T> lstIDs, Action<TEntity> act = null)
         {
-            Where<T>(o => lstIDs.Contains((T) o.ID));
+            Where<T>(o => lstIDs.Contains((T)o.ID));
             Copy(act);
         }
 
@@ -374,7 +374,7 @@ namespace FS.Core.Data.Table
         /// </summary>
         /// <typeparam name="T">ID</typeparam>
         /// <param name="ID">条件，等同于：o=>o.ID == ID 的操作</param>
-        public bool IsHaving<T>(T ID) 
+        public bool IsHaving<T>(T ID)
         {
             return Where<T>(o => o.ID.Equals(ID)).IsHaving();
         }
@@ -529,7 +529,7 @@ namespace FS.Core.Data.Table
         /// </summary>
         /// <param name="ID">条件，等同于：o=>o.ID.Equals(ID) 的操作</param>
         /// <typeparam name="T">ID</typeparam>
-        public void Delete<T>(int? ID) 
+        public void Delete<T>(int? ID)
         {
             Where<T>(o => o.ID.Equals(ID)).Delete();
         }
@@ -643,13 +643,14 @@ namespace FS.Core.Data.Table
         /// <summary>
         ///     获取数量
         /// </summary>
-        /// <typeparam name="T">ID</typeparam>
+        /// <typeparam name="T1">ID</typeparam>
+        /// <typeparam name="T2">字段类型</typeparam>
         /// <param name="ID">条件，等同于：o=>o.ID.Equals(ID) 的操作</param>
         /// <param name="fieldName">筛选字段</param>
         /// <param name="defValue">不存在时默认值</param>
-        public T GetValue<T>(T ID, Expression<Func<TEntity, T>> fieldName, T defValue = default(T))
+        public T2 GetValue<T1, T2>(T1 ID, Expression<Func<TEntity, T2>> fieldName, T2 defValue = default(T2))
         {
-            return Where<T>(o => o.ID.Equals(ID)).GetValue(fieldName, defValue);
+            return Where<T1>(o => o.ID.Equals(ID)).GetValue(fieldName, defValue);
         }
         #endregion
 
