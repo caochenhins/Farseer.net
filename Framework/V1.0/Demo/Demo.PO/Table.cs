@@ -8,5 +8,8 @@ namespace Demo.PO
     {
         [Column(Name = "Members_User")]
         public TableSet<UserVO> User { get; set; }
+
+        [Column(Name = "Members_Role", IsCache = true)]
+        public TableSet<UserRoleVO> UserRole { get; set; }
     }
 }

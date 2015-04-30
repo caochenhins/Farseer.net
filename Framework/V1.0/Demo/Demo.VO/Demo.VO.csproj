@@ -43,6 +43,7 @@
     <Compile Include="Members\InfoUserVO.cs" />
     <Compile Include="Members\InsertUserVO.cs" />
     <Compile Include="Members\ListUserVO.cs" />
+    <Compile Include="Members\UserRoleVO.cs" />
     <Compile Include="Members\UserVO.cs" />
     <Compile Include="Members\ValueUserVO.cs" />
     <Compile Include="Members\AccountVO.cs" />
