@@ -74,7 +74,7 @@ namespace FS.Extend
             }
 
             var map = CacheManger.GetTableMap(typeof(T1));
-            var modelInfo = map.GetModelInfo((memberExpression.Member).Name);
+            var modelInfo = map.GetModelProperty((memberExpression.Member).Name);
 
             return modelInfo.Value.Column.Name;
         }

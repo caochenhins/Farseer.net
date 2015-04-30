@@ -38,7 +38,7 @@ namespace FS.Core
         /// </summary>
         public static DbProvider CreateDbProvider<TEntity>(DataBaseType? db = null) where TEntity : class,new()
         {
-            var dbType = db ?? CacheManger.GetTableMap(typeof(TEntity)).ClassInfo.DataType;
+            var dbType = db ?? CacheManger.GetTableMap(typeof(TEntity)).EntityProperty.DataType;
             switch (dbType)
             {
                 case DataBaseType.OleDb: return new OleDbProvider();

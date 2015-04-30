@@ -530,7 +530,7 @@ namespace FS.Utils
         /// </summary>
         public static void RememberUrl()
         {
-            Cookies.Set(SystemConfigs.ConfigInfo.Cookies_CallBack_Url, Req.GetUrl());
+            Cookies.Set(SystemConfigs.ConfigEntity.Cookies_CallBack_Url, Req.GetUrl());
         }
 
         /// <summary>
@@ -547,7 +547,7 @@ namespace FS.Utils
         /// </summary>
         public static void GoToUrl(string url = "")
         {
-            if (string.IsNullOrWhiteSpace(url)) { url = Cookies.Get(SystemConfigs.ConfigInfo.Cookies_CallBack_Url); }
+            if (string.IsNullOrWhiteSpace(url)) { url = Cookies.Get(SystemConfigs.ConfigEntity.Cookies_CallBack_Url); }
             if (string.IsNullOrWhiteSpace(url)) { url = "http://" + GetDomain(0); }
             if (url.StartsWith("?")) { url = MvcReq.GetPageName() + url; }
             HttpContext.Current.Response.Redirect(url);

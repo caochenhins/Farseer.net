@@ -8,7 +8,7 @@
         /// <summary>
         /// 查询单条记录
         /// </summary>
-        void ToInfo();
+        void ToEntity();
         /// <summary>
         /// 查询多条记录
         /// </summary>

@@ -148,9 +148,9 @@ namespace FS.Extend
         /// <param name="ts">TableSet</param>
         /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="ID">条件，等同于：o=>o.ID == ID 的操作</param>
-        public static TEntity ToInfo<TEntity>(this TableSet<TEntity> ts, int? ID) where TEntity : class, Core.Infrastructure.IEntity, new()
+        public static TEntity ToEntity<TEntity>(this TableSet<TEntity> ts, int? ID) where TEntity : class, Core.Infrastructure.IEntity, new()
         {
-            return ts.Where(o => o.ID == ID).ToInfo();
+            return ts.Where(o => o.ID == ID).ToEntity();
         }
 
         /// <summary>
@@ -159,9 +159,9 @@ namespace FS.Extend
         /// <param name="ID">当前ID</param>
         /// <param name="ts">TableSet</param>
         /// <typeparam name="TEntity">实体类</typeparam>
-        public static TEntity ToNexTEntity<TEntity>(this TableSet<TEntity> ts, int? ID) where TEntity : class, Core.Infrastructure.IEntity, new()
+        public static TEntity ToNextEntity<TEntity>(this TableSet<TEntity> ts, int? ID) where TEntity : class, Core.Infrastructure.IEntity, new()
         {
-            return ts.Where(o => o.ID > ID).Asc(o => o.ID).ToInfo();
+            return ts.Where(o => o.ID > ID).Asc(o => o.ID).ToEntity();
         }
 
         /// <summary>
@@ -170,9 +170,9 @@ namespace FS.Extend
         /// <param name="ID">当前ID</param>
         /// <param name="ts">TableSet</param>
         /// <typeparam name="TEntity">实体类</typeparam>
-        public static TEntity ToPreviousInfo<TEntity>(this TableSet<TEntity> ts, int? ID) where TEntity : class, Core.Infrastructure.IEntity, new()
+        public static TEntity ToPreviousEntity<TEntity>(this TableSet<TEntity> ts, int? ID) where TEntity : class, Core.Infrastructure.IEntity, new()
         {
-            return ts.Where(o => o.ID < ID).Desc(o => o.ID).ToInfo();
+            return ts.Where(o => o.ID < ID).Desc(o => o.ID).ToEntity();
         }
 
         /// <summary>

@@ -164,9 +164,9 @@ namespace FS.Core.Data.View
         /// <summary>
         /// 查询单条记录（不支持延迟加载）
         /// </summary>
-        public TEntity ToInfo()
+        public TEntity ToEntity()
         {
-            QueueManger.SqlQuery<TEntity>(Queue).ToInfo();
+            QueueManger.SqlQuery<TEntity>(Queue).ToEntity();
             return QueueManger.ExecuteInfo<TEntity>(Queue);
         }
         /// <summary>

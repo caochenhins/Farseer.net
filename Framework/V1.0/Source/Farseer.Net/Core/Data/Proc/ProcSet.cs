@@ -52,7 +52,7 @@ namespace FS.Core.Data.Proc
         /// <summary>
         /// 执行存储过程（返回单条记录）
         /// </summary>
-        public TEntity ToInfo(TEntity entity = null)
+        public TEntity ToEntity(TEntity entity = null)
         {
             QueueManger.SqlQuery<TEntity>(Queue).CreateParam(entity);
             return QueueManger.ExecuteInfo(Queue, entity);

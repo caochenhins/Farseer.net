@@ -26,7 +26,7 @@ namespace FS.Mapping.Table
         /// <param name="dbIndex"></param>
         public void Map(int dbIndex)
         {
-            ClassInfo = new DBAttribute(null, dbIndex);
+            EntityProperty = new DBAttribute(null, dbIndex);
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace FS.Mapping.Table
         /// <param name="commandTimeout"></param>
         public void Map(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, string dataVer = "2008", int commandTimeout = 30)
         {
-            ClassInfo = new DBAttribute(null, connectionString, dbType, dataVer, commandTimeout);
+            EntityProperty = new DBAttribute(null, connectionString, dbType, dataVer, commandTimeout);
         }
 
         /// <summary>
@@ -52,9 +52,9 @@ namespace FS.Mapping.Table
 
             #region 类属性
             var attrs = Type.GetCustomAttributes(typeof(DBAttribute), false);
-            foreach (var attr in attrs.OfType<DBAttribute>()) { ClassInfo = attr; }
-            if (ClassInfo == null) { ClassInfo = new DBAttribute(null); }
-            if (string.IsNullOrEmpty(ClassInfo.Name)) { ClassInfo.Name = Type.Name; }
+            foreach (var attr in attrs.OfType<DBAttribute>()) { EntityProperty = attr; }
+            if (EntityProperty == null) { EntityProperty = new DBAttribute(null); }
+            if (string.IsNullOrEmpty(EntityProperty.Name)) { EntityProperty.Name = Type.Name; }
             #endregion
 
             #region 变量属性
@@ -94,7 +94,7 @@ namespace FS.Mapping.Table
         /// <summary>
         ///     类属性
         /// </summary>
-        public DBAttribute ClassInfo { get; set; }
+        public DBAttribute EntityProperty { get; set; }
 
         /// <summary>
         ///     自增ID
@@ -118,7 +118,7 @@ namespace FS.Mapping.Table
         ///     获取当前属性（通过使用的fieldName）
         /// </summary>
         /// <param name="fieldName">属性名称</param>
-        public KeyValuePair<PropertyInfo, FieldMapState> GetModelInfo(string fieldName = "")
+        public KeyValuePair<PropertyInfo, FieldMapState> GetModelProperty(string fieldName = "")
         {
             return string.IsNullOrEmpty(fieldName) ? ModelList.FirstOrDefault(oo => oo.Value.Column.IsPrimaryKey) : ModelList.FirstOrDefault(oo => oo.Key.Name == fieldName);
         }

@@ -19,7 +19,7 @@ namespace FS.Utils
         /// <param name="isAddPrefix">是否需要添加前缀</param>
         public static void Set(string strName, object strValue, bool isAddPrefix = true)
         {
-            Set(strName, strValue, SystemConfigs.ConfigInfo.Cookies_TimeOut, isAddPrefix);
+            Set(strName, strValue, SystemConfigs.ConfigEntity.Cookies_TimeOut, isAddPrefix);
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace FS.Utils
         /// <param name="isAddPrefix">是否需要添加前缀</param>
         public static void Set(string strName, object value, int expires, bool isAddPrefix = true)
         {
-            if (isAddPrefix) { strName = SystemConfigs.ConfigInfo.Cookies_Prefix + strName; }
+            if (isAddPrefix) { strName = SystemConfigs.ConfigEntity.Cookies_Prefix + strName; }
             if (value == null) { value = string.Empty; }
             var cookie = HttpContext.Current.Request.Cookies[strName] ?? new HttpCookie(strName);
 
@@ -40,9 +40,9 @@ namespace FS.Utils
             cookie.Value = value.ToString();
             cookie.Expires = DateTime.Now.AddMinutes(expires);
 
-            if (!string.IsNullOrWhiteSpace(GeneralConfigs.ConfigInfo.CookiesDomain))
+            if (!string.IsNullOrWhiteSpace(GeneralConfigs.ConfigEntity.CookiesDomain))
             {
-                cookie.Domain = GeneralConfigs.ConfigInfo.CookiesDomain;
+                cookie.Domain = GeneralConfigs.ConfigEntity.CookiesDomain;
             }
             HttpContext.Current.Response.Cookies.Add(cookie);
         }
@@ -66,7 +66,7 @@ namespace FS.Utils
         /// <param name="isAddPrefix">是否需要添加前缀</param>
         public static T Get<T>(string strName, T defValue, bool isAddPrefix = true)
         {
-            if (isAddPrefix) { strName = SystemConfigs.ConfigInfo.Cookies_Prefix + strName; }
+            if (isAddPrefix) { strName = SystemConfigs.ConfigEntity.Cookies_Prefix + strName; }
             if (HttpContext.Current.Request.Cookies[strName] != null)
             {
                 var httpCookie = HttpContext.Current.Request.Cookies[strName];

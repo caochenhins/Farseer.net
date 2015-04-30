@@ -114,7 +114,7 @@ namespace FS.Extend
         /// <param name="ID">条件，等同于：o=>o.ID == ID 的操作</param>
         public static TEntity ToInfo<TEntity>(this ViewSet<TEntity> ts, int? ID) where TEntity : class, Core.Infrastructure.IEntity, new()
         {
-            return ts.Where(o => o.ID == ID).ToInfo();
+            return ts.Where(o => o.ID == ID).ToEntity();
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace FS.Extend
         /// <typeparam name="TEntity">实体类</typeparam>
         public static TEntity ToNexTEntity<TEntity>(this ViewSet<TEntity> ts, int? ID) where TEntity : class, Core.Infrastructure.IEntity, new()
         {
-            return ts.Where(o => o.ID > ID).Asc(o => o.ID).ToInfo();
+            return ts.Where(o => o.ID > ID).Asc(o => o.ID).ToEntity();
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace FS.Extend
         /// <typeparam name="TEntity">实体类</typeparam>
         public static TEntity ToPreviousInfo<TEntity>(this ViewSet<TEntity> ts, int? ID) where TEntity : class, Core.Infrastructure.IEntity, new()
         {
-            return ts.Where(o => o.ID < ID).Desc(o => o.ID).ToInfo();
+            return ts.Where(o => o.ID < ID).Desc(o => o.ID).ToEntity();
         }
 
         /// <summary>

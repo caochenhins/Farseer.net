@@ -40,7 +40,7 @@ namespace FS.Configs
         /// </summary>
         public static implicit operator RewriterRule(int index)
         {
-            return RewriterConfigs.ConfigInfo.Rules.Count <= index ? null : RewriterConfigs.ConfigInfo.Rules[index];
+            return RewriterConfigs.ConfigEntity.Rules.Count <= index ? null : RewriterConfigs.ConfigEntity.Rules[index];
         }
     }
 }

@@ -13,7 +13,7 @@ namespace FS.Core.Client.SqLite.SqlQuery
         /// <param name="queueSql">包含数据库SQL操作的队列</param>
         public SqlQuery(IQueueManger queueManger, IQueueSql queueSql) : base(queueManger, queueSql) { }
 
-        public override void ToInfo()
+        public override void ToEntity()
         {
             QueueSql.Sql = new StringBuilder();
             var strSelectSql = Visit.Select(QueueSql.ExpSelect);

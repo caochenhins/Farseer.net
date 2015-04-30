@@ -220,7 +220,7 @@ namespace FS.Core.Infrastructure
                 case ExpressionType.Constant: return Visit(VisitConvertExp(m));
                 default:
                     {
-                        var keyValue = Map.GetModelInfo(m.Member.Name);
+                        var keyValue = Map.GetModelProperty(m.Member.Name);
                         if (keyValue.Key == null)
                         {
                             switch (m.Member.Name)

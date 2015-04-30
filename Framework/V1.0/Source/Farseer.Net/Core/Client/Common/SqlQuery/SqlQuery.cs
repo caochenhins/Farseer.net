@@ -36,7 +36,7 @@ namespace FS.Core.Client.Common.SqlQuery
             Visit = new ExpressionVisit<TEntity>(queueManger, QueueSql);
         }
 
-        public virtual void ToInfo()
+        public virtual void ToEntity()
         {
             QueueSql.Sql = new StringBuilder();
             var strSelectSql = Visit.Select(QueueSql.ExpSelect);

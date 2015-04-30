@@ -71,7 +71,7 @@ namespace FS.Configs
         /// </summary>
         public static implicit operator EmailInfo(int index)
         {
-            return EmailConfigs.ConfigInfo.EmailList.Count <= index ? null : EmailConfigs.ConfigInfo.EmailList[index];
+            return EmailConfigs.ConfigEntity.EmailList.Count <= index ? null : EmailConfigs.ConfigEntity.EmailList[index];
         }
     }
 }

@@ -15,14 +15,14 @@ namespace FS.Core.Infrastructure
         protected BaseContext()
         {
             var map = CacheManger.GetTableMap(this.GetType());
-            DataBase = new DbExecutor(map.ClassInfo.ConnStr, map.ClassInfo.DataType, map.ClassInfo.CommandTimeout);
+            DataBase = new DbExecutor(map.EntityProperty.ConnStr, map.EntityProperty.DataType, map.EntityProperty.CommandTimeout);
         }
 
         /// <summary>
         /// 通过数据库配置，连接数据库
         /// </summary>
         /// <param name="dbIndex">数据库选项</param>
-        protected BaseContext(int dbIndex) : this(CacheManger.CreateConnString(dbIndex), DbConfigs.ConfigInfo.DbList[dbIndex].DataType, DbConfigs.ConfigInfo.DbList[dbIndex].CommandTimeout) { }
+        protected BaseContext(int dbIndex) : this(CacheManger.CreateConnString(dbIndex), DbConfigs.ConfigEntity.DbList[dbIndex].DataType, DbConfigs.ConfigEntity.DbList[dbIndex].CommandTimeout) { }
 
         /// <summary>
         /// 通过自定义数据链接符，连接数据库

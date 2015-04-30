@@ -70,7 +70,7 @@ namespace FS.Core.Infrastructure
         {
             if (m == null) return null;
 
-            var keyValue = Map.GetModelInfo(m.Member.Name);
+            var keyValue = Map.GetModelProperty(m.Member.Name);
             if (keyValue.Key == null) { return CreateFieldName((MemberExpression)m.Expression); }
 
             // 加入Sql队列

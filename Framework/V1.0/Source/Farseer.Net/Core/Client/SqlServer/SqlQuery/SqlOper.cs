@@ -20,7 +20,7 @@ namespace FS.Core.Client.SqlServer.SqlQuery
             var map = CacheManger.GetTableMap(typeof(TEntity));
 
             // 主键如果有值，则需要 SET IDENTITY_INSERT ON
-            var indexHaveValue = map.GetModelInfo().Key != null && map.GetModelInfo().Key.GetValue(entity, null) != null;
+            var indexHaveValue = map.GetModelProperty().Key != null && map.GetModelProperty().Key.GetValue(entity, null) != null;
             if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue)
             {
                 QueueSql.Sql = new StringBuilder(string.Format("SET IDENTITY_INSERT {0} ON ; {1} ; SET IDENTITY_INSERT {0} OFF;", QueueSql.Name, QueueSql.Sql));

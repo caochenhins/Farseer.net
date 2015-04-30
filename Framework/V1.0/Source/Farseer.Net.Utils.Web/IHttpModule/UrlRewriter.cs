@@ -43,7 +43,7 @@ namespace FS.Utils.IHttpModule
 
 
             // 循环所有重写规则
-            foreach (var rule in RewriterConfigs.ConfigInfo.Rules)
+            foreach (var rule in RewriterConfigs.ConfigEntity.Rules)
             {
                 // 取得规则地址
                 var lookFor = "^" + ResolveUrl(appPath, rule.LookFor) + "$";
@@ -71,7 +71,7 @@ namespace FS.Utils.IHttpModule
         protected string ResolveUrl(string appPath, string url)
         {
             //替换多个域
-            url = string.Format(url, GeneralConfigs.ConfigInfo.RewriterDomain.ToArray("", ";"));
+            url = string.Format(url, GeneralConfigs.ConfigEntity.RewriterDomain.ToArray("", ";"));
             if (url.Length == 0 || url[0] != '~') { return url; }
             // 如果不是使用目录地址，则直接返回原地址
             if (url.Length == 1) { return appPath; }

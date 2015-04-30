@@ -26,7 +26,7 @@ namespace FS.Utils
         /// <param name="defValue">为空时返回的值</param>
         public static T Get<T>(string strName, T defValue, bool isAddPrefix = true)
         {
-            if (isAddPrefix) { strName = SystemConfigs.ConfigInfo.Session_Prefix + strName; }
+            if (isAddPrefix) { strName = SystemConfigs.ConfigEntity.Session_Prefix + strName; }
             var t = defValue;
             var obj = HttpContext.Current.Session[strName];
             return obj.ConvertType(defValue);
@@ -39,9 +39,9 @@ namespace FS.Utils
         /// <param name="value">插入的值</param>
         public static void Set(string strName, object value, bool isAddPrefix = true)
         {
-            if (isAddPrefix) { strName = SystemConfigs.ConfigInfo.Session_Prefix + strName; }
+            if (isAddPrefix) { strName = SystemConfigs.ConfigEntity.Session_Prefix + strName; }
             if (value == null){value = string.Empty; }
-            HttpContext.Current.Session.Timeout = SystemConfigs.ConfigInfo.Session_TimeOut;
+            HttpContext.Current.Session.Timeout = SystemConfigs.ConfigEntity.Session_TimeOut;
             HttpContext.Current.Session.Add(strName, value);
         }
 
@@ -51,7 +51,7 @@ namespace FS.Utils
         /// <param name="name">SessionID</param>
         public static void Remove(string strName, bool isAddPrefix = true)
         {
-            if (isAddPrefix) { strName = SystemConfigs.ConfigInfo.Session_Prefix + strName; }
+            if (isAddPrefix) { strName = SystemConfigs.ConfigEntity.Session_Prefix + strName; }
             if (HttpContext.Current.Session[strName] != null)
             {
                 HttpContext.Current.Session.Remove(strName);

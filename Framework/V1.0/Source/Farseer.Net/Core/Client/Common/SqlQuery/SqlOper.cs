@@ -67,9 +67,9 @@ namespace FS.Core.Client.Common.SqlQuery
             var strAssemble = Visit.Assign(entity);
 
             // 主键如果有值，则需要 去掉主键的赋值、并且加上主键的条件
-            if (map.GetModelInfo().Key != null)
+            if (map.GetModelProperty().Key != null)
             {
-                var value = map.GetModelInfo().Key.GetValue(entity, null);
+                var value = map.GetModelProperty().Key.GetValue(entity, null);
                 if (value != null)
                 {
                     if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql += " AND "; }

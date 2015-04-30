@@ -30,7 +30,7 @@ namespace FS.Configs
         /// <summary>
         ///     配置变量
         /// </summary>
-        protected static T m_ConfigInfo;
+        protected static T m_ConfigEntity;
 
         /// <summary>
         ///     Config修改时间
@@ -86,15 +86,15 @@ namespace FS.Configs
         /// <summary>
         ///     配置变量
         /// </summary>
-        public static T ConfigInfo
+        public static T ConfigEntity
         {
             get
             {
-                if (m_ConfigInfo == null || ((DateTime.Now - LoadTime).TotalMinutes > 60 && FileLastWriteTime != File.GetLastWriteTime(FilePath + FileName)))
+                if (m_ConfigEntity == null || ((DateTime.Now - LoadTime).TotalMinutes > 60 && FileLastWriteTime != File.GetLastWriteTime(FilePath + FileName)))
                 {
                     LoadConfig();
                 }
-                return m_ConfigInfo;
+                return m_ConfigEntity;
             }
         }
 
@@ -107,15 +107,15 @@ namespace FS.Configs
             if (!File.Exists(FilePath + FileName))
             {
                 var t = new T();
-                foreach (var fieldInfo in t.GetType().GetFields()) { DynamicAddItem(fieldInfo, t); }
-                foreach (var propertyInfo in t.GetType().GetProperties()) { DynamicAddItem(propertyInfo, t); }
+                foreach (var fieldEntity in t.GetType().GetFields()) { DynamicAddItem(fieldEntity, t); }
+                foreach (var property in t.GetType().GetProperties()) { DynamicAddItem(property, t); }
                 SaveConfig(t);
             }
             FileLastWriteTime = File.GetLastWriteTime(FilePath + FileName);
 
             lock (m_LockHelper)
             {
-                m_ConfigInfo = Deserialize(FilePath + FileName);
+                m_ConfigEntity = Deserialize(FilePath + FileName);
                 LoadTime = DateTime.Now;
             }
         }
@@ -180,7 +180,7 @@ namespace FS.Configs
         /// <param name="t">Config配置</param>
         public static bool SaveConfig(T t = null)
         {
-            if (t == null) { t = ConfigInfo; }
+            if (t == null) { t = ConfigEntity; }
             var result = Serialize(t, FilePath + FileName);
             return result;
         }

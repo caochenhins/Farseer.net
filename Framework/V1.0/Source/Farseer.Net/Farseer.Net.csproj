@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4F393E31-DFCD-434A-A350-53D635A99317}</ProjectGuid>
+    <ProjectGuid>{F6345D1B-C5DC-464C-A417-C02D7CD37E52}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>FS</RootNamespace>
@@ -192,7 +192,6 @@
     <Compile Include="Extend\StringExtend.cs" />
     <Compile Include="Extend\ViewSetExtend.cs" />
     <Compile Include="Extend\TableSetExtend.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Mapping\Table\Attribute\ColumnAttribute.cs" />
     <Compile Include="Mapping\Table\Attribute\DBAttribute.cs" />
     <Compile Include="Mapping\Table\Attribute\PropertyExtendAttribute.cs" />

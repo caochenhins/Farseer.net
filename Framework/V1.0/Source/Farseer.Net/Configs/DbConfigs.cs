@@ -107,7 +107,7 @@ namespace FS.Configs
         /// </summary>
         public static implicit operator DbInfo(int index)
         {
-            return DbConfigs.ConfigInfo.DbList.Count <= index ? null : DbConfigs.ConfigInfo.DbList[index];
+            return DbConfigs.ConfigEntity.DbList.Count <= index ? null : DbConfigs.ConfigEntity.DbList[index];
         }
     }
 }

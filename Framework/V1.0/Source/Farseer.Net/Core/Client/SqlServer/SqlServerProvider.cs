@@ -15,7 +15,7 @@ namespace FS.Core.Client.SqlServer
         public override IDbSqlQuery<TEntity> CreateSqlQuery<TEntity>(IQueueManger queueManger, IQueueSql queueSql)
         {
             var map = CacheManger.GetTableMap(typeof(TEntity));
-            switch (map.ClassInfo.DataVer)
+            switch (map.EntityProperty.DataVer)
             {
                 case "2000": return new SqlQuery2000<TEntity>(queueManger, queueSql);
             }
