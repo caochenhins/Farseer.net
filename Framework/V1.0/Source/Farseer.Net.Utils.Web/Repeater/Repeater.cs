@@ -1,6 +1,5 @@
 ﻿using System.Text.RegularExpressions;
 using System.Web.UI;
-using FS.Utils.Web;
 
 [assembly: TagPrefix("FS.UI", "FS")]
 namespace FS.Utils.WebForm.Repeater

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using FS.Core.Infrastructure;
 using FS.Extend;
-using System.Data;
 
 namespace FS.Core.Data.Table
 {

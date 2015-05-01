@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using FS.Utils.Web;
 
 namespace FS.Utils.WebForm.Repeater
 {

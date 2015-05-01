@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Demo.BusinessRule.Members;
-using Demo.VO.Members;
-
-namespace Demo.BusinessFacade.Members
+﻿namespace Demo.BusinessFacade.Members
 {
     public class UserBF
     {

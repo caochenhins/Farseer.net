@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text;
-using FS.Core.Infrastructure;
+﻿using FS.Core.Infrastructure;
 
 namespace FS.Core.Client.Oracle.SqlQuery
 {

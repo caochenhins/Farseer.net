@@ -1,8 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using FS.Core.Infrastructure;
-
-namespace FS.Core.Data.View
+﻿namespace FS.Core.Data.View
 {
     /// <summary>
     /// 多个视图带静态实例化的上下文

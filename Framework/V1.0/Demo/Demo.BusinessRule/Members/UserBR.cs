@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Demo.VO.Members;
-using EmitMapper;
-
-namespace Demo.BusinessRule.Members
+﻿namespace Demo.BusinessRule.Members
 {
     public class UserBR
     {

@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
-using System.Text.RegularExpressions;
 
 namespace FS.Core.Data
 {

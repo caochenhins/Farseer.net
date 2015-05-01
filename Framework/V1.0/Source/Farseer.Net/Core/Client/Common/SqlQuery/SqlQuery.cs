@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using FS.Core.Infrastructure;
 
 namespace FS.Core.Client.Common.SqlQuery

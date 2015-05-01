@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using FS.Mapping.Verify;
-
-namespace FS.Extend
+﻿namespace FS.Extend
 {
     /// <summary>
     ///     实体类扩展方法

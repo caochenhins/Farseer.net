@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using FS.Core.Infrastructure;
+﻿using FS.Core.Infrastructure;
 
 namespace Demo.VO.Members
 {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using FS.Core.Infrastructure;
 
 namespace FS.Core.Data.View

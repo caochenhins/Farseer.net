@@ -1,8 +1,4 @@
-﻿using System.ComponentModel;
-using System.Data;
-using FS.Core.Infrastructure;
-
-namespace FS.Core.Data.Table
+﻿namespace FS.Core.Data.Table
 {
     /// <summary>
     /// 多张表带静态实例化的上下文

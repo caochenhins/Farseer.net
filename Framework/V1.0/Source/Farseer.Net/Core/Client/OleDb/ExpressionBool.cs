@@ -1,9 +1,4 @@
-﻿using System;
-using System.Data;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text.RegularExpressions;
-using FS.Core.Infrastructure;
+﻿using FS.Core.Infrastructure;
 
 namespace FS.Core.Client.OleDb
 {

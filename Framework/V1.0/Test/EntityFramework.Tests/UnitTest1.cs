@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using Demo.VO.Members;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

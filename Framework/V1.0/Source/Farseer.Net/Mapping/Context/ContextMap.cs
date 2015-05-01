@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using FS.Core;
-using FS.Core.Data;
 using FS.Mapping.Context.Attribute;
 
 namespace FS.Mapping.Context

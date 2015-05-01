@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using FS.Mapping.Context.Attribute;
+﻿using FS.Mapping.Context.Attribute;
 
 namespace FS.Mapping.Context
 {

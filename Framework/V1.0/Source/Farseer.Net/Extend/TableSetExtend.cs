@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using FS.Core.Data.Table;
+﻿using FS.Core.Data.Table;
 
 namespace FS.Extend
 {

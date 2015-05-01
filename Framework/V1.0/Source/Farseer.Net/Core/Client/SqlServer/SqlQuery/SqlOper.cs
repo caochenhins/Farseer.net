@@ -20,7 +20,7 @@ namespace FS.Core.Client.SqlServer.SqlQuery
 
             // 主键如果有值，则需要 SET IDENTITY_INSERT ON
             var indexHaveValue = map.PrimaryState.Key != null && map.PrimaryState.Key.GetValue(entity, null) != null;
-            if (!string.IsNullOrWhiteSpace(map.PrimaryState.Value.FieldAtt.Name) && indexHaveValue)
+            if (indexHaveValue && !string.IsNullOrWhiteSpace(map.PrimaryState.Value.FieldAtt.Name))
             {
                 QueueSql.Sql = new StringBuilder(string.Format("SET IDENTITY_INSERT {0} ON ; {1} ; SET IDENTITY_INSERT {0} OFF;", QueueSql.Name, QueueSql.Sql));
             }
