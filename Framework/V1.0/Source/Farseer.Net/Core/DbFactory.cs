@@ -13,7 +13,7 @@ using FS.Core.Client.SqLite;
 using FS.Core.Client.SqlServer;
 using FS.Core.Data;
 using FS.Core.Infrastructure;
-using FS.Mapping.Table;
+using FS.Mapping.Context;
 
 namespace FS.Core
 {
@@ -25,12 +25,12 @@ namespace FS.Core
         /// </summary>
         /// <typeparam name="TInfo">实体类</typeparam>
         /// <param name="tranLevel">开启事务等级</param>
-        public static DbExecutor CreateDbExecutor<TInfo>(IsolationLevel tranLevel = IsolationLevel.Serializable)
+        public static DbExecutor CreateDbExecutor<TInfo>(IsolationLevel tranLevel = IsolationLevel.Serializable) where TInfo : BaseContext
         {
-            TableMap map = typeof(TInfo);
-            var dataType = map.EntityProperty.DataType;
-            var connetionString = map.EntityProperty.ConnStr;
-            var commandTimeout = map.EntityProperty.CommandTimeout;
+            ContextMap map = typeof(TInfo);
+            var dataType = map.ContextProperty.DataType;
+            var connetionString = map.ContextProperty.ConnStr;
+            var commandTimeout = map.ContextProperty.CommandTimeout;
 
             return new DbExecutor(connetionString, dataType, commandTimeout, tranLevel);
         }
@@ -65,7 +65,7 @@ namespace FS.Core
         /// </summary>
         public static DbProvider CreateDbProvider<TEntity>(DataBaseType? db = null) where TEntity : class,new()
         {
-            var dbType = db ?? CacheManger.GetTableMap(typeof(TEntity)).EntityProperty.DataType;
+            var dbType = db ?? CacheManger.GetContextMap(typeof(TEntity)).ContextProperty.DataType;
             switch (dbType)
             {
                 case DataBaseType.OleDb: return new OleDbProvider();

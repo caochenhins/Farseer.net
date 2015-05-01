@@ -68,7 +68,7 @@ namespace FS.Core.Data.Proc
         private void InstanceProperty()
         {
             IsMergeCommand = true;
-            QueueManger = new ProcQueueManger(DataBase);
+            QueueManger = new ProcQueueManger(DataBase, ContextMap);
             InstanceProperty(this, "ProcSet`1");
         }
 

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using FS.Core;
-using FS.Mapping.Table;
 
 namespace FS.Extend
 {
@@ -120,22 +119,22 @@ namespace FS.Extend
         /// </summary>
         /// <param name="dt">源DataTable</param>
         /// <typeparam name="T">实体类</typeparam>
-        public static List<TResult> ToList<TResult>(this DataTable dt) where TResult : class, new()
+        public static List<TEntity> ToList<TEntity>(this DataTable dt) where TEntity : class, new()
         {
-            var list = new List<TResult>();
-            var map = CacheManger.GetTableMap(typeof(TResult));
-            TResult t;
+            var list = new List<TEntity>();
+            var map = CacheManger.GetFieldMap(typeof(TEntity));
+            TEntity t;
             foreach (DataRow dr in dt.Rows)
             {
-                t = new TResult();
+                t = new TEntity();
 
                 //赋值字段
-                foreach (var kic in map.ModelList)
+                foreach (var kic in map.MapList)
                 {
                     if (!kic.Key.CanWrite) { continue; }
                     string filedName;
-                    if (!DbFactory.CreateDbProvider<TResult>().IsField(kic.Value.Column.Name)) { filedName = kic.Key.Name; }
-                    else { filedName = kic.Value.Column.Name; }
+                    if (!DbFactory.CreateDbProvider<TEntity>().IsField(kic.Value.FieldAtt.Name)) { filedName = kic.Key.Name; }
+                    else { filedName = kic.Value.FieldAtt.Name; }
                     if (dr.Table.Columns.Contains(filedName))
                     {
                         kic.Key.SetValue(t, dr[filedName].ConvertType(kic.Key.PropertyType), null);
@@ -164,23 +163,23 @@ namespace FS.Extend
         /// <summary>
         ///     将DataRow转成实体类
         /// </summary>
-        /// <typeparam name="T">实体类</typeparam>
+        /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="dr">源DataRow</param>
-        public static T ToInfo<T>(this DataRow dr) where T : class,new()
+        public static TEntity ToInfo<TEntity>(this DataRow dr) where TEntity : class,new()
         {
-            var map = CacheManger.GetTableMap(typeof(T));
-            var t = (T)Activator.CreateInstance(typeof(T));
+            var map = CacheManger.GetFieldMap(typeof(TEntity));
+            var t = (TEntity)Activator.CreateInstance(typeof(TEntity));
 
             //赋值字段
-            foreach (var kic in map.ModelList)
+            foreach (var kic in map.MapList)
             {
-                if (dr.Table.Columns.Contains(kic.Value.Column.Name))
+                if (dr.Table.Columns.Contains(kic.Value.FieldAtt.Name))
                 {
                     if (!kic.Key.CanWrite) { continue; }
-                    kic.Key.SetValue(t, dr[kic.Value.Column.Name].ConvertType(kic.Key.PropertyType), null);
+                    kic.Key.SetValue(t, dr[kic.Value.FieldAtt.Name].ConvertType(kic.Key.PropertyType), null);
                 }
             }
-            return t ?? new T();
+            return t ?? new TEntity();
         }
     }
 }

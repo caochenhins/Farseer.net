@@ -2,7 +2,6 @@
 using System.Text;
 using FS.Core.Data.Table;
 using FS.Core.Infrastructure;
-using FS.Mapping.Table;
 
 namespace FS.Core.Client.Common.SqlQuery
 {
@@ -60,20 +59,20 @@ namespace FS.Core.Client.Common.SqlQuery
 
         public virtual void Update(TEntity entity)
         {
-            var map = CacheManger.GetTableMap(typeof(TEntity));
+            var map = CacheManger.GetFieldMap(typeof(TEntity));
 
             QueueSql.Sql = new StringBuilder();
             var strWhereSql = Visit.Where(QueueSql.ExpWhere);
             var strAssemble = Visit.Assign(entity);
 
             // 主键如果有值，则需要 去掉主键的赋值、并且加上主键的条件
-            if (map.GetModelProperty().Key != null)
+            if (map.PrimaryState.Key != null)
             {
-                var value = map.GetModelProperty().Key.GetValue(entity, null);
+                var value = map.PrimaryState.Key.GetValue(entity, null);
                 if (value != null)
                 {
                     if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql += " AND "; }
-                    strWhereSql += string.Format("{0} = {1}", map.IndexName, value);
+                    strWhereSql += string.Format("{0} = {1}", map.PrimaryState.Value.FieldAtt.Name, value);
                 }
             }
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }

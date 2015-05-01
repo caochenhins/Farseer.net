@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
 using FS.Core;
-using FS.Mapping.Table;
 
 namespace FS.Extend
 {
@@ -73,10 +72,10 @@ namespace FS.Extend
                 memberExpression = @select.Body as MemberExpression;
             }
 
-            var map = CacheManger.GetTableMap(typeof(T1));
-            var modelInfo = map.GetModelProperty((memberExpression.Member).Name);
+            var map = CacheManger.GetFieldMap(typeof(T1));
+            var modelInfo = map.GetState((memberExpression.Member).Name);
 
-            return modelInfo.Value.Column.Name;
+            return modelInfo.Value.FieldAtt.Name;
         }
 
         public static Expression<Func<TOuter, TInner>> Combine<TOuter, TMiddle, TInner>(

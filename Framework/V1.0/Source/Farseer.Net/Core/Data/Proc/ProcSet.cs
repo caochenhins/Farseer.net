@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using FS.Mapping.Context;
 
 namespace FS.Core.Data.Proc
 {

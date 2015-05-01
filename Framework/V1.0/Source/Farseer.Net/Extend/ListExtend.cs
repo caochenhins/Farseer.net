@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using FS.Core;
 using FS.Core.Infrastructure;
-using FS.Mapping.Table;
 
 namespace FS.Extend
 {
@@ -78,8 +77,8 @@ namespace FS.Extend
         {
             var dt = new DataTable();
             if (lst.Count == 0) { return dt; }
-            var map = CacheManger.GetTableMap(lst[0].GetType());
-            var lstFields = map.ModelList.Where(o => o.Value.Column.IsMap);
+            var map = CacheManger.GetFieldMap(lst[0].GetType());
+            var lstFields = map.MapList.Where(o => o.Value.FieldAtt.IsMap);
             foreach (var field in lstFields)
             {
                 var type = field.Key.PropertyType;
@@ -88,7 +87,7 @@ namespace FS.Extend
                 {
                     type = type.GetGenericArguments()[0];
                 }
-                dt.Columns.Add(field.Value.Column.Name, type);
+                dt.Columns.Add(field.Value.FieldAtt.Name, type);
             }
 
             foreach (var info in lst)
@@ -98,8 +97,8 @@ namespace FS.Extend
                 {
                     var value = info.GetValue(field.Key.Name, (object)null);
                     if (value == null) { continue; }
-                    if (!dt.Columns.Contains(field.Value.Column.Name)) { dt.Columns.Add(field.Value.Column.Name); }
-                    dt.Rows[dt.Rows.Count - 1][field.Value.Column.Name] = value;
+                    if (!dt.Columns.Contains(field.Value.FieldAtt.Name)) { dt.Columns.Add(field.Value.FieldAtt.Name); }
+                    dt.Rows[dt.Rows.Count - 1][field.Value.FieldAtt.Name] = value;
                 }
             }
             return dt;

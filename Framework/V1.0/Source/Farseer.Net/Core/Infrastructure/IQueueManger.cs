@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data.Common;
 using FS.Core.Data;
+using FS.Mapping.Context;
 
 namespace FS.Core.Infrastructure
 {
@@ -23,5 +24,9 @@ namespace FS.Core.Infrastructure
         /// 数据库操作
         /// </summary>
         DbExecutor DataBase { get;  }
+        /// <summary>
+        /// 映射关系
+        /// </summary>
+        ContextMap ContextMap { get; set; } 
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Xml.Linq;
 using FS.Core;
 using FS.Extend.Infrastructure;
-using FS.Mapping.Table;
+using FS.Mapping.Context;
 
 namespace FS.Extend
 {
@@ -19,7 +19,7 @@ namespace FS.Extend
         /// </summary>
         public static List<TEntity> ToList<TEntity>(this XElement element) where TEntity : class
         {
-            var orm = CacheManger.GetTableMap(typeof(TEntity));
+            var orm = CacheManger.GetFieldMap(typeof(TEntity));
             var list = new List<TEntity>();
             Type type;
 
@@ -30,19 +30,19 @@ namespace FS.Extend
                 t = (TEntity)Activator.CreateInstance(typeof(TEntity));
 
                 //赋值字段
-                foreach (var kic in orm.ModelList)
+                foreach (var kic in orm.MapList)
                 {
                     type = kic.Key.PropertyType;
                     if (!kic.Key.CanWrite) { continue; }
                     if (kic.Value.PropertyExtend == eumPropertyExtend.Attribute)
                     {
-                        if (el.Attribute(kic.Value.Column.Name) == null) { continue; }
-                        kic.Key.SetValue(t, el.Attribute(kic.Value.Column.Name).Value.ConvertType(type), null);
+                        if (el.Attribute(kic.Value.FieldAtt.Name) == null) { continue; }
+                        kic.Key.SetValue(t, el.Attribute(kic.Value.FieldAtt.Name).Value.ConvertType(type), null);
                     }
                     else if (kic.Value.PropertyExtend == eumPropertyExtend.Element)
                     {
-                        if (el.Element(kic.Value.Column.Name) == null) { continue; }
-                        kic.Key.SetValue(t, el.Element(kic.Value.Column.Name).Value.ConvertType(type), null);
+                        if (el.Element(kic.Value.FieldAtt.Name) == null) { continue; }
+                        kic.Key.SetValue(t, el.Element(kic.Value.FieldAtt.Name).Value.ConvertType(type), null);
                     }
                 }
                 list.Add(t);

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using FS.Configs;
 using FS.Core.Data;
+using FS.Mapping.Context;
 
 namespace FS.Core.Infrastructure
 {
@@ -14,8 +15,8 @@ namespace FS.Core.Infrastructure
         /// </summary>
         protected BaseContext()
         {
-            var map = CacheManger.GetTableMap(this.GetType());
-            DataBase = new DbExecutor(map.EntityProperty.ConnStr, map.EntityProperty.DataType, map.EntityProperty.CommandTimeout);
+            ContextMap = CacheManger.GetContextMap(this.GetType());
+            DataBase = new DbExecutor(ContextMap.ContextProperty.ConnStr, ContextMap.ContextProperty.DataType, ContextMap.ContextProperty.CommandTimeout);
         }
 
         /// <summary>
@@ -33,25 +34,29 @@ namespace FS.Core.Infrastructure
         protected BaseContext(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, int commandTimeout = 30)
         {
             DataBase = new DbExecutor(connectionString, dbType, commandTimeout);
+            ContextMap = CacheManger.GetContextMap(this.GetType());
         }
 
         /// <summary>
         /// 实例化子类中，所有Set属性
         /// </summary>
-        protected void InstanceProperty(object entity, string propertyName)
+        protected void InstanceProperty(object context, string propertyName)
         {
-            var types = this.GetType().GetProperties();
-            var map = CacheManger.GetTableMap(this.GetType());
-            foreach (var type in types)
+            var lstPropertyInfo = this.GetType().GetProperties();
+            foreach (var propertyInfo in lstPropertyInfo)
             {
-                if (!type.CanWrite || type.PropertyType.Name != propertyName) { continue; }
+                if (!propertyInfo.CanWrite || propertyInfo.PropertyType.Name != propertyName) { continue; }
                 //var set = CacheManger.GetInstance(type.PropertyType, entity, map.GetFieldName(type));
-                var set = Activator.CreateInstance(type.PropertyType, entity, map.GetFieldName(type));
-                type.SetValue(entity, set, null);
+                // 动态实例化属性
+                var set = Activator.CreateInstance(propertyInfo.PropertyType, context, ContextMap.GetState(propertyInfo).Value.SetAtt.Name);
+                propertyInfo.SetValue(context, set, null);
             }
         }
 
         protected DbExecutor DataBase { get; private set; }
+
+        public ContextMap ContextMap { get; set; } 
+
         #region 禁用智能提示
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj)

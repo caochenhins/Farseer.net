@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using FS.Core.Data.Table;
-using FS.Mapping.Table;
+using FS.Mapping.Context;
 
 namespace FS.Core.Infrastructure
 {
@@ -197,16 +197,16 @@ namespace FS.Core.Infrastructure
         /// <param name="entity">实体类</param>
         public IList<DbParameter> GetParameter<TEntity>(TEntity entity) where TEntity : class,new()
         {
-            var map = CacheManger.GetTableMap(typeof(TEntity));
+            var map = CacheManger.GetFieldMap(typeof(TEntity));
             var lst = new List<DbParameter>();
 
-            foreach (var kic in map.ModelList.Where(o => o.Value.Column.IsMap))
+            foreach (var kic in map.MapList.Where(o => o.Value.FieldAtt.IsMap))
             {
                 var obj = kic.Key.GetValue(entity, null);
                 if (obj == null || obj is TableSet<TEntity>) { continue; }
 
                 //  添加参数到列表
-                lst.Add(CreateDbParam(kic.Value.Column.Name, obj));
+                lst.Add(CreateDbParam(kic.Value.FieldAtt.Name, obj));
             }
 
             return lst;
@@ -240,22 +240,25 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 创建SQL查询
         /// </summary>
+        /// <param name="contextMap">映射关系</param>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queueSql">包含数据库SQL操作的队列</param>
-        public abstract IDbSqlQuery<TEntity> CreateSqlQuery<TEntity>(IQueueManger queueManger, IQueueSql queueSql) where TEntity : class, new();
+        public abstract IDbSqlQuery<TEntity> CreateSqlQuery<TEntity>(ContextMap contextMap, IQueueManger queueManger, IQueueSql queueSql) where TEntity : class, new();
 
         /// <summary>
         /// 创建SQL存储过程
         /// </summary>
+        /// <param name="contextMap">映射关系</param>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queueSql">包含数据库SQL操作的队列</param>
-        public abstract IDbSqlProc<TEntity> CreateSqlProc<TEntity>(IQueueManger queueManger, IQueue queueSql) where TEntity : class,new();
+        public abstract IDbSqlProc<TEntity> CreateSqlProc<TEntity>(ContextMap contextMap, IQueueManger queueManger, IQueue queueSql) where TEntity : class,new();
 
         /// <summary>
         /// 创建SQL执行
         /// </summary>
+        /// <param name="contextMap">映射关系</param>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queueSql">包含数据库SQL操作的队列</param>
-        public abstract IDbSqlOper<TEntity> CreateSqlOper<TEntity>(IQueueManger queueManger, IQueueSql queueSql) where TEntity : class,new();
+        public abstract IDbSqlOper<TEntity> CreateSqlOper<TEntity>(ContextMap contextMap, IQueueManger queueManger, IQueueSql queueSql) where TEntity : class,new();
     }
 }

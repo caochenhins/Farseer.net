@@ -33,7 +33,9 @@ namespace Farseer.Net.Core.Tests.TableTest
 
                 context.User.Where(o => o.ID == 1).Append(o => o.LoginCount, 1).AddUp();
                 context.User.AddUp(o => o.LoginCount, 1);
-
+                context.UserRole.ToList();
+                context.UserRole.Where(o => o.ID == 1).ToList();
+                context.UserRole.Where(o => o.ID > 1).ToList();
                 var lst = context.User.Where(o => o.ID > 0).Desc(o => new { o.ID, o.LoginCount }).Asc(o => o.GenderType).ToList();
 
                 context.SaveChanges();

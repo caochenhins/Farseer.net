@@ -5,7 +5,6 @@ using System.Text;
 using FS.Core.Client.SqlServer;
 using FS.Core.Data.Table;
 using FS.Core.Infrastructure;
-using FS.Mapping.Table;
 
 namespace FS.Core.Client
 {
@@ -60,19 +59,19 @@ namespace FS.Core.Client
         {
             Clear();
 
-            var map = CacheManger.GetTableMap(typeof(TEntity));
+            var map = CacheManger.GetFieldMap(typeof(TEntity));
             var sb = new StringBuilder();
 
             //  迭代实体赋值情况
-            foreach (var kic in map.ModelList.Where(o => o.Value.Column.IsMap))
+            foreach (var kic in map.MapList.Where(o => o.Value.FieldAtt.IsMap))
             {
                 // 如果主键有值，则取消修改主键的SQL
-                if (kic.Value.Column.IsPrimaryKey) { continue; }
+                if (kic.Value.FieldAtt.IsPrimaryKey) { continue; }
                 var obj = kic.Key.GetValue(entity, null);
                 if (obj == null || obj is TableSet<TEntity>) { continue; }
 
                 //  查找组中是否存在已有的参数，有则直接取出
-                var newParam = QueueManger.DbProvider.CreateDbParam(QueueSql.Index + "_" + kic.Value.Column.Name, obj, QueueManger.Param, QueueSql.Param);
+                var newParam = QueueManger.DbProvider.CreateDbParam(QueueSql.Index + "_" + kic.Value.FieldAtt.Name, obj, QueueManger.Param, QueueSql.Param);
 
                 //  添加参数到列表
                 sb.AppendFormat("{0} = {1} ,", QueueManger.DbProvider.KeywordAegis(kic.Key.Name), newParam.ParameterName);
@@ -101,7 +100,7 @@ namespace FS.Core.Client
         {
             Clear();
 
-            var map = CacheManger.GetTableMap(typeof(TEntity));
+            var map = CacheManger.GetFieldMap(typeof(TEntity));
             //  字段
             var strFields = new StringBuilder();
             //  值
@@ -110,14 +109,14 @@ namespace FS.Core.Client
             //var lstParam = QueryQueue.Param;
 
             //  迭代实体赋值情况
-            foreach (var kic in map.ModelList.Where(o => o.Value.Column.IsMap))
+            foreach (var kic in map.MapList.Where(o => o.Value.FieldAtt.IsMap))
             {
                 var obj = kic.Key.GetValue(entity, null);
                 if (obj == null || obj is TableSet<TEntity>) { continue; }
 
                 //  查找组中是否存在已有的参数，有则直接取出
 
-                var newParam = QueueManger.DbProvider.CreateDbParam(QueueSql.Index + "_" + kic.Value.Column.Name, obj, QueueManger.Param, QueueSql.Param);
+                var newParam = QueueManger.DbProvider.CreateDbParam(QueueSql.Index + "_" + kic.Value.FieldAtt.Name, obj, QueueManger.Param, QueueSql.Param);
 
                 //  添加参数到列表
                 strFields.AppendFormat("{0},", QueueManger.DbProvider.KeywordAegis(kic.Key.Name));

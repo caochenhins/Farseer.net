@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using FS.Core.Infrastructure;
 using FS.Extend;
-using FS.Mapping.Table;
+using FS.Mapping.Context;
 
 namespace FS.Core.Data.Proc
 {
@@ -29,6 +29,10 @@ namespace FS.Core.Data.Proc
         /// </summary>
         public DbProvider DbProvider { get; set; }
         /// <summary>
+        /// 映射关系
+        /// </summary>
+        public ContextMap ContextMap { get; set; }
+        /// <summary>
         /// 所有队列的参数
         /// </summary>
         public List<DbParameter> Param
@@ -45,9 +49,11 @@ namespace FS.Core.Data.Proc
         /// 构造函数
         /// </summary>
         /// <param name="database">数据库操作</param>
-        public ProcQueueManger(DbExecutor database)
+        /// <param name="contextMap">映射关系</param>
+        public ProcQueueManger(DbExecutor database, ContextMap contextMap)
         {
             DataBase = database;
+            ContextMap = contextMap;
             DbProvider = DbFactory.CreateDbProvider(database.DataType);
             _groupQueueList = new List<ProcQueue>();
             Clear();
@@ -101,7 +107,7 @@ namespace FS.Core.Data.Proc
 
         public IDbSqlProc<TEntity> SqlQuery<TEntity>(IQueue queue) where TEntity : class,new()
         {
-            return DbProvider.CreateSqlProc<TEntity>(this, queue);
+            return DbProvider.CreateSqlProc<TEntity>(ContextMap,this, queue);
         }
 
         /// <summary>
@@ -113,10 +119,10 @@ namespace FS.Core.Data.Proc
         private void SetParamToEntity<TEntity>(IQueue queue, TEntity entity) where TEntity : class,new()
         {
             if (entity == null) { return; }
-            var map = CacheManger.GetTableMap(typeof(TEntity));
-            foreach (var kic in map.ModelList.Where(o => o.Value.IsOutParam))
+            var map = CacheManger.GetFieldMap(typeof(TEntity));
+            foreach (var kic in map.MapList.Where(o => o.Value.FieldAtt.IsOutParam))
             {
-                kic.Key.SetValue(entity, queue.Param.Find(o => o.ParameterName == DbProvider.ParamsPrefix + kic.Value.Column.Name).Value.ConvertType(kic.Key.PropertyType), null);
+                kic.Key.SetValue(entity, queue.Param.Find(o => o.ParameterName == DbProvider.ParamsPrefix + kic.Value.FieldAtt.Name).Value.ConvertType(kic.Key.PropertyType), null);
             }
         }
         public int Execute<TEntity>(IQueue queue, TEntity entity = null) where TEntity : class,new()

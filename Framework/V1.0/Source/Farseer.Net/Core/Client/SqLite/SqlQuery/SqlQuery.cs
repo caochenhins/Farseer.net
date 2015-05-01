@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using FS.Core.Infrastructure;
-using FS.Mapping.Table;
 
 namespace FS.Core.Client.SqLite.SqlQuery
 {
@@ -60,7 +59,7 @@ namespace FS.Core.Client.SqLite.SqlQuery
             // 不分页
             if (pageIndex == 1) { ToList(pageSize, isDistinct); return; }
 
-            var map = CacheManger.GetTableMap(typeof(TEntity));
+            var map = CacheManger.GetContextMap(typeof(TEntity));
             var strSelectSql = Visit.Select(QueueSql.ExpSelect);
             var strWhereSql = Visit.Where(QueueSql.ExpWhere);
             var strOrderBySql = Visit.OrderBy(QueueSql.ExpOrderBy);

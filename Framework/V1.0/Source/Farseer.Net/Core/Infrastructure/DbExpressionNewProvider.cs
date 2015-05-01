@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
-using FS.Mapping.Table;
+using FS.Mapping.Context;
 
 namespace FS.Core.Infrastructure
 {
@@ -15,7 +15,7 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 实体类映射
         /// </summary>
-        protected readonly TableMap Map = typeof(TEntity);
+        protected readonly FieldMap Map = typeof(TEntity);
         /// <summary>
         /// 条件堆栈
         /// </summary>
@@ -70,16 +70,16 @@ namespace FS.Core.Infrastructure
         {
             if (m == null) return null;
 
-            var keyValue = Map.GetModelProperty(m.Member.Name);
+            var keyValue = Map.GetState(m.Member.Name);
             if (keyValue.Key == null) { return CreateFieldName((MemberExpression)m.Expression); }
 
             // 加入Sql队列
             string filedName;
-            if (!QueueManger.DbProvider.IsField(keyValue.Value.Column.Name))
+            if (!QueueManger.DbProvider.IsField(keyValue.Value.FieldAtt.Name))
             {
-                filedName = IsSelect ? keyValue.Value.Column.Name + " as " + keyValue.Key.Name : keyValue.Value.Column.Name;
+                filedName = IsSelect ? keyValue.Value.FieldAtt.Name + " as " + keyValue.Key.Name : keyValue.Value.FieldAtt.Name;
             }
-            else { filedName = QueueManger.DbProvider.KeywordAegis(keyValue.Value.Column.Name); }
+            else { filedName = QueueManger.DbProvider.KeywordAegis(keyValue.Value.FieldAtt.Name); }
             SqlList.Push(filedName);
             return m;
         }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text;
 using FS.Core.Infrastructure;
-using FS.Mapping.Table;
 
 namespace FS.Core.Client.OleDb.SqlQuery
 {

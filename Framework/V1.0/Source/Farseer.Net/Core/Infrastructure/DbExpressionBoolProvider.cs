@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
-using FS.Mapping.Table;
+using FS.Mapping.Context;
 
 namespace FS.Core.Infrastructure
 {
@@ -18,7 +18,7 @@ namespace FS.Core.Infrastructure
         /// <summary>
         ///  实体类映射
         /// </summary>
-        protected readonly TableMap Map = typeof(TEntity);
+        protected readonly FieldMap Map = typeof(TEntity);
         /// <summary>
         ///  条件堆栈
         /// </summary>
@@ -225,7 +225,7 @@ namespace FS.Core.Infrastructure
                 case ExpressionType.Constant: return Visit(VisitConvertExp(m));
                 default:
                     {
-                        var keyValue = Map.GetModelProperty(m.Member.Name);
+                        var keyValue = Map.GetState(m.Member.Name);
                         if (keyValue.Key == null)
                         {
                             switch (m.Member.Name)
@@ -241,8 +241,8 @@ namespace FS.Core.Infrastructure
                         }
 
                         // 加入Sql队列
-                        _currentFieldName = keyValue.Value.Column.Name;
-                        var filedName = QueueManger.DbProvider.KeywordAegis(keyValue.Value.Column.Name);
+                        _currentFieldName = keyValue.Value.FieldAtt.Name;
+                        var filedName = QueueManger.DbProvider.KeywordAegis(keyValue.Value.FieldAtt.Name);
                         SqlList.Push(filedName);
                         return m;
                     }

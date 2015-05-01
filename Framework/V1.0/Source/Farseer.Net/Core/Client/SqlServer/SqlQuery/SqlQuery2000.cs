@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using FS.Core.Infrastructure;
-using FS.Mapping.Table;
 
 namespace FS.Core.Client.SqlServer.SqlQuery
 {
@@ -17,14 +16,14 @@ namespace FS.Core.Client.SqlServer.SqlQuery
             // 不分页
             if (pageIndex == 1) { ToList(pageSize, isDistinct); return; }
 
-            var map = CacheManger.GetTableMap(typeof(TEntity));
+            var map = CacheManger.GetFieldMap(typeof(TEntity));
             var strSelectSql = Visit.Select(QueueSql.ExpSelect);
             var strWhereSql = Visit.Where(QueueSql.ExpWhere);
             var strOrderBySql = Visit.OrderBy(QueueSql.ExpOrderBy);
             var strDistinctSql = isDistinct ? "Distinct" : string.Empty;
             QueueSql.Sql = new StringBuilder();
 
-            strOrderBySql = "ORDER BY " + (string.IsNullOrWhiteSpace(strOrderBySql) ? string.Format("{0} ASC", map.IndexName) : strOrderBySql);
+            strOrderBySql = "ORDER BY " + (string.IsNullOrWhiteSpace(strOrderBySql) ? string.Format("{0} ASC", map.PrimaryState.Value.FieldAtt.Name) : strOrderBySql);
             var strOrderBySqlReverse = strOrderBySql.Replace(" DESC", " [倒序]").Replace("ASC", "DESC").Replace("[倒序]", "ASC");
 
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }

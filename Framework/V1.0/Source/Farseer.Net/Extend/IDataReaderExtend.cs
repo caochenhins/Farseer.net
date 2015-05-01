@@ -5,8 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using FS.Core;
-using FS.Mapping.Table;
-using FS.Mapping.Table.Attribute;
+using FS.Mapping.Context.Attribute;
 
 namespace FS.Extend
 {
@@ -46,7 +45,7 @@ namespace FS.Extend
                 public readonly Type Type;
                 public readonly MethodInfo SetMethod;
 
-                public DbColumnInfo(PropertyInfo prop, ColumnAttribute attr)
+                public DbColumnInfo(PropertyInfo prop, FieldAttribute attr)
                 {
                     _propertyName = prop.Name;
                     ColumnName = attr.Name ?? prop.Name;
@@ -67,16 +66,16 @@ namespace FS.Extend
 
             private static IEnumerable<DbColumnInfo> GetProperties()
             {
-                var dbResult = Attribute.GetCustomAttribute(typeof(T), typeof(DBAttribute), true) as DBAttribute;
+                var dbResult = Attribute.GetCustomAttribute(typeof(T), typeof(ContextAttribute), true) as ContextAttribute;
                 foreach (var prop in typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public))
                 {
                     if (prop.GetIndexParameters().Length > 0) { continue; }
                     var setMethod = prop.GetSetMethod(false);
                     if (setMethod == null) { continue; }
-                    var attr = Attribute.GetCustomAttribute(prop, typeof(ColumnAttribute), true) as ColumnAttribute;
+                    var attr = Attribute.GetCustomAttribute(prop, typeof(FieldAttribute), true) as FieldAttribute;
                     if (dbResult != null)
                     {
-                        if (attr == null) { attr = new ColumnAttribute(); }
+                        if (attr == null) { attr = new FieldAttribute(); }
                     }
                     else if (attr == null) { continue; }
                     yield return new DbColumnInfo(prop, attr);
@@ -394,7 +393,7 @@ namespace FS.Extend
         public static List<TEntity> ToList<TEntity>(this IDataReader reader) where TEntity : class, new()
         {
             var list = new List<TEntity>();
-            var Map = CacheManger.GetTableMap(typeof(TEntity));
+            var Map = CacheManger.GetFieldMap(typeof(TEntity));
             TEntity t;
 
             while (reader.Read())
@@ -402,12 +401,12 @@ namespace FS.Extend
                 t = (TEntity)Activator.CreateInstance(typeof(TEntity));
 
                 //赋值字段
-                foreach (var kic in Map.ModelList)
+                foreach (var kic in Map.MapList)
                 {
-                    if (reader.HaveName(kic.Value.Column.Name))
+                    if (reader.HaveName(kic.Value.FieldAtt.Name))
                     {
                         if (!kic.Key.CanWrite) { continue; }
-                        kic.Key.SetValue(t, reader[kic.Value.Column.Name].ConvertType(kic.Key.PropertyType), null);
+                        kic.Key.SetValue(t, reader[kic.Value.FieldAtt.Name].ConvertType(kic.Key.PropertyType), null);
                     }
                 }
 
@@ -425,7 +424,7 @@ namespace FS.Extend
         /// <typeparam name="TEntity">实体类</typeparam>
         public static TEntity ToInfo<TEntity>(this IDataReader reader) where TEntity : class, new()
         {
-            var map = CacheManger.GetTableMap(typeof(TEntity));
+            var map = CacheManger.GetFieldMap(typeof(TEntity));
 
             var t = (TEntity)Activator.CreateInstance(typeof(TEntity));
             var isHaveValue = false;
@@ -433,12 +432,12 @@ namespace FS.Extend
             if (reader.Read())
             {
                 //赋值字段
-                foreach (var kic in map.ModelList)
+                foreach (var kic in map.MapList)
                 {
-                    if (reader.HaveName(kic.Value.Column.Name))
+                    if (reader.HaveName(kic.Value.FieldAtt.Name))
                     {
                         if (!kic.Key.CanWrite) { continue; }
-                        kic.Key.SetValue(t, reader[kic.Value.Column.Name].ConvertType(kic.Key.PropertyType), null);
+                        kic.Key.SetValue(t, reader[kic.Value.FieldAtt.Name].ConvertType(kic.Key.PropertyType), null);
                         isHaveValue = true;
                     }
                 }

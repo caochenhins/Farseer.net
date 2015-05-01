@@ -218,6 +218,7 @@ namespace FS.Core.Data
         /// <param name="cmdType">执行方式</param>
         /// <param name="cmdText">SQL或者存储过程名称</param>
         /// <param name="parameters">参数</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:检查 SQL 查询是否存在安全漏洞")]
         public DataSet GetDataSet(CommandType cmdType, string cmdText, params DbParameter[] parameters)
         {
             if (string.IsNullOrWhiteSpace(cmdText)) { return new DataSet(); }

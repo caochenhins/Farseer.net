@@ -1,14 +1,13 @@
-﻿using FS.Mapping.Table;
-using FS.Mapping.Table.Attribute;
+﻿using FS.Mapping.Context.Attribute;
 
 namespace Demo.VO.Members
 {
-    public class ValueUserVO 
+    public class ValueUserVO
     {
         /// <summary>
         /// 用户ID
         /// </summary>
-        [Proc()]
+        [Field(IsInParam = true)]
         public int? ID { get; set; }
     }
 }

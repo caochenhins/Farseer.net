@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FS.Core.Infrastructure;
-using FS.Mapping.Table;
 
 namespace FS.Core.Client.Common.SqlQuery
 {
@@ -27,12 +26,12 @@ namespace FS.Core.Client.Common.SqlQuery
             if (entity == null) { return; }
             QueueSql.Param = new List<System.Data.Common.DbParameter>();
 
-            var map = CacheManger.GetTableMap(typeof(TEntity));
-            foreach (var kic in map.ModelList.Where(o => o.Value.IsInParam || o.Value.IsOutParam))
+            var map = CacheManger.GetFieldMap(typeof(TEntity));
+            foreach (var kic in map.MapList.Where(o => o.Value.FieldAtt.IsInParam || o.Value.FieldAtt.IsOutParam))
             {
                 var obj = kic.Key.GetValue(entity, null);
 
-                QueueSql.Param.Add(QueueManger.DbProvider.CreateDbParam(kic.Value.Column.Name, obj, kic.Key.PropertyType, kic.Value.IsOutParam));
+                QueueSql.Param.Add(QueueManger.DbProvider.CreateDbParam(kic.Value.FieldAtt.Name, obj, kic.Key.PropertyType, kic.Value.FieldAtt.IsOutParam));
             }
         }
     }

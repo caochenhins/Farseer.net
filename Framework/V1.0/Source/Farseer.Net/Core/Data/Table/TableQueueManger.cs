@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using FS.Core.Infrastructure;
 using FS.Extend;
+using FS.Mapping.Context;
 
 namespace FS.Core.Data.Table
 {
@@ -45,14 +46,20 @@ namespace FS.Core.Data.Table
                 return lst;
             }
         }
+        /// <summary>
+        /// 映射关系
+        /// </summary>
+        public ContextMap ContextMap { get; set; }
 
         /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="database">数据库操作</param>
-        public TableQueueManger(DbExecutor database)
+        /// <param name="contextMap">映射关系</param>
+        public TableQueueManger(DbExecutor database, ContextMap contextMap)
         {
             DataBase = database;
+            ContextMap = contextMap;
             DbProvider = DbFactory.CreateDbProvider(database.DataType);
             _groupQueueList = new List<TableQueue>();
             Clear();
@@ -113,7 +120,7 @@ namespace FS.Core.Data.Table
         /// <param name="queue">包含数据库SQL操作的队列</param>
         public IDbSqlQuery<TEntity> SqlQuery<TEntity>(IQueueSql queue) where TEntity : class,new()
         {
-            return DbProvider.CreateSqlQuery<TEntity>(this, queue);
+            return DbProvider.CreateSqlQuery<TEntity>(ContextMap, this, queue);
         }
 
         /// <summary>
@@ -122,7 +129,7 @@ namespace FS.Core.Data.Table
         /// <param name="queue">包含数据库SQL操作的队列</param>
         public IDbSqlOper<TEntity> SqlOper<TEntity>(IQueueSql queue) where TEntity : class,new()
         {
-            return DbProvider.CreateSqlOper<TEntity>(this, queue);
+            return DbProvider.CreateSqlOper<TEntity>(ContextMap, this, queue);
         }
         public int Execute(IQueueSql queue)
         {

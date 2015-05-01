@@ -1,8 +1,7 @@
 ﻿using System;
 using Demo.Common;
 using FS.Core.Infrastructure;
-using FS.Mapping.Table;
-using FS.Mapping.Table.Attribute;
+using FS.Mapping.Context.Attribute;
 
 namespace Demo.VO.Members
 {
@@ -11,7 +10,7 @@ namespace Demo.VO.Members
         /// <summary>
         /// 用户ID
         /// </summary>
-        [Column(IsPrimaryKey = true)]
+        [Field(IsPrimaryKey = true)]
         public int? ID { get; set; }
         /// <summary>
         /// 用户名
@@ -41,7 +40,7 @@ namespace Demo.VO.Members
         /// <summary>
         /// 登陆IP
         /// </summary>
-        [Column(Name = "getdate()")]
+        [Field(Name = "getdate()")]
         public DateTime? GetDate { get; set; }
 
         /// <summary>

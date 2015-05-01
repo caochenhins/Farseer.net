@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using FS.Core.Infrastructure;
-using FS.Mapping.Table;
 
 namespace FS.Core.Client.SqlServer.SqlQuery
 {
@@ -17,11 +16,11 @@ namespace FS.Core.Client.SqlServer.SqlQuery
         {
             base.Insert(entity);
 
-            var map = CacheManger.GetTableMap(typeof(TEntity));
+            var map = CacheManger.GetFieldMap(typeof(TEntity));
 
             // 主键如果有值，则需要 SET IDENTITY_INSERT ON
-            var indexHaveValue = map.GetModelProperty().Key != null && map.GetModelProperty().Key.GetValue(entity, null) != null;
-            if (!string.IsNullOrWhiteSpace(map.IndexName) && indexHaveValue)
+            var indexHaveValue = map.PrimaryState.Key != null && map.PrimaryState.Key.GetValue(entity, null) != null;
+            if (!string.IsNullOrWhiteSpace(map.PrimaryState.Value.FieldAtt.Name) && indexHaveValue)
             {
                 QueueSql.Sql = new StringBuilder(string.Format("SET IDENTITY_INSERT {0} ON ; {1} ; SET IDENTITY_INSERT {0} OFF;", QueueSql.Name, QueueSql.Sql));
             }

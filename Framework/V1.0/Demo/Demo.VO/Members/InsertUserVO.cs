@@ -1,5 +1,4 @@
-﻿using FS.Mapping.Table;
-using FS.Mapping.Table.Attribute;
+﻿using FS.Mapping.Context.Attribute;
 
 namespace Demo.VO.Members
 {
@@ -8,19 +7,19 @@ namespace Demo.VO.Members
         /// <summary>
         /// 用户ID
         /// </summary>
-        [Proc(IsOutParam = true)]
+        [Field(IsOutParam = true)]
         public int? ID { get; set; }
 
         /// <summary>
         /// 用户名
         /// </summary>
-        [Proc()]
+        [Field(IsInParam = true)]
         public string UserName { get; set; }
 
         /// <summary>
         /// 密码
         /// </summary>
-        [Proc()]
+        [Field(IsInParam = true)]
         public string PassWord { get; set; }
     }
 }

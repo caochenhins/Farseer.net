@@ -68,7 +68,7 @@ namespace FS.Core.Data.Table
         private void InstanceProperty()
         {
             IsMergeCommand = true;
-            QueueManger = new TableQueueManger(DataBase);
+            QueueManger = new TableQueueManger(DataBase, ContextMap);
             InstanceProperty(this, "TableSet`1");
         }
 

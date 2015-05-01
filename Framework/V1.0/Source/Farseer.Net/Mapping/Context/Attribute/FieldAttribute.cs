@@ -1,17 +1,17 @@
 ﻿using System;
 
-namespace FS.Mapping.Table.Attribute
+namespace FS.Mapping.Context.Attribute
 {
     /// <summary>
     /// 设置字段在数据库中的映射关系
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public sealed class ColumnAttribute : System.Attribute
+    public sealed class FieldAttribute : System.Attribute
     {
         /// <summary>
         /// 设置字段在数据库中的映射关系
         /// </summary>
-        public ColumnAttribute()
+        public FieldAttribute()
         {
             IsMap = true;
             IsPrimaryKey = false;
@@ -33,9 +33,15 @@ namespace FS.Mapping.Table.Attribute
         public bool IsMap { get; set; }
 
         /// <summary>
-        /// 是否缓存TableSet、ViewSet、ProcSet类型的属性
-        /// 开启后，会缓存整张表、视图
+        /// 指示字段是否为存储过程中输出的参数
+        /// （默认为false)
         /// </summary>
-        public bool IsCache { get; set; }
+        public bool IsOutParam { get; set; }
+
+        /// <summary>
+        /// 指示字段是否为存储过程中输入的参数
+        /// （默认为false)
+        /// </summary>
+        public bool IsInParam { get; set; }
     }
 }

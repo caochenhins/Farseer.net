@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Common;
 using FS.Core.Infrastructure;
 using FS.Extend;
+using FS.Mapping.Context;
 
 namespace FS.Core.Data.View
 {
@@ -11,9 +12,14 @@ namespace FS.Core.Data.View
     {
         public DbExecutor DataBase { get; internal set; }
         public DbProvider DbProvider { get; set; }
-        public ViewQueueManger(DbExecutor database)
+        /// <summary>
+        /// 映射关系
+        /// </summary>
+        public ContextMap ContextMap { get; set; }
+        public ViewQueueManger(DbExecutor database, ContextMap contextMap)
         {
             DataBase = database;
+            ContextMap = contextMap;
             DbProvider = DbFactory.CreateDbProvider(database.DataType);
             Clear();
         }
@@ -47,7 +53,7 @@ namespace FS.Core.Data.View
         /// <param name="queue">包含数据库SQL操作的队列</param>
         public IDbSqlQuery<TEntity> SqlQuery<TEntity>(IQueueSql queue) where TEntity : class,new()
         {
-            return DbProvider.CreateSqlQuery<TEntity>(this, queue);
+            return DbProvider.CreateSqlQuery<TEntity>(ContextMap, this, queue);
         }
         public int Execute(IQueueSql queue)
         {

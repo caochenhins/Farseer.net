@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using FS.Configs;
-using FS.Mapping.Table;
+using FS.Mapping.Context;
 using FS.Mapping.Verify;
 
 namespace FS.Core
@@ -19,7 +19,11 @@ namespace FS.Core
         /// <summary>
         ///     缓存所有实体类
         /// </summary>
-        private static readonly Dictionary<Type, TableMap> MapList = new Dictionary<Type, TableMap>();
+        private static readonly Dictionary<Type, ContextMap> ContextMapList = new Dictionary<Type, ContextMap>();
+        /// <summary>
+        ///     缓存所有实体类
+        /// </summary>
+        private static readonly Dictionary<Type, FieldMap> FieldMapList = new Dictionary<Type, FieldMap>();
         /// <summary>
         ///     缓存所有验证的实体类
         /// </summary>
@@ -30,21 +34,38 @@ namespace FS.Core
         private static readonly Dictionary<int, string> ConnList = new Dictionary<int, string>();
 
         /// <summary>
-        ///     返回实体类映射的信息
+        ///     返回Context映射的信息
         /// </summary>
         /// <param name="type">实体类</param>
-        public static TableMap GetTableMap(Type type)
+        public static ContextMap GetContextMap(Type type)
         {
-            if (MapList.ContainsKey(type)) return MapList[type];
+            if (ContextMapList.ContainsKey(type)) return ContextMapList[type];
             lock (LockObject)
             {
-                if (!MapList.ContainsKey(type))
+                if (!ContextMapList.ContainsKey(type))
                 {
-                    MapList.Add(type, new TableMap(type));
+                    ContextMapList.Add(type, new ContextMap(type));
                 }
             }
 
-            return MapList[type];
+            return ContextMapList[type];
+        }
+        /// <summary>
+        ///     返回Field映射的信息
+        /// </summary>
+        /// <param name="type">实体类</param>
+        public static FieldMap GetFieldMap(Type type)
+        {
+            if (FieldMapList.ContainsKey(type)) return FieldMapList[type];
+            lock (LockObject)
+            {
+                if (!FieldMapList.ContainsKey(type))
+                {
+                    FieldMapList.Add(type, new FieldMap(type));
+                }
+            }
+
+            return FieldMapList[type];
         }
 
         /// <summary>
@@ -105,8 +126,10 @@ namespace FS.Core
         /// </summary>
         public static void ClearCache()
         {
-            MapList.Clear();
+            ContextMapList.Clear();
+            FieldMapList.Clear();
             VerifyMapList.Clear();
+            ConnList.Clear();
         }
     }
 

@@ -37,7 +37,7 @@ namespace FS.Core.Data.View
         /// </summary>
         private void InstanceProperty()
         {
-            QueueManger = new ViewQueueManger(DataBase);
+            QueueManger = new ViewQueueManger(DataBase, ContextMap);
             InstanceProperty(this, "ViewSet`1");
         }
 
