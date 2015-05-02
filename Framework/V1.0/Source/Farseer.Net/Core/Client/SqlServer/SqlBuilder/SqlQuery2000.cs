@@ -21,7 +21,7 @@ namespace FS.Core.Client.SqlServer.SqlBuilder
             var strDistinctSql = isDistinct ? "Distinct" : string.Empty;
             QueueSql.Sql = new StringBuilder();
 
-            strOrderBySql = "ORDER BY " + (string.IsNullOrWhiteSpace(strOrderBySql) ? string.Format("{0} ASC", QueueSql.Map.PrimaryState.Value.FieldAtt.Name) : strOrderBySql);
+            strOrderBySql = "ORDER BY " + (string.IsNullOrWhiteSpace(strOrderBySql) ? string.Format("{0} ASC", QueueSql.FieldMap.PrimaryState.Value.FieldAtt.Name) : strOrderBySql);
             var strOrderBySqlReverse = strOrderBySql.Replace(" DESC", " [倒序]").Replace("ASC", "DESC").Replace("[倒序]", "ASC");
 
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }

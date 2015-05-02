@@ -32,6 +32,6 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 实体类映射
         /// </summary>
-        FieldMap Map { get; set; }
+        FieldMap FieldMap { get; set; }
     }
 }

@@ -17,8 +17,8 @@ namespace FS.Core.Client.SqlServer.SqlBuilder
             base.Insert(entity);
 
             // 主键如果有值，则需要 SET IDENTITY_INSERT ON
-            var indexHaveValue = QueueSql.Map.PrimaryState.Key != null && QueueSql.Map.PrimaryState.Key.GetValue(entity, null) != null;
-            if (indexHaveValue && !string.IsNullOrWhiteSpace(QueueSql.Map.PrimaryState.Value.FieldAtt.Name))
+            var indexHaveValue = QueueSql.FieldMap.PrimaryState.Key != null && QueueSql.FieldMap.PrimaryState.Key.GetValue(entity, null) != null;
+            if (indexHaveValue && !string.IsNullOrWhiteSpace(QueueSql.FieldMap.PrimaryState.Value.FieldAtt.Name))
             {
                 QueueSql.Sql = new StringBuilder(string.Format("SET IDENTITY_INSERT {0} ON ; {1} ; SET IDENTITY_INSERT {0} OFF;", QueueSql.Name, QueueSql.Sql));
             }

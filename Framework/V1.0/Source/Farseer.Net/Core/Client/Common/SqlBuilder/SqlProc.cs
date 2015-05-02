@@ -26,7 +26,7 @@ namespace FS.Core.Client.Common.SqlBuilder
             if (entity == null) { return; }
             QueueSql.Param = new List<System.Data.Common.DbParameter>();
 
-            foreach (var kic in QueueSql.Map.MapList.Where(o => o.Value.FieldAtt.IsInParam || o.Value.FieldAtt.IsOutParam))
+            foreach (var kic in QueueSql.FieldMap.MapList.Where(o => o.Value.FieldAtt.IsInParam || o.Value.FieldAtt.IsOutParam))
             {
                 var obj = kic.Key.GetValue(entity, null);
 

@@ -212,35 +212,35 @@ namespace FS.Core.Infrastructure
         protected virtual Expression CreateFieldName(MemberExpression m)
         {
             if (m == null) return null;
+            if (m.NodeType == ExpressionType.Constant) { return Visit(VisitConvertExp(m)); }
 
-            switch (m.NodeType)
+            var keyValue = QueueSql.FieldMap.GetState(m.Member.Name);
+            // 解析带SQL函数的字段
+            if (keyValue.Key == null) { return CreateFunctionFieldName(m); }
+
+            // 加入Sql队列
+            _currentFieldName = keyValue.Value.FieldAtt.Name;
+            var filedName = QueueManger.DbProvider.KeywordAegis(_currentFieldName);
+            SqlList.Push(filedName);
+            return m;
+        }
+
+        /// <summary>
+        ///     将属性变量转换成T-SQL字段名（带SQL函数的字段）
+        /// </summary>
+        protected virtual Expression CreateFunctionFieldName(MemberExpression m)
+        {
+            switch (m.Member.Name)
             {
-                //局部变量
-                case ExpressionType.Constant: return Visit(VisitConvertExp(m));
-                default:
+                case "Count":
+                case "Length":
                     {
-                        var keyValue = QueueSql.Map.GetState(m.Member.Name);
-                        if (keyValue.Key == null)
-                        {
-                            switch (m.Member.Name)
-                            {
-                                case "Length":
-                                    {
-                                        var exp = CreateFieldName((MemberExpression)m.Expression);
-                                        SqlList.Push(string.Format("LEN({0})", SqlList.Pop()));
-                                        return exp;
-                                    }
-                            }
-                            return CreateFieldName((MemberExpression)m.Expression);
-                        }
-
-                        // 加入Sql队列
-                        _currentFieldName = keyValue.Value.FieldAtt.Name;
-                        var filedName = QueueManger.DbProvider.KeywordAegis(keyValue.Value.FieldAtt.Name);
-                        SqlList.Push(filedName);
-                        return m;
+                        var exp = CreateFieldName((MemberExpression)m.Expression);
+                        SqlList.Push(string.Format("LEN({0})", SqlList.Pop()));
+                        return exp;
                     }
             }
+            return CreateFieldName((MemberExpression)m.Expression);
         }
 
         /// <summary>

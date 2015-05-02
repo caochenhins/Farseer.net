@@ -30,9 +30,9 @@ namespace FS.Core.Client.SqlServer.SqlBuilder
 
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "*"; }
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
-            if (string.IsNullOrWhiteSpace(strOrderBySql) && string.IsNullOrWhiteSpace(QueueSql.Map.PrimaryState.Value.FieldAtt.Name)) { throw new Exception("当未指定排序方式时，必须要指定 主键字段"); }
+            if (string.IsNullOrWhiteSpace(strOrderBySql) && string.IsNullOrWhiteSpace(QueueSql.FieldMap.PrimaryState.Value.FieldAtt.Name)) { throw new Exception("当未指定排序方式时，必须要指定 主键字段"); }
 
-            strOrderBySql = "ORDER BY " + (string.IsNullOrWhiteSpace(strOrderBySql) ? string.Format("{0} ASC", QueueSql.Map.PrimaryState.Value.FieldAtt.Name) : strOrderBySql);
+            strOrderBySql = "ORDER BY " + (string.IsNullOrWhiteSpace(strOrderBySql) ? string.Format("{0} ASC", QueueSql.FieldMap.PrimaryState.Value.FieldAtt.Name) : strOrderBySql);
 
             QueueSql.Sql.AppendFormat("SELECT {1} FROM (SELECT {0} {1},ROW_NUMBER() OVER({2}) as Row FROM {3} {4}) a WHERE Row BETWEEN {5} AND {6};", strDistinctSql, strSelectSql, strOrderBySql, QueueSql.Name, strWhereSql, (pageIndex - 1) * pageSize + 1, pageIndex * pageSize);
         }

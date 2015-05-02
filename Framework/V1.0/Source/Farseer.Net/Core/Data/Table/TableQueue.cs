@@ -19,7 +19,7 @@ namespace FS.Core.Data.Table
         public StringBuilder Sql { get; set; }
         public List<DbParameter> Param { get; set; }
         public string Name { get; set; }
-        public FieldMap Map { get; set; }
+        public FieldMap FieldMap { get; set; }
         public Action<TableQueue> LazyAct { get; set; }
         public IBuilderSqlOper SqlBuilder { get; set; }
         public TableQueue(int index, string name, FieldMap map, IQueueManger queueManger)
@@ -28,7 +28,7 @@ namespace FS.Core.Data.Table
             Index = index;
             Name = name;
             Param = new List<DbParameter>();
-            Map = map;
+            FieldMap = map;
             SqlBuilder = queueManger.DbProvider.CreateBuilderSqlOper(queueManger, this);
         }
         public void Dispose()

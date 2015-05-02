@@ -46,13 +46,13 @@ namespace FS.Core.Client.Common.SqlBuilder
             var strAssemble = Visit.Assign(entity);
 
             // 主键如果有值，则需要 去掉主键的赋值、并且加上主键的条件
-            if (QueueSql.Map.PrimaryState.Key != null)
+            if (QueueSql.FieldMap.PrimaryState.Key != null)
             {
-                var value = QueueSql.Map.PrimaryState.Key.GetValue(entity, null);
+                var value = QueueSql.FieldMap.PrimaryState.Key.GetValue(entity, null);
                 if (value != null)
                 {
                     if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql += " AND "; }
-                    strWhereSql += string.Format("{0} = {1}", QueueSql.Map.PrimaryState.Value.FieldAtt.Name, value);
+                    strWhereSql += string.Format("{0} = {1}", QueueSql.FieldMap.PrimaryState.Value.FieldAtt.Name, value);
                 }
             }
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }

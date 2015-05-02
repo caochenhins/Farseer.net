@@ -64,7 +64,7 @@ namespace FS.Core.Infrastructure
         {
             if (m == null) return null;
 
-            var keyValue = QueueSql.Map.GetState(m.Member.Name);
+            var keyValue = QueueSql.FieldMap.GetState(m.Member.Name);
             if (keyValue.Key == null) { return CreateFieldName((MemberExpression)m.Expression); }
 
             // 加入Sql队列
