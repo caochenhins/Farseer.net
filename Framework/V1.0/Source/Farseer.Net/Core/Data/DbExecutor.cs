@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
+using FS.Core.Infrastructure;
 
 namespace FS.Core.Data
 {

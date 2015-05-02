@@ -29,11 +29,17 @@ namespace FS.Core.Data.Table
         /// <summary>
         /// 禁止外部实例化
         /// </summary>
-        private TableSet() { }
-        public TableSet(TableContext context, string name)
+        private TableSet() { } 
+        public TableSet(TableContext context)
         {
             _context = context;
-            _name = name;
+            var contextState = _context.ContextMap.GetState(this.GetType());
+            _name = contextState.Value.SetAtt.Name;
+            // 缓存
+            if (contextState.Value.SetAtt.IsCache)
+            {
+                
+            }
         }
 
         #region 条件

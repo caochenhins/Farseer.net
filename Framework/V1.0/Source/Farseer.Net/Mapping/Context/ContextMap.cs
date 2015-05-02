@@ -83,5 +83,15 @@ namespace FS.Mapping.Context
         {
             return MapList.Single(o => o.Key == setPropertyInfo);
         }
+
+        /// <summary>
+        ///     获取标注的名称
+        /// </summary>
+        /// <param name="setPropertyInfo">属性变量</param>
+        /// <returns></returns>
+        public KeyValuePair<PropertyInfo, SetState> GetState(Type setType)
+        {
+            return MapList.Single(o => o.Key.PropertyType == setType);
+        }
     }
 }

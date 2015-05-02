@@ -31,10 +31,11 @@ namespace FS.Core.Data.View
         /// 禁止外部实例化
         /// </summary>
         private ViewSet() { }
-        public ViewSet(ViewContext context, string name)
+        public ViewSet(ViewContext context)
         {
             _context = context;
-            _name = name;
+            var contextState = _context.ContextMap.GetState(this.GetType());
+            _name = contextState.Value.SetAtt.Name;
         }
 
         #region 条件

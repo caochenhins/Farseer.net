@@ -5,7 +5,7 @@ using FS.Core.Infrastructure;
 
 namespace FS.Core.Client.Common.SqlQuery
 {
-    public class SqlOper<TEntity> : IDbSqlOper<TEntity> where TEntity : class,new()
+    public class SqlOper<TEntity> : IBuilderSqlOper<TEntity> where TEntity : class,new()
     {
         /// <summary>
         /// 队列管理模块

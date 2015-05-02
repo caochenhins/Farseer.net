@@ -3,7 +3,7 @@
     /// <summary>
     /// 查询支持的SQL方法
     /// </summary>
-    public interface IDbSqlQuery<TEntity> where TEntity : class,new()
+    public interface IBuilderSqlQuery<TEntity> where TEntity : class,new()
     {
         /// <summary>
         /// 查询单条记录

@@ -12,7 +12,7 @@ namespace FS.Core.Data.Table
         /// <summary>
         /// 使用DB特性设置数据库信息
         /// </summary>
-        protected TableContext()
+        public TableContext()
         {
             InstanceProperty();
         }

@@ -54,7 +54,7 @@ namespace FS.Core.Data.Proc
         {
             DataBase = database;
             ContextMap = contextMap;
-            DbProvider = DbFactory.CreateDbProvider(database.DataType);
+            DbProvider = DbProvider.CreateInstance(database.DataType);
             _groupQueueList = new List<ProcQueue>();
             Clear();
         }
@@ -105,9 +105,9 @@ namespace FS.Core.Data.Proc
             _queue = null;
         }
 
-        public IDbSqlProc<TEntity> SqlQuery<TEntity>(IQueue queue) where TEntity : class,new()
+        public IBuilderSqlProc<TEntity> SqlQuery<TEntity>(IQueue queue) where TEntity : class,new()
         {
-            return DbProvider.CreateSqlProc<TEntity>(ContextMap,this, queue);
+            return DbProvider.CreateBuilderSqlProc<TEntity>(ContextMap,this, queue);
         }
 
         /// <summary>

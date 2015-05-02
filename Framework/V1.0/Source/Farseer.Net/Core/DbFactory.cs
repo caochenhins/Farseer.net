@@ -45,36 +45,6 @@ namespace FS.Core
             DbInfo dbInfo = dbIndex;
             return new DbExecutor(CreateConnString(dbIndex), dbInfo.DataType, dbInfo.CommandTimeout, tranLevel);
         }
-        /// <summary>
-        /// 返回数据库类型名称
-        /// </summary>
-        public static DbProvider CreateDbProvider(DataBaseType dbType)
-        {
-            switch (dbType)
-            {
-                case DataBaseType.OleDb: return new OleDbProvider();
-                case DataBaseType.MySql: return new MySqlProvider();
-                case DataBaseType.SQLite: return new SqLiteProvider();
-                case DataBaseType.Oracle: return new OracleProvider();
-            }
-            return new SqlServerProvider();
-        }
-
-        /// <summary>
-        /// 返回数据库类型名称
-        /// </summary>
-        public static DbProvider CreateDbProvider<TEntity>(DataBaseType? db = null) where TEntity : class,new()
-        {
-            var dbType = db ?? CacheManger.GetContextMap(typeof(TEntity)).ContextProperty.DataType;
-            switch (dbType)
-            {
-                case DataBaseType.OleDb: return new OleDbProvider();
-                case DataBaseType.MySql: return new MySqlProvider();
-                case DataBaseType.SQLite: return new SqLiteProvider();
-                case DataBaseType.Oracle: return new OracleProvider();
-            }
-            return new SqlServerProvider();
-        }
 
         /// <summary>
         /// 返回数据库类型名称

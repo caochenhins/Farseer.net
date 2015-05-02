@@ -75,7 +75,7 @@ namespace FS.Core.Infrastructure
 
             // 加入Sql队列
             string filedName;
-            if (!QueueManger.DbProvider.IsField(keyValue.Value.FieldAtt.Name))
+            if (!DbProvider.IsField(keyValue.Value.FieldAtt.Name))
             {
                 filedName = IsSelect ? keyValue.Value.FieldAtt.Name + " as " + keyValue.Key.Name : keyValue.Value.FieldAtt.Name;
             }

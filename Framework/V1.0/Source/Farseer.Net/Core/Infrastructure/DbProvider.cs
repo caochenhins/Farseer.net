@@ -6,6 +6,12 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using FS.Core.Client.MySql;
+using FS.Core.Client.OleDb;
+using FS.Core.Client.Oracle;
+using FS.Core.Client.SqLite;
+using FS.Core.Client.SqlServer;
+using FS.Core.Data;
 using FS.Core.Data.Table;
 using FS.Mapping.Context;
 
@@ -35,13 +41,13 @@ namespace FS.Core.Infrastructure
         ///     创建字段保护符
         /// </summary>
         /// <param name="fieldName">字符名称</param>
-        public virtual string KeywordAegis(string fieldName) { return string.Format("[{0}]", fieldName); }
+        public virtual string KeywordAegis(string fieldName) { return String.Format("[{0}]", fieldName); }
 
         /// <summary>
         /// 判断是否为字段。还是组合字段。
         /// </summary>
         /// <param name="fieldName">字段名称</param>
-        public bool IsField(string fieldName)
+        public static bool IsField(string fieldName)
         {
             return new Regex("^[a-z0-9_-]+$", RegexOptions.IgnoreCase).IsMatch(fieldName.Replace("(", "\\(").Replace(")", "\\)"));
         }
@@ -97,7 +103,7 @@ namespace FS.Core.Infrastructure
         /// <returns></returns>
         public DbType GetDbType(object valu, out int len)
         {
-            if (valu == null) { valu = string.Empty; }
+            if (valu == null) { valu = String.Empty; }
 
             var type = valu.GetType();
             if (type.Name.Equals("Nullable`1")) { type = Nullable.GetUnderlyingType(type); }
@@ -169,7 +175,7 @@ namespace FS.Core.Infrastructure
         /// <param name="output">是否是输出值</param>
         public DbParameter CreateDbParam(string name, object valu, bool output = false)
         {
-            if (valu == null) { valu = string.Empty; }
+            if (valu == null) { valu = String.Empty; }
 
             int len;
             var type = GetDbType(valu, out len);
@@ -243,7 +249,7 @@ namespace FS.Core.Infrastructure
         /// <param name="contextMap">映射关系</param>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queueSql">包含数据库SQL操作的队列</param>
-        public abstract IDbSqlQuery<TEntity> CreateSqlQuery<TEntity>(ContextMap contextMap, IQueueManger queueManger, IQueueSql queueSql) where TEntity : class, new();
+        public abstract IBuilderSqlQuery<TEntity> CreateBuilderSqlQuery<TEntity>(ContextMap contextMap, IQueueManger queueManger, IQueueSql queueSql) where TEntity : class, new();
 
         /// <summary>
         /// 创建SQL存储过程
@@ -251,7 +257,7 @@ namespace FS.Core.Infrastructure
         /// <param name="contextMap">映射关系</param>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queueSql">包含数据库SQL操作的队列</param>
-        public abstract IDbSqlProc<TEntity> CreateSqlProc<TEntity>(ContextMap contextMap, IQueueManger queueManger, IQueue queueSql) where TEntity : class,new();
+        public abstract IBuilderSqlProc<TEntity> CreateBuilderSqlProc<TEntity>(ContextMap contextMap, IQueueManger queueManger, IQueue queueSql) where TEntity : class,new();
 
         /// <summary>
         /// 创建SQL执行
@@ -259,6 +265,37 @@ namespace FS.Core.Infrastructure
         /// <param name="contextMap">映射关系</param>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queueSql">包含数据库SQL操作的队列</param>
-        public abstract IDbSqlOper<TEntity> CreateSqlOper<TEntity>(ContextMap contextMap, IQueueManger queueManger, IQueueSql queueSql) where TEntity : class,new();
+        public abstract IBuilderSqlOper<TEntity> CreateBuilderSqlOper<TEntity>(ContextMap contextMap, IQueueManger queueManger, IQueueSql queueSql) where TEntity : class,new();
+
+        /// <summary>
+        /// 返回数据库类型名称
+        /// </summary>
+        public static DbProvider CreateInstance(DataBaseType dbType)
+        {
+            switch (dbType)
+            {
+                case DataBaseType.OleDb: return new OleDbProvider();
+                case DataBaseType.MySql: return new MySqlProvider();
+                case DataBaseType.SQLite: return new SqLiteProvider();
+                case DataBaseType.Oracle: return new OracleProvider();
+            }
+            return new SqlServerProvider();
+        }
+
+        /// <summary>
+        /// 返回数据库类型名称
+        /// </summary>
+        public static DbProvider CreateInstance<TEntity>() where TEntity : BaseContext, new()
+        {
+            var dbType = CacheManger.GetContextMap(typeof(TEntity)).ContextProperty.DataType;
+            switch (dbType)
+            {
+                case DataBaseType.OleDb: return new OleDbProvider();
+                case DataBaseType.MySql: return new MySqlProvider();
+                case DataBaseType.SQLite: return new SqLiteProvider();
+                case DataBaseType.Oracle: return new OracleProvider();
+            }
+            return new SqlServerProvider();
+        }
     }
 }

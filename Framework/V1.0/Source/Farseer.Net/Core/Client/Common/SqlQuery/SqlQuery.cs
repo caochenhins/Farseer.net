@@ -7,7 +7,7 @@ namespace FS.Core.Client.Common.SqlQuery
     /// 查询支持的SQL方法
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
-    public class SqlQuery<TEntity> : IDbSqlQuery<TEntity> where TEntity : class,new()
+    public class SqlQuery<TEntity> : IBuilderSqlQuery<TEntity> where TEntity : class,new()
     {
         /// <summary>
         /// 队列管理模块

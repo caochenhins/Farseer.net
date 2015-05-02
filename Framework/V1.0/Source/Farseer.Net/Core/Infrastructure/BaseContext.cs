@@ -44,16 +44,15 @@ namespace FS.Core.Infrastructure
             foreach (var propertyInfo in lstPropertyInfo)
             {
                 if (!propertyInfo.CanWrite || propertyInfo.PropertyType.Name != propertyName) { continue; }
-                //var set = CacheManger.GetInstance(type.PropertyType, entity, map.GetFieldName(type));
                 // 动态实例化属性
-                var set = Activator.CreateInstance(propertyInfo.PropertyType, context, ContextMap.GetState(propertyInfo).Value.SetAtt.Name);
+                var set = Activator.CreateInstance(propertyInfo.PropertyType, context);
                 propertyInfo.SetValue(context, set, null);
             }
         }
 
         protected DbExecutor DataBase { get; private set; }
 
-        public ContextMap ContextMap { get; set; } 
+        public ContextMap ContextMap { get; private set; } 
 
         #region 禁用智能提示
         [EditorBrowsable(EditorBrowsableState.Never)]

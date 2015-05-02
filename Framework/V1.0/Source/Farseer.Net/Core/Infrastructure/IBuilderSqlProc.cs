@@ -3,7 +3,7 @@
     /// <summary>
     /// 视图支持的SQL方法
     /// </summary>
-    public interface IDbSqlProc<TEntity> where TEntity : class,new()
+    public interface IBuilderSqlProc<in TEntity> where TEntity : class,new()
     {
         /// <summary>
         /// 查询单条记录

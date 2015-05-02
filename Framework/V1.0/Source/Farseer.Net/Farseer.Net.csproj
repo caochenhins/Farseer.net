@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F6345D1B-C5DC-464C-A417-C02D7CD37E52}</ProjectGuid>
+    <ProjectGuid>{4F393E31-DFCD-434A-A350-53D635A99317}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>FS</RootNamespace>
@@ -169,9 +169,9 @@
     <Compile Include="Core\Data\Table\TableSet.cs" />
     <Compile Include="Core\Data\DbExecutor.cs" />
     <Compile Include="Core\DbFactory.cs" />
-    <Compile Include="Core\Infrastructure\IDbSqlProc.cs" />
-    <Compile Include="Core\Infrastructure\IDbSqlQuery.cs" />
-    <Compile Include="Core\Infrastructure\IDbSqlOper.cs" />
+    <Compile Include="Core\Infrastructure\IBuilderSqlProc.cs" />
+    <Compile Include="Core\Infrastructure\IBuilderSqlQuery.cs" />
+    <Compile Include="Core\Infrastructure\IBuilderSqlOper.cs" />
     <Compile Include="Core\Data\View\ViewContext`1.cs">
       <SubType>Code</SubType>
     </Compile>

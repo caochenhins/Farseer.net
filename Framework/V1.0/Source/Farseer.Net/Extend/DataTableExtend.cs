@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using FS.Core;
+using FS.Core.Infrastructure;
 
 namespace FS.Extend
 {
@@ -110,7 +112,7 @@ namespace FS.Extend
         public static DataTable CloneData(this DataTable dt)
         {
             var newTable = dt.Clone();
-            dt.Rows.ToRows().ForEach(o => newTable.ImportRow(o));
+            dt.Rows.ToRows().ForEach(newTable.ImportRow);
             return newTable;
         }
 
@@ -123,18 +125,14 @@ namespace FS.Extend
         {
             var list = new List<TEntity>();
             var map = CacheManger.GetFieldMap(typeof(TEntity));
-            TEntity t;
             foreach (DataRow dr in dt.Rows)
             {
-                t = new TEntity();
-
-                //赋值字段
+                // 赋值字段
+                var t = new TEntity();
                 foreach (var kic in map.MapList)
                 {
                     if (!kic.Key.CanWrite) { continue; }
-                    string filedName;
-                    if (!DbFactory.CreateDbProvider<TEntity>().IsField(kic.Value.FieldAtt.Name)) { filedName = kic.Key.Name; }
-                    else { filedName = kic.Value.FieldAtt.Name; }
+                    var filedName = !DbProvider.IsField(kic.Value.FieldAtt.Name) ? kic.Key.Name : kic.Value.FieldAtt.Name;
                     if (dr.Table.Columns.Contains(filedName))
                     {
                         kic.Key.SetValue(t, dr[filedName].ConvertType(kic.Key.PropertyType), null);
@@ -152,11 +150,8 @@ namespace FS.Extend
         public static List<DataRow> ToRows(this DataRowCollection drc)
         {
             var lstRow = new List<DataRow>();
-
             if (drc == null) { return lstRow; }
-
-            foreach (DataRow dr in drc) { lstRow.Add(dr); }
-
+            lstRow.AddRange(drc.Cast<DataRow>());
             return lstRow;
         }
 

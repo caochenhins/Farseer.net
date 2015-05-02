@@ -60,7 +60,8 @@ namespace FS.Core.Data.Table
         {
             DataBase = database;
             ContextMap = contextMap;
-            DbProvider = DbFactory.CreateDbProvider(database.DataType);
+
+            DbProvider = DbProvider.CreateInstance(database.DataType);
             _groupQueueList = new List<TableQueue>();
             Clear();
         }
@@ -118,18 +119,18 @@ namespace FS.Core.Data.Table
         /// 创建SQL查询
         /// </summary>
         /// <param name="queue">包含数据库SQL操作的队列</param>
-        public IDbSqlQuery<TEntity> SqlQuery<TEntity>(IQueueSql queue) where TEntity : class,new()
+        public IBuilderSqlQuery<TEntity> SqlQuery<TEntity>(IQueueSql queue) where TEntity : class,new()
         {
-            return DbProvider.CreateSqlQuery<TEntity>(ContextMap, this, queue);
+            return DbProvider.CreateBuilderSqlQuery<TEntity>(ContextMap, this, queue);
         }
 
         /// <summary>
         /// 创建SQL执行
         /// </summary>
         /// <param name="queue">包含数据库SQL操作的队列</param>
-        public IDbSqlOper<TEntity> SqlOper<TEntity>(IQueueSql queue) where TEntity : class,new()
+        public IBuilderSqlOper<TEntity> SqlOper<TEntity>(IQueueSql queue) where TEntity : class,new()
         {
-            return DbProvider.CreateSqlOper<TEntity>(ContextMap, this, queue);
+            return DbProvider.CreateBuilderSqlOper<TEntity>(ContextMap, this, queue);
         }
         public int Execute(IQueueSql queue)
         {

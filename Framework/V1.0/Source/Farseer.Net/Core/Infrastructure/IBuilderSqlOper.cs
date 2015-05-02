@@ -3,7 +3,7 @@
     /// <summary>
     /// 表支持的SQL方法
     /// </summary>
-    public interface IDbSqlOper<TEntity> where TEntity : class,new()
+    public interface IBuilderSqlOper<in TEntity> where TEntity : class,new()
     {
         /// <summary>
         /// 删除
