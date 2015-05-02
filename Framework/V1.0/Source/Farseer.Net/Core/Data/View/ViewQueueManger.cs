@@ -32,7 +32,7 @@ namespace FS.Core.Data.View
         /// <param name="name">表名称</param>
         public ViewQueue GetQueue(string name, FieldMap map)
         {
-            return _queue ?? (_queue = new ViewQueue(0, name, map));
+            return _queue ?? (_queue = new ViewQueue(0, name, map, this));
         }
 
         public List<DbParameter> Param
@@ -48,14 +48,6 @@ namespace FS.Core.Data.View
             _queue = null;
         }
 
-        /// <summary>
-        /// 创建SQL查询
-        /// </summary>
-        /// <param name="queue">包含数据库SQL操作的队列</param>
-        public IBuilderSqlQuery SqlBuilder(IQueueSql queue)
-        {
-            return DbProvider.CreateBuilderSqlQuery(ContextMap, this, queue);
-        }
         public int Execute(IQueueSql queue)
         {
             var param = queue.Param == null ? null : queue.Param.ToArray();

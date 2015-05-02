@@ -21,13 +21,15 @@ namespace FS.Core.Data.Table
         public string Name { get; set; }
         public FieldMap Map { get; set; }
         public Action<TableQueue> LazyAct { get; set; }
-        public TableQueue(int index, string name, FieldMap map)
+        public IBuilderSqlOper SqlBuilder { get; set; }
+        public TableQueue(int index, string name, FieldMap map, IQueueManger queueManger)
         {
             ID = Guid.NewGuid();
             Index = index;
             Name = name;
             Param = new List<DbParameter>();
             Map = map;
+            SqlBuilder = queueManger.DbProvider.CreateBuilderSqlOper(queueManger, this);
         }
         public void Dispose()
         {

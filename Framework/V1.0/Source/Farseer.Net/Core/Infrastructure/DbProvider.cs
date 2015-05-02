@@ -13,7 +13,6 @@ using FS.Core.Client.SqLite;
 using FS.Core.Client.SqlServer;
 using FS.Core.Data;
 using FS.Core.Data.Table;
-using FS.Mapping.Context;
 
 namespace FS.Core.Infrastructure
 {
@@ -246,26 +245,23 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 创建SQL查询
         /// </summary>
-        /// <param name="contextMap">映射关系</param>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queueSql">包含数据库SQL操作的队列</param>
-        public abstract IBuilderSqlQuery CreateBuilderSqlQuery(ContextMap contextMap, IQueueManger queueManger, IQueueSql queueSql);
+        public abstract IBuilderSqlQuery CreateBuilderSqlQuery(IQueueManger queueManger, IQueueSql queueSql);
 
         /// <summary>
         /// 创建SQL存储过程
         /// </summary>
-        /// <param name="contextMap">映射关系</param>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queueSql">包含数据库SQL操作的队列</param>
-        public abstract IBuilderSqlProc CreateBuilderSqlProc(ContextMap contextMap, IQueueManger queueManger, IQueue queueSql);
+        public abstract IBuilderSqlProc CreateBuilderSqlProc(IQueueManger queueManger, IQueue queueSql);
 
         /// <summary>
         /// 创建SQL执行
         /// </summary>
-        /// <param name="contextMap">映射关系</param>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queueSql">包含数据库SQL操作的队列</param>
-        public abstract IBuilderSqlOper CreateBuilderSqlOper(ContextMap contextMap, IQueueManger queueManger, IQueueSql queueSql);
+        public abstract IBuilderSqlOper CreateBuilderSqlOper(IQueueManger queueManger, IQueueSql queueSql);
 
         /// <summary>
         /// 返回数据库类型名称

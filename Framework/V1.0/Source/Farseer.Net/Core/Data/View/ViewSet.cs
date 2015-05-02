@@ -112,7 +112,7 @@ namespace FS.Core.Data.View
         /// <param name="isRand">返回当前条件下随机的数据</param>
         public DataTable ToTable(int top = 0, bool isDistinct = false, bool isRand = false)
         {
-            QueueManger.SqlBuilder(Queue).ToList(top, isDistinct, isRand);
+            Queue.SqlBuilder.ToList(top, isDistinct, isRand);
             return QueueManger.ExecuteTable(Queue);
         }
 
@@ -125,7 +125,7 @@ namespace FS.Core.Data.View
         /// <returns></returns>
         public DataTable ToTable(int pageSize, int pageIndex, bool isDistinct = false)
         {
-            QueueManger.SqlBuilder(Queue).ToList(pageSize, pageIndex, isDistinct);
+            Queue.SqlBuilder.ToList(pageSize, pageIndex, isDistinct);
             return QueueManger.ExecuteTable(Queue);
         }
 
@@ -254,7 +254,7 @@ namespace FS.Core.Data.View
         /// </summary>
         public TEntity ToEntity()
         {
-            QueueManger.SqlBuilder(Queue).ToEntity();
+            Queue.SqlBuilder.ToEntity();
             return QueueManger.ExecuteInfo<TEntity>(Queue);
         }
 
@@ -276,7 +276,7 @@ namespace FS.Core.Data.View
         /// </summary>
         public int Count(bool isDistinct = false, bool isRand = false)
         {
-            QueueManger.SqlBuilder(Queue).Count();
+            Queue.SqlBuilder.Count();
             return QueueManger.ExecuteQuery<int>(Queue);
         }
 
@@ -344,7 +344,7 @@ namespace FS.Core.Data.View
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Value操作时，fieldName参数不能为空！"); }
             Select(fieldName);
 
-            QueueManger.SqlBuilder(Queue).GetValue();
+            Queue.SqlBuilder.GetValue();
             return QueueManger.ExecuteQuery(Queue, defValue);
         }
 
@@ -372,7 +372,7 @@ namespace FS.Core.Data.View
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Sum操作时，fieldName参数不能为空！"); }
             Select(fieldName);
 
-            QueueManger.SqlBuilder(Queue).Sum();
+            Queue.SqlBuilder.Sum();
             return QueueManger.ExecuteQuery(Queue, defValue);
         }
 
@@ -384,7 +384,7 @@ namespace FS.Core.Data.View
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Max操作时，fieldName参数不能为空！"); }
             Select(fieldName);
 
-            QueueManger.SqlBuilder(Queue).Max();
+            Queue.SqlBuilder.Max();
             return QueueManger.ExecuteQuery(Queue, defValue);
         }
         /// <summary>
@@ -395,7 +395,7 @@ namespace FS.Core.Data.View
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Min操作时，fieldName参数不能为空！"); }
             Select(fieldName);
 
-            QueueManger.SqlBuilder(Queue).Min();
+            Queue.SqlBuilder.Min();
             return QueueManger.ExecuteQuery(Queue, defValue);
         }
 

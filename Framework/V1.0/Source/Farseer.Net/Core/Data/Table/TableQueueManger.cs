@@ -73,7 +73,7 @@ namespace FS.Core.Data.Table
         /// <param name="name">表名称</param>
         public TableQueue GetQueue(string name, FieldMap map)
         {
-            return _queue ?? (_queue = new TableQueue(_groupQueueList.Count, name, map));
+            return _queue ?? (_queue = new TableQueue(_groupQueueList.Count, name, map, this));
         }
 
         /// <summary>
@@ -114,15 +114,6 @@ namespace FS.Core.Data.Table
         private void Clear()
         {
             _queue = null;
-        }
-
-        /// <summary>
-        /// 创建SQL执行
-        /// </summary>
-        /// <param name="queue">包含数据库SQL操作的队列</param>
-        public IBuilderSqlOper SqlBuilder(IQueueSql queue)
-        {
-            return DbProvider.CreateBuilderSqlOper(ContextMap, this, queue);
         }
         public int Execute(IQueueSql queue)
         {

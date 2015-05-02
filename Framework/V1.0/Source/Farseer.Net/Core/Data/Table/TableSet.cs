@@ -144,7 +144,7 @@ namespace FS.Core.Data.Table
         /// <param name="isRand">返回当前条件下随机的数据</param>
         public DataTable ToTable(int top = 0, bool isDistinct = false, bool isRand = false)
         {
-            QueueManger.SqlBuilder(Queue).ToList(top, isDistinct, isRand);
+            Queue.SqlBuilder.ToList(top, isDistinct, isRand);
             return QueueManger.ExecuteTable(Queue);
         }
 
@@ -157,7 +157,7 @@ namespace FS.Core.Data.Table
         /// <returns></returns>
         public DataTable ToTable(int pageSize, int pageIndex, bool isDistinct = false)
         {
-            QueueManger.SqlBuilder(Queue).ToList(pageSize, pageIndex, isDistinct);
+            Queue.SqlBuilder.ToList(pageSize, pageIndex, isDistinct);
             return QueueManger.ExecuteTable(Queue);
         }
 
@@ -283,7 +283,7 @@ namespace FS.Core.Data.Table
         /// </summary>
         public TEntity ToEntity()
         {
-            QueueManger.SqlBuilder(Queue).ToEntity();
+            Queue.SqlBuilder.ToEntity();
             return QueueManger.ExecuteInfo<TEntity>(Queue);
         }
 
@@ -305,7 +305,7 @@ namespace FS.Core.Data.Table
         /// </summary>
         public int Count(bool isDistinct = false, bool isRand = false)
         {
-            QueueManger.SqlBuilder(Queue).Count();
+            Queue.SqlBuilder.Count();
             return QueueManger.ExecuteQuery<int>(Queue);
         }
 
@@ -416,12 +416,12 @@ namespace FS.Core.Data.Table
             //  判断是否启用合并提交
             if (_context.IsMergeCommand)
             {
-                Queue.LazyAct = (queryQueue) => QueueManger.SqlBuilder(queryQueue).Update(entity);
+                Queue.LazyAct = (queryQueue) => queryQueue.SqlBuilder.Update(entity);
                 QueueManger.Append();
             }
             else
             {
-                QueueManger.SqlBuilder(Queue).Update(entity);
+                Queue.SqlBuilder.Update(entity);
                 QueueManger.Execute(Queue);
             }
             return entity;
@@ -472,12 +472,12 @@ namespace FS.Core.Data.Table
             //  判断是否启用合并提交
             if (_context.IsMergeCommand)
             {
-                Queue.LazyAct = (queryQueue) => QueueManger.SqlBuilder(queryQueue).Insert(entity);
+                Queue.LazyAct = (queryQueue) => queryQueue.SqlBuilder.Insert(entity);
                 QueueManger.Append();
             }
             else
             {
-                QueueManger.SqlBuilder(Queue).Insert(entity);
+                Queue.SqlBuilder.Insert(entity);
                 QueueManger.Execute(Queue);
             }
             return entity;
@@ -491,7 +491,7 @@ namespace FS.Core.Data.Table
         {
             if (entity == null) { throw new ArgumentNullException("entity", "插入操作时，参数不能为空！"); }
 
-            QueueManger.SqlBuilder(Queue).InsertIdentity(entity);
+            Queue.SqlBuilder.InsertIdentity(entity);
             identity = QueueManger.ExecuteQuery<int>(Queue);
 
             return entity;
@@ -512,7 +512,7 @@ namespace FS.Core.Data.Table
             }
             lst.ForEach(entity =>
             {
-                QueueManger.SqlBuilder(Queue).Insert(entity);
+                Queue.SqlBuilder.Insert(entity);
                 QueueManger.Execute(Queue);
             });
             return lst;
@@ -528,12 +528,12 @@ namespace FS.Core.Data.Table
             //  判断是否启用合并提交
             if (_context.IsMergeCommand)
             {
-                Queue.LazyAct = (queryQueue) => QueueManger.SqlBuilder(queryQueue).Delete();
+                Queue.LazyAct = (queryQueue) => queryQueue.SqlBuilder.Delete();
                 QueueManger.Append();
             }
             else
             {
-                QueueManger.SqlBuilder(Queue).Delete();
+                Queue.SqlBuilder.Delete();
                 QueueManger.Execute(Queue);
             }
         }
@@ -589,12 +589,12 @@ namespace FS.Core.Data.Table
             //  判断是否启用合并提交
             if (_context.IsMergeCommand)
             {
-                Queue.LazyAct = (queryQueue) => QueueManger.SqlBuilder(queryQueue).AddUp();
+                Queue.LazyAct = (queryQueue) => queryQueue.SqlBuilder.AddUp();
                 QueueManger.Append();
             }
             else
             {
-                QueueManger.SqlBuilder(Queue).AddUp();
+                Queue.SqlBuilder.AddUp();
                 QueueManger.Execute(Queue);
             }
         }
@@ -649,7 +649,7 @@ namespace FS.Core.Data.Table
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Value操作时，fieldName参数不能为空！"); }
             Select(fieldName);
 
-            QueueManger.SqlBuilder(Queue).GetValue();
+            Queue.SqlBuilder.GetValue();
             return QueueManger.ExecuteQuery(Queue, defValue);
         }
 
@@ -676,7 +676,7 @@ namespace FS.Core.Data.Table
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Sum操作时，fieldName参数不能为空！"); }
             Select(fieldName);
 
-            QueueManger.SqlBuilder(Queue).Sum();
+            Queue.SqlBuilder.Sum();
             return QueueManger.ExecuteQuery(Queue, defValue);
         }
         /// <summary>
@@ -687,7 +687,7 @@ namespace FS.Core.Data.Table
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Max操作时，fieldName参数不能为空！"); }
             Select(fieldName);
 
-            QueueManger.SqlBuilder(Queue).Max();
+            Queue.SqlBuilder.Max();
             return QueueManger.ExecuteQuery(Queue, defValue);
         }
         /// <summary>
@@ -698,7 +698,7 @@ namespace FS.Core.Data.Table
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Min操作时，fieldName参数不能为空！"); }
             Select(fieldName);
 
-            QueueManger.SqlBuilder(Queue).Min();
+            Queue.SqlBuilder.Min();
             return QueueManger.ExecuteQuery(Queue, defValue);
         }
         #endregion

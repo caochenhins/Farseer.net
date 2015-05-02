@@ -19,14 +19,16 @@ namespace FS.Core.Data.View
         public List<DbParameter> Param { get; set; }
         public string Name { get; set; }
         public FieldMap Map { get; set; }
+        public IBuilderSqlQuery SqlBuilder { get; set; }
 
-        public ViewQueue(int index, string name, FieldMap map)
+        public ViewQueue(int index, string name, FieldMap map, IQueueManger queueManger)
         {
             ID = Guid.NewGuid();
             Index = index;
             Name = name;
             Param = new List<DbParameter>();
             Map = map;
+            SqlBuilder = queueManger.DbProvider.CreateBuilderSqlQuery(queueManger, this);
         }
 
         public void Dispose()

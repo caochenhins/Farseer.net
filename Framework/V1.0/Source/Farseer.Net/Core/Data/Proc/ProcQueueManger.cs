@@ -66,7 +66,7 @@ namespace FS.Core.Data.Proc
         /// <param name="name">表名称</param>
         public ProcQueue GetQueue(string name, FieldMap map)
         {
-            return _queue ?? (_queue = new ProcQueue(_groupQueueList.Count, name, map));
+            return _queue ?? (_queue = new ProcQueue(_groupQueueList.Count, name, map, this));
         }
 
         /// <summary>
@@ -104,11 +104,6 @@ namespace FS.Core.Data.Proc
         private void Clear()
         {
             _queue = null;
-        }
-
-        public IBuilderSqlProc SqlBuilder(IQueue queue)
-        {
-            return DbProvider.CreateBuilderSqlProc(ContextMap,this, queue);
         }
 
         /// <summary>

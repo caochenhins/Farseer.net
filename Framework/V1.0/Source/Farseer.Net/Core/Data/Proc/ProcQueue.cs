@@ -13,14 +13,16 @@ namespace FS.Core.Data.Proc
         public List<DbParameter> Param { get; set; }
         public string Name { get; set; }
         public FieldMap Map { get; set; }
+        public IBuilderSqlProc SqlBuilder { get; set; }
 
-        public ProcQueue(int index, string name, FieldMap map)
+        public ProcQueue(int index, string name, FieldMap map, IQueueManger queueManger)
         {
             ID = Guid.NewGuid();
             Index = index;
             Name = name;
             Param = new List<DbParameter>();
             Map = map;
+            SqlBuilder = queueManger.DbProvider.CreateBuilderSqlProc(queueManger, this);
         }
 
         public Action<ProcQueue> LazyAct { get; set; }
