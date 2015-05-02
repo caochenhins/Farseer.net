@@ -2,7 +2,7 @@
 
 namespace FS.Core.Client.SqlServer
 {
-    public class ExpressionNew<TEntity> : Common.ExpressionNew<TEntity> where TEntity : class, new()
+    public class ExpressionNew : Common.ExpressionNew
     {
         /// <summary>
         /// 构造函数

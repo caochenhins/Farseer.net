@@ -3,34 +3,16 @@ using System.Text;
 using FS.Core.Data.Table;
 using FS.Core.Infrastructure;
 
-namespace FS.Core.Client.Common.SqlQuery
+namespace FS.Core.Client.Common.SqlBuilder
 {
-    public class SqlOper<TEntity> : IBuilderSqlOper<TEntity> where TEntity : class,new()
+    public class SqlOper : SqlQuery, IBuilderSqlOper
     {
-        /// <summary>
-        /// 队列管理模块
-        /// </summary>
-        protected readonly IQueueManger QueueManger;
-        /// <summary>
-        /// 包含数据库SQL操作的队列
-        /// </summary>
-        protected readonly IQueueSql QueueSql;
-        /// <summary>
-        /// 数据库字段解析器总入口，根据要解析的类型，再分散到各自负责的解析器
-        /// </summary>
-        protected readonly ExpressionVisit<TEntity> Visit;
-
         /// <summary>
         /// 查询支持的SQL方法
         /// </summary>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queueSql">包含数据库SQL操作的队列</param>
-        public SqlOper(IQueueManger queueManger, IQueueSql queueSql)
-        {
-            QueueManger = queueManger;
-            QueueSql = queueSql;
-            Visit = new ExpressionVisit<TEntity>(queueManger, QueueSql);
-        }
+        public SqlOper(IQueueManger queueManger, IQueueSql queueSql) : base(queueManger, queueSql) { }
 
         public virtual void Delete()
         {
@@ -42,7 +24,7 @@ namespace FS.Core.Client.Common.SqlQuery
             QueueSql.Sql.AppendFormat("DELETE FROM {0} {1}", QueueManger.DbProvider.KeywordAegis(QueueSql.Name), strWhereSql);
         }
 
-        public virtual void Insert(TEntity entity)
+        public virtual void Insert<TEntity>(TEntity entity) where TEntity : class,new()
         {
             QueueSql.Sql = new StringBuilder();
             var strinsertAssemble = Visit.Insert(entity);
@@ -50,29 +32,27 @@ namespace FS.Core.Client.Common.SqlQuery
             QueueSql.Sql.AppendFormat("INSERT INTO {0} {1}", QueueSql.Name, strinsertAssemble);
         }
 
-        public virtual void InsertIdentity(TEntity entity)
+        public virtual void InsertIdentity<TEntity>(TEntity entity) where TEntity : class,new()
         {
             QueueSql.Sql = new StringBuilder();
             var strinsertAssemble = Visit.Insert(entity);
             QueueSql.Sql.AppendFormat("INSERT INTO {0} {1}", QueueSql.Name, strinsertAssemble);
         }
 
-        public virtual void Update(TEntity entity)
+        public virtual void Update<TEntity>(TEntity entity) where TEntity : class,new()
         {
-            var map = CacheManger.GetFieldMap(typeof(TEntity));
-
             QueueSql.Sql = new StringBuilder();
             var strWhereSql = Visit.Where(QueueSql.ExpWhere);
             var strAssemble = Visit.Assign(entity);
 
             // 主键如果有值，则需要 去掉主键的赋值、并且加上主键的条件
-            if (map.PrimaryState.Key != null)
+            if (QueueSql.Map.PrimaryState.Key != null)
             {
-                var value = map.PrimaryState.Key.GetValue(entity, null);
+                var value = QueueSql.Map.PrimaryState.Key.GetValue(entity, null);
                 if (value != null)
                 {
                     if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql += " AND "; }
-                    strWhereSql += string.Format("{0} = {1}", map.PrimaryState.Value.FieldAtt.Name, value);
+                    strWhereSql += string.Format("{0} = {1}", QueueSql.Map.PrimaryState.Value.FieldAtt.Name, value);
                 }
             }
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }

@@ -1,9 +1,9 @@
 ﻿using System.Text;
 using FS.Core.Infrastructure;
 
-namespace FS.Core.Client.OleDb.SqlQuery
+namespace FS.Core.Client.OleDb.SqlBuilder
 {
-    public class SqlQuery<TEntity> : Common.SqlQuery.SqlQuery<TEntity> where TEntity : class, new()
+    public class SqlQuery : Common.SqlBuilder.SqlQuery 
     {
         /// <summary>
         /// 查询支持的SQL方法

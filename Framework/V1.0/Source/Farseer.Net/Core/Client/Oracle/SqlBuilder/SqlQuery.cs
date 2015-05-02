@@ -1,9 +1,9 @@
 ﻿using System.Text;
 using FS.Core.Infrastructure;
 
-namespace FS.Core.Client.Oracle.SqlQuery
+namespace FS.Core.Client.Oracle.SqlBuilder
 {
-    public class SqlQuery<TEntity> : Common.SqlQuery.SqlQuery<TEntity> where TEntity : class, new()
+    public class SqlQuery : Common.SqlBuilder.SqlQuery
     {
         /// <summary>
         /// 查询支持的SQL方法
@@ -59,7 +59,6 @@ namespace FS.Core.Client.Oracle.SqlQuery
             // 不分页
             if (pageIndex == 1) { ToList(pageSize, isDistinct); return; }
 
-            var map = CacheManger.GetContextMap(typeof(TEntity));
             var strSelectSql = Visit.Select(QueueSql.ExpSelect);
             var strWhereSql = Visit.Where(QueueSql.ExpWhere);
             var strOrderBySql = Visit.OrderBy(QueueSql.ExpOrderBy);

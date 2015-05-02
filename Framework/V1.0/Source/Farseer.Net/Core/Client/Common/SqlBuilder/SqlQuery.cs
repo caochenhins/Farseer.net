@@ -1,13 +1,12 @@
 ﻿using System.Text;
 using FS.Core.Infrastructure;
 
-namespace FS.Core.Client.Common.SqlQuery
+namespace FS.Core.Client.Common.SqlBuilder
 {
     /// <summary>
     /// 查询支持的SQL方法
     /// </summary>
-    /// <typeparam name="TEntity"></typeparam>
-    public class SqlQuery<TEntity> : IBuilderSqlQuery<TEntity> where TEntity : class,new()
+    public class SqlQuery : IBuilderSqlQuery
     {
         /// <summary>
         /// 队列管理模块
@@ -20,7 +19,7 @@ namespace FS.Core.Client.Common.SqlQuery
         /// <summary>
         /// 数据库字段解析器总入口，根据要解析的类型，再分散到各自负责的解析器
         /// </summary>
-        protected readonly ExpressionVisit<TEntity> Visit;
+        protected readonly ExpressionVisit Visit;
 
         /// <summary>
         /// 查询支持的SQL方法
@@ -31,7 +30,7 @@ namespace FS.Core.Client.Common.SqlQuery
         {
             QueueManger = queueManger;
             QueueSql = queueSql;
-            Visit = new ExpressionVisit<TEntity>(queueManger, QueueSql);
+            Visit = new ExpressionVisit(queueManger, QueueSql);
         }
 
         public virtual void ToEntity()
@@ -81,14 +80,13 @@ namespace FS.Core.Client.Common.SqlQuery
             // 不分页
             if (pageIndex == 1) { ToList(pageSize, isDistinct); return; }
 
-            var map = CacheManger.GetFieldMap(typeof(TEntity));
             var strSelectSql = Visit.Select(QueueSql.ExpSelect);
             var strWhereSql = Visit.Where(QueueSql.ExpWhere);
             var strOrderBySql = Visit.OrderBy(QueueSql.ExpOrderBy);
             var strDistinctSql = isDistinct ? "Distinct" : string.Empty;
             QueueSql.Sql = new StringBuilder();
 
-            strOrderBySql = "ORDER BY " + (string.IsNullOrWhiteSpace(strOrderBySql) ? string.Format("{0} ASC", map.PrimaryState.Value.FieldAtt.Name) : strOrderBySql);
+            strOrderBySql = "ORDER BY " + (string.IsNullOrWhiteSpace(strOrderBySql) ? string.Format("{0} ASC", QueueSql.Map.PrimaryState.Value.FieldAtt.Name) : strOrderBySql);
             var strOrderBySqlReverse = strOrderBySql.Replace(" DESC", " [倒序]").Replace("ASC", "DESC").Replace("[倒序]", "ASC");
 
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }

@@ -2,13 +2,12 @@
 using System.Text;
 using FS.Core.Infrastructure;
 
-namespace FS.Core.Client.SqlServer.SqlQuery
+namespace FS.Core.Client.SqlServer.SqlBuilder
 {
     /// <summary>
     /// 查询支持的SQL方法
     /// </summary>
-    /// <typeparam name="TEntity"></typeparam>
-    public class SqlQuery<TEntity> : Common.SqlQuery.SqlQuery<TEntity> where TEntity : class, new()
+    public class SqlQuery : Common.SqlBuilder.SqlQuery
     {
         /// <summary>
         /// 查询支持的SQL方法
@@ -22,7 +21,6 @@ namespace FS.Core.Client.SqlServer.SqlQuery
             // 不分页
             if (pageIndex == 1) { ToList(pageSize, isDistinct); return; }
 
-            var map = CacheManger.GetFieldMap(typeof(TEntity));
             var strSelectSql = Visit.Select(QueueSql.ExpSelect);
             var strWhereSql = Visit.Where(QueueSql.ExpWhere);
             var strOrderBySql = Visit.OrderBy(QueueSql.ExpOrderBy);
@@ -32,9 +30,9 @@ namespace FS.Core.Client.SqlServer.SqlQuery
 
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "*"; }
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
-            if (string.IsNullOrWhiteSpace(strOrderBySql) && string.IsNullOrWhiteSpace(map.PrimaryState.Value.FieldAtt.Name)) { throw new Exception("当未指定排序方式时，必须要指定 主键字段"); }
+            if (string.IsNullOrWhiteSpace(strOrderBySql) && string.IsNullOrWhiteSpace(QueueSql.Map.PrimaryState.Value.FieldAtt.Name)) { throw new Exception("当未指定排序方式时，必须要指定 主键字段"); }
 
-            strOrderBySql = "ORDER BY " + (string.IsNullOrWhiteSpace(strOrderBySql) ? string.Format("{0} ASC", map.PrimaryState.Value.FieldAtt.Name) : strOrderBySql);
+            strOrderBySql = "ORDER BY " + (string.IsNullOrWhiteSpace(strOrderBySql) ? string.Format("{0} ASC", QueueSql.Map.PrimaryState.Value.FieldAtt.Name) : strOrderBySql);
 
             QueueSql.Sql.AppendFormat("SELECT {1} FROM (SELECT {0} {1},ROW_NUMBER() OVER({2}) as Row FROM {3} {4}) a WHERE Row BETWEEN {5} AND {6};", strDistinctSql, strSelectSql, strOrderBySql, QueueSql.Name, strWhereSql, (pageIndex - 1) * pageSize + 1, pageIndex * pageSize);
         }

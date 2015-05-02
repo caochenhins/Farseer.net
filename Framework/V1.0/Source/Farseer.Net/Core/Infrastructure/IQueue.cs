@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using FS.Mapping.Context;
 
 namespace FS.Core.Infrastructure
 {
@@ -27,5 +28,10 @@ namespace FS.Core.Infrastructure
         /// 表名/视图名/存储过程名
         /// </summary>
         string Name { get; set; }
+
+        /// <summary>
+        /// 实体类映射
+        /// </summary>
+        FieldMap Map { get; set; }
     }
 }

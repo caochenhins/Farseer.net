@@ -1,5 +1,5 @@
 ﻿using System.Data.Common;
-using FS.Core.Client.SqlServer.SqlQuery;
+using FS.Core.Client.SqlServer.SqlBuilder;
 using FS.Core.Infrastructure;
 using FS.Mapping.Context;
 
@@ -12,23 +12,23 @@ namespace FS.Core.Client.SqlServer
             get { return DbProviderFactories.GetFactory("System.Data.SqlClient"); }
         }
 
-        public override IBuilderSqlQuery<TEntity> CreateBuilderSqlQuery<TEntity>(ContextMap contextMap, IQueueManger queueManger, IQueueSql queueSql)
+        public override IBuilderSqlQuery CreateBuilderSqlQuery(ContextMap contextMap, IQueueManger queueManger, IQueueSql queueSql)
         {
             switch (contextMap.ContextProperty.DataVer)
             {
-                case "2000": return new SqlQuery2000<TEntity>(queueManger, queueSql);
+                case "2000": return new SqlQuery2000(queueManger, queueSql);
             }
-            return new SqlQuery<TEntity>(queueManger, queueSql);
+            return new SqlQuery(queueManger, queueSql);
         }
 
-        public override IBuilderSqlProc<TEntity> CreateBuilderSqlProc<TEntity>(ContextMap contextMap, IQueueManger queueManger, IQueue queueSql)
+        public override IBuilderSqlProc CreateBuilderSqlProc(ContextMap contextMap, IQueueManger queueManger, IQueue queueSql)
         {
-            return new SqlProc<TEntity>(queueManger, queueSql);
+            return new SqlProc(queueManger, queueSql);
         }
 
-        public override IBuilderSqlOper<TEntity> CreateBuilderSqlOper<TEntity>(ContextMap contextMap, IQueueManger queueManger, IQueueSql queueSql)
+        public override IBuilderSqlOper CreateBuilderSqlOper(ContextMap contextMap, IQueueManger queueManger, IQueueSql queueSql)
         {
-            return new SqlOper<TEntity>(queueManger, queueSql);
+            return new SqlOper(queueManger, queueSql);
         }
     }
 }

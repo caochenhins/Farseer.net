@@ -2,20 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
-using FS.Mapping.Context;
 
 namespace FS.Core.Infrastructure
 {
     /// <summary>
     /// 提供ExpressionNew表达式树的解析
     /// </summary>
-    /// <typeparam name="TEntity">实体类</typeparam>
-    public abstract class DbExpressionNewProvider<TEntity> where TEntity : class, new()
+    public abstract class DbExpressionNewProvider
     {
-        /// <summary>
-        /// 实体类映射
-        /// </summary>
-        protected readonly FieldMap Map = typeof(TEntity);
         /// <summary>
         /// 条件堆栈
         /// </summary>
@@ -70,7 +64,7 @@ namespace FS.Core.Infrastructure
         {
             if (m == null) return null;
 
-            var keyValue = Map.GetState(m.Member.Name);
+            var keyValue = QueueSql.Map.GetState(m.Member.Name);
             if (keyValue.Key == null) { return CreateFieldName((MemberExpression)m.Expression); }
 
             // 加入Sql队列

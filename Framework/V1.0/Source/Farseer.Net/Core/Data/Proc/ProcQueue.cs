@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using FS.Core.Infrastructure;
+using FS.Mapping.Context;
 
 namespace FS.Core.Data.Proc
 {
@@ -11,12 +12,15 @@ namespace FS.Core.Data.Proc
         public int Index { get; set; }
         public List<DbParameter> Param { get; set; }
         public string Name { get; set; }
-        public ProcQueue(int index, string name)
+        public FieldMap Map { get; set; }
+
+        public ProcQueue(int index, string name, FieldMap map)
         {
             ID = Guid.NewGuid();
             Index = index;
             Name = name;
             Param = new List<DbParameter>();
+            Map = map;
         }
 
         public Action<ProcQueue> LazyAct { get; set; }

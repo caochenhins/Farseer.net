@@ -2,7 +2,7 @@
 
 namespace FS.Core.Client.OleDb
 {
-    public class ExpressionBool<TEntity> : Common.ExpressionBool<TEntity> where TEntity : class, new()
+    public class ExpressionBool : Common.ExpressionBool
     {
         public ExpressionBool(IQueueManger queueManger, IQueueSql queueSql) : base(queueManger, queueSql) { }
     }

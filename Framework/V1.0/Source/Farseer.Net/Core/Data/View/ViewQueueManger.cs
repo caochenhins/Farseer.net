@@ -28,10 +28,11 @@ namespace FS.Core.Data.View
         /// <summary>
         /// 获取当前队列（不存在，则创建）
         /// </summary>
+        /// <param name="map">字段映射</param>
         /// <param name="name">表名称</param>
-        public ViewQueue GetQueue(string name)
+        public ViewQueue GetQueue(string name, FieldMap map)
         {
-            return _queue ?? (_queue = new ViewQueue(0, name));
+            return _queue ?? (_queue = new ViewQueue(0, name, map));
         }
 
         public List<DbParameter> Param
@@ -51,9 +52,9 @@ namespace FS.Core.Data.View
         /// 创建SQL查询
         /// </summary>
         /// <param name="queue">包含数据库SQL操作的队列</param>
-        public IBuilderSqlQuery<TEntity> SqlQuery<TEntity>(IQueueSql queue) where TEntity : class,new()
+        public IBuilderSqlQuery SqlBuilder(IQueueSql queue)
         {
-            return DbProvider.CreateBuilderSqlQuery<TEntity>(ContextMap, this, queue);
+            return DbProvider.CreateBuilderSqlQuery(ContextMap, this, queue);
         }
         public int Execute(IQueueSql queue)
         {

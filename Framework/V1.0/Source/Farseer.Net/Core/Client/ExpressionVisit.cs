@@ -11,17 +11,16 @@ namespace FS.Core.Client
     /// <summary>
     /// 数据库字段解析器总入口，根据要解析的类型，再分散到各自负责的解析器
     /// </summary>
-    /// <typeparam name="TEntity"></typeparam>
-    public class ExpressionVisit<TEntity> where TEntity : class,new()
+    public class ExpressionVisit 
     {
         /// <summary>
         /// 提供ExpressionNew表达式树的解析
         /// </summary>
-        private readonly DbExpressionNewProvider<TEntity> _expNewProvider;
+        private readonly DbExpressionNewProvider _expNewProvider;
         /// <summary>
         /// 提供ExpressionBinary表达式树的解析
         /// </summary>
-        private readonly DbExpressionBoolProvider<TEntity> _expBoolProvider;
+        private readonly DbExpressionBoolProvider _expBoolProvider;
 
         /// <summary>
         /// 队列管理模块
@@ -47,15 +46,15 @@ namespace FS.Core.Client
             QueueManger = queueManger;
             QueueSql = queueSql;
 
-            _expNewProvider = new ExpressionNew<TEntity>(QueueManger, QueueSql);
-            _expBoolProvider = new ExpressionBool<TEntity>(QueueManger, QueueSql);
+            _expNewProvider = new ExpressionNew(QueueManger, QueueSql);
+            _expBoolProvider = new ExpressionBool(QueueManger, QueueSql);
         }
 
         /// <summary>
         /// 赋值解析器
         /// </summary>
         /// <param name="entity">实体类</param>
-        public string Assign(TEntity entity)
+        public string Assign<TEntity>(TEntity entity) where TEntity : class,new()
         {
             Clear();
 
@@ -96,7 +95,7 @@ namespace FS.Core.Client
         /// 插入字段解析器
         /// </summary>
         /// <param name="entity">实体类</param>
-        public string Insert(TEntity entity)
+        public string Insert<TEntity>(TEntity entity) where TEntity : class,new()
         {
             Clear();
 

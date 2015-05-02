@@ -55,9 +55,9 @@
     <Compile Include="Configs\SystemConfigs.cs" />
     <Compile Include="Core\CacheManger.cs" />
     <Compile Include="Core\Client\Common\ExpressionBool.cs" />
-    <Compile Include="Core\Client\Common\SqlQuery\SqlOper.cs" />
-    <Compile Include="Core\Client\Common\SqlQuery\SqlProc.cs" />
-    <Compile Include="Core\Client\Common\SqlQuery\SqlQuery.cs" />
+    <Compile Include="Core\Client\Common\SqlBuilder\SqlOper.cs" />
+    <Compile Include="Core\Client\Common\SqlBuilder\SqlProc.cs" />
+    <Compile Include="Core\Client\Common\SqlBuilder\SqlQuery.cs" />
     <Compile Include="Core\Client\MySql\ExpressionBool.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -67,13 +67,13 @@
     <Compile Include="Core\Client\MySql\MySqlProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Client\MySql\SqlQuery\SqlProc.cs">
+    <Compile Include="Core\Client\MySql\SqlBuilder\SqlProc.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Client\MySql\SqlQuery\SqlOper.cs">
+    <Compile Include="Core\Client\MySql\SqlBuilder\SqlOper.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Client\MySql\SqlQuery\SqlQuery.cs">
+    <Compile Include="Core\Client\MySql\SqlBuilder\SqlQuery.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Client\OleDb\ExpressionBool.cs">
@@ -85,13 +85,13 @@
     <Compile Include="Core\Client\OleDb\OleDbProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Client\OleDb\SqlQuery\SqlProc.cs">
+    <Compile Include="Core\Client\OleDb\SqlBuilder\SqlProc.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Client\OleDb\SqlQuery\SqlOper.cs">
+    <Compile Include="Core\Client\OleDb\SqlBuilder\SqlOper.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Client\OleDb\SqlQuery\SqlQuery.cs">
+    <Compile Include="Core\Client\OleDb\SqlBuilder\SqlQuery.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Client\Oracle\ExpressionBool.cs">
@@ -103,13 +103,13 @@
     <Compile Include="Core\Client\Oracle\OracleProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Client\Oracle\SqlQuery\SqlProc.cs">
+    <Compile Include="Core\Client\Oracle\SqlBuilder\SqlProc.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Client\Oracle\SqlQuery\SqlOper.cs">
+    <Compile Include="Core\Client\Oracle\SqlBuilder\SqlOper.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Client\Oracle\SqlQuery\SqlQuery.cs">
+    <Compile Include="Core\Client\Oracle\SqlBuilder\SqlQuery.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Client\SqLite\ExpressionBool.cs">
@@ -121,13 +121,13 @@
     <Compile Include="Core\Client\SqLite\SqLiteProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Client\SqLite\SqlQuery\SqlProc.cs">
+    <Compile Include="Core\Client\SqLite\SqlBuilder\SqlProc.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Client\SqLite\SqlQuery\SqlOper.cs">
+    <Compile Include="Core\Client\SqLite\SqlBuilder\SqlOper.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Client\SqLite\SqlQuery\SqlQuery.cs">
+    <Compile Include="Core\Client\SqLite\SqlBuilder\SqlQuery.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Client\SqlServer\ExpressionNew.cs" />
@@ -154,15 +154,15 @@
     <Compile Include="Core\Client\SqlServer\ExpressionBool.cs" />
     <Compile Include="Core\Client\ExpressionVisit.cs" />
     <Compile Include="Core\Client\Common\ExpressionNew.cs" />
-    <Compile Include="Core\Client\SqlServer\SqlQuery\SqlProc.cs" />
-    <Compile Include="Core\Client\SqlServer\SqlQuery\SqlQuery.cs" />
-    <Compile Include="Core\Client\SqlServer\SqlQuery\SqlQuery2000.cs" />
+    <Compile Include="Core\Client\SqlServer\SqlBuilder\SqlProc.cs" />
+    <Compile Include="Core\Client\SqlServer\SqlBuilder\SqlQuery.cs" />
+    <Compile Include="Core\Client\SqlServer\SqlBuilder\SqlQuery2000.cs" />
     <Compile Include="Core\Infrastructure\DbExpressionBoolProvider.cs" />
     <Compile Include="Core\Infrastructure\DbExpressionNewProvider.cs" />
     <Compile Include="Core\Client\SqlServer\SqlServerProvider.cs" />
     <Compile Include="Core\Data\Table\TableQueueManger.cs" />
     <Compile Include="Core\Data\Table\TableQueue.cs" />
-    <Compile Include="Core\Client\SqlServer\SqlQuery\SqlOper.cs" />
+    <Compile Include="Core\Client\SqlServer\SqlBuilder\SqlOper.cs" />
     <Compile Include="Core\Infrastructure\DbProvider.cs" />
     <Compile Include="Core\Infrastructure\IEntity.cs" />
     <Compile Include="Core\Infrastructure\IQueueManger.cs" />

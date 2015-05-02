@@ -62,10 +62,11 @@ namespace FS.Core.Data.Proc
         /// <summary>
         /// 获取当前队列（不存在，则创建）
         /// </summary>
+        /// <param name="map">字段映射</param>
         /// <param name="name">表名称</param>
-        public ProcQueue GetQueue(string name)
+        public ProcQueue GetQueue(string name, FieldMap map)
         {
-            return _queue ?? (_queue = new ProcQueue(_groupQueueList.Count, name));
+            return _queue ?? (_queue = new ProcQueue(_groupQueueList.Count, name, map));
         }
 
         /// <summary>
@@ -105,9 +106,9 @@ namespace FS.Core.Data.Proc
             _queue = null;
         }
 
-        public IBuilderSqlProc<TEntity> SqlQuery<TEntity>(IQueue queue) where TEntity : class,new()
+        public IBuilderSqlProc SqlBuilder(IQueue queue)
         {
-            return DbProvider.CreateBuilderSqlProc<TEntity>(ContextMap,this, queue);
+            return DbProvider.CreateBuilderSqlProc(ContextMap,this, queue);
         }
 
         /// <summary>

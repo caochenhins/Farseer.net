@@ -69,10 +69,11 @@ namespace FS.Core.Data.Table
         /// <summary>
         /// 获取当前队列（不存在，则创建）
         /// </summary>
+        /// <param name="map">字段映射</param>
         /// <param name="name">表名称</param>
-        public TableQueue GetQueue(string name)
+        public TableQueue GetQueue(string name, FieldMap map)
         {
-            return _queue ?? (_queue = new TableQueue(_groupQueueList.Count, name));
+            return _queue ?? (_queue = new TableQueue(_groupQueueList.Count, name, map));
         }
 
         /// <summary>
@@ -116,21 +117,12 @@ namespace FS.Core.Data.Table
         }
 
         /// <summary>
-        /// 创建SQL查询
-        /// </summary>
-        /// <param name="queue">包含数据库SQL操作的队列</param>
-        public IBuilderSqlQuery<TEntity> SqlQuery<TEntity>(IQueueSql queue) where TEntity : class,new()
-        {
-            return DbProvider.CreateBuilderSqlQuery<TEntity>(ContextMap, this, queue);
-        }
-
-        /// <summary>
         /// 创建SQL执行
         /// </summary>
         /// <param name="queue">包含数据库SQL操作的队列</param>
-        public IBuilderSqlOper<TEntity> SqlOper<TEntity>(IQueueSql queue) where TEntity : class,new()
+        public IBuilderSqlOper SqlBuilder(IQueueSql queue)
         {
-            return DbProvider.CreateBuilderSqlOper<TEntity>(ContextMap, this, queue);
+            return DbProvider.CreateBuilderSqlOper(ContextMap, this, queue);
         }
         public int Execute(IQueueSql queue)
         {

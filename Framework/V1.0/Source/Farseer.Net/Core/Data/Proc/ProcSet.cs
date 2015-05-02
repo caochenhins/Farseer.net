@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FS.Mapping.Context;
 
 namespace FS.Core.Data.Proc
 {
@@ -14,12 +15,16 @@ namespace FS.Core.Data.Proc
         private readonly ProcContext _context;
 
         private ProcQueueManger QueueManger { get { return _context.QueueManger; } }
-        private ProcQueue Queue { get { return _context.QueueManger.GetQueue(_name); } }
+        private ProcQueue Queue { get { return _context.QueueManger.GetQueue(_name, _map); } }
 
         /// <summary>
         /// 表名/视图名/存储过程名
         /// </summary>
         private readonly string _name;
+        /// <summary>
+        /// 实体类映射
+        /// </summary>
+        private readonly FieldMap _map;
 
         /// <summary>
         /// 禁止外部实例化
@@ -28,6 +33,7 @@ namespace FS.Core.Data.Proc
         public ProcSet(ProcContext context)
         {
             _context = context;
+            _map = typeof(TEntity);
             var contextState = _context.ContextMap.GetState(this.GetType());
             _name = contextState.Value.SetAtt.Name;
         }
@@ -37,7 +43,7 @@ namespace FS.Core.Data.Proc
         /// </summary>
         public T GetValue<T>(TEntity entity = null, T t = default(T))
         {
-            QueueManger.SqlQuery<TEntity>(Queue).CreateParam(entity);
+            QueueManger.SqlBuilder(Queue).CreateParam(entity);
             return QueueManger.ExecuteValue(Queue, entity, t);
         }
 
@@ -46,7 +52,7 @@ namespace FS.Core.Data.Proc
         /// </summary>
         public void Execute(TEntity entity = null)
         {
-            QueueManger.SqlQuery<TEntity>(Queue).CreateParam(entity);
+            QueueManger.SqlBuilder(Queue).CreateParam(entity);
             QueueManger.Execute(Queue, entity);
         }
 
@@ -55,7 +61,7 @@ namespace FS.Core.Data.Proc
         /// </summary>
         public TEntity ToEntity(TEntity entity = null)
         {
-            QueueManger.SqlQuery<TEntity>(Queue).CreateParam(entity);
+            QueueManger.SqlBuilder(Queue).CreateParam(entity);
             return QueueManger.ExecuteInfo(Queue, entity);
         }
 
@@ -64,7 +70,7 @@ namespace FS.Core.Data.Proc
         /// </summary>
         public List<TEntity> ToList(TEntity entity = null)
         {
-            QueueManger.SqlQuery<TEntity>(Queue).CreateParam(entity);
+            QueueManger.SqlBuilder(Queue).CreateParam(entity);
             return QueueManger.ExecuteList(Queue, entity);
         }
     }

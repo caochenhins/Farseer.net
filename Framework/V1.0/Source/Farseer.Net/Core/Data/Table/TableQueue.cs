@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Linq.Expressions;
 using System.Text;
 using FS.Core.Infrastructure;
+using FS.Mapping.Context;
 
 namespace FS.Core.Data.Table
 {
@@ -18,13 +19,15 @@ namespace FS.Core.Data.Table
         public StringBuilder Sql { get; set; }
         public List<DbParameter> Param { get; set; }
         public string Name { get; set; }
+        public FieldMap Map { get; set; }
         public Action<TableQueue> LazyAct { get; set; }
-        public TableQueue(int index, string name)
+        public TableQueue(int index, string name, FieldMap map)
         {
             ID = Guid.NewGuid();
             Index = index;
             Name = name;
             Param = new List<DbParameter>();
+            Map = map;
         }
         public void Dispose()
         {

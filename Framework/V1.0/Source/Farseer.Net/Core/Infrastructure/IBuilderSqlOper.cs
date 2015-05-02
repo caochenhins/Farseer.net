@@ -3,7 +3,7 @@
     /// <summary>
     /// 表支持的SQL方法
     /// </summary>
-    public interface IBuilderSqlOper<in TEntity> where TEntity : class,new()
+    public interface IBuilderSqlOper : IBuilderSqlQuery
     {
         /// <summary>
         /// 删除
@@ -12,15 +12,15 @@
         /// <summary>
         /// 插入
         /// </summary>
-        void Insert(TEntity entity);
+        void Insert<TEntity>(TEntity entity) where TEntity : class,new();
         /// <summary>
         /// 插入
         /// </summary>
-        void InsertIdentity(TEntity entity);
+        void InsertIdentity<TEntity>(TEntity entity) where TEntity : class,new();
         /// <summary>
         /// 修改
         /// </summary>
-        void Update(TEntity entity);
+        void Update<TEntity>(TEntity entity) where TEntity : class,new();
         /// <summary>
         /// 添加或者减少某个字段
         /// </summary>

@@ -1,8 +1,8 @@
 ﻿using FS.Core.Infrastructure;
 
-namespace FS.Core.Client.Oracle.SqlQuery
+namespace FS.Core.Client.OleDb.SqlBuilder
 {
-    public sealed class SqlOper<TEntity> : Common.SqlQuery.SqlOper<TEntity> where TEntity : class,new()
+    public sealed class SqlOper : Common.SqlBuilder.SqlOper
     {
         /// <summary>
         /// 查询支持的SQL方法
@@ -11,10 +11,10 @@ namespace FS.Core.Client.Oracle.SqlQuery
         /// <param name="queueSql">包含数据库SQL操作的队列</param>
         public SqlOper(IQueueManger queueManger, IQueueSql queueSql) : base(queueManger, queueSql) { }
 
-        public override void InsertIdentity(TEntity entity)
+        public override void InsertIdentity<TEntity>(TEntity entity)
         {
             base.InsertIdentity(entity);
-            QueueSql.Sql.AppendFormat("SELECT @@IDENTITY ");
+            QueueSql.Sql.AppendFormat("SELECT @@IDENTITY;");
         }
     }
 }

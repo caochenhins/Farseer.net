@@ -2,9 +2,9 @@
 using System.Linq;
 using FS.Core.Infrastructure;
 
-namespace FS.Core.Client.Common.SqlQuery
+namespace FS.Core.Client.Common.SqlBuilder
 {
-    public class SqlProc<TEntity> : IBuilderSqlProc<TEntity> where TEntity : class,new()
+    public class SqlProc : IBuilderSqlProc
     {
         /// <summary>
         /// 队列管理模块
@@ -21,13 +21,12 @@ namespace FS.Core.Client.Common.SqlQuery
             QueueManger = queueManger;
         }
 
-        public virtual void CreateParam(TEntity entity)
+        public virtual void CreateParam<TEntity>(TEntity entity) where TEntity : class,new()
         {
             if (entity == null) { return; }
             QueueSql.Param = new List<System.Data.Common.DbParameter>();
 
-            var map = CacheManger.GetFieldMap(typeof(TEntity));
-            foreach (var kic in map.MapList.Where(o => o.Value.FieldAtt.IsInParam || o.Value.FieldAtt.IsOutParam))
+            foreach (var kic in QueueSql.Map.MapList.Where(o => o.Value.FieldAtt.IsInParam || o.Value.FieldAtt.IsOutParam))
             {
                 var obj = kic.Key.GetValue(entity, null);
 

@@ -2,7 +2,7 @@
 
 namespace FS.Core.Client.Common
 {
-    public class ExpressionNew<TEntity> : DbExpressionNewProvider<TEntity> where TEntity : class, new()
+    public class ExpressionNew : DbExpressionNewProvider
     {
         /// <summary>
         /// 构造函数

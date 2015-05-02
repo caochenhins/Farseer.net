@@ -6,7 +6,7 @@ using FS.Core.Infrastructure;
 
 namespace FS.Core.Client.Common
 {
-    public class ExpressionBool<TEntity> : DbExpressionBoolProvider<TEntity> where TEntity : class, new()
+    public class ExpressionBool : DbExpressionBoolProvider
     {
         public ExpressionBool(IQueueManger queueManger, IQueueSql queueSql) : base(queueManger, queueSql) { }
 

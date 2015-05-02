@@ -1,9 +1,9 @@
 ﻿using System.Text;
 using FS.Core.Infrastructure;
 
-namespace FS.Core.Client.SqLite.SqlQuery
+namespace FS.Core.Client.MySql.SqlBuilder
 {
-    public class SqlQuery<TEntity> : Common.SqlQuery.SqlQuery<TEntity> where TEntity : class, new()
+    public class SqlQuery : Common.SqlBuilder.SqlQuery
     {
         /// <summary>
         /// 查询支持的SQL方法
@@ -23,7 +23,7 @@ namespace FS.Core.Client.SqLite.SqlQuery
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
             if (!string.IsNullOrWhiteSpace(strOrderBySql)) { strOrderBySql = "ORDER BY " + strOrderBySql; }
 
-            QueueSql.Sql.AppendFormat("SELECT {0} FROM {1} {2} {3} LIMIT 0,1", strSelectSql, QueueManger.DbProvider.KeywordAegis(QueueSql.Name), strWhereSql, strOrderBySql);
+            QueueSql.Sql.AppendFormat("SELECT {0} FROM {1} {2} {3} LIMIT 1", strSelectSql, QueueManger.DbProvider.KeywordAegis(QueueSql.Name), strWhereSql, strOrderBySql);
         }
 
         public override void ToList(int top = 0, bool isDistinct = false, bool isRand = false)
@@ -59,7 +59,6 @@ namespace FS.Core.Client.SqLite.SqlQuery
             // 不分页
             if (pageIndex == 1) { ToList(pageSize, isDistinct); return; }
 
-            var map = CacheManger.GetContextMap(typeof(TEntity));
             var strSelectSql = Visit.Select(QueueSql.ExpSelect);
             var strWhereSql = Visit.Where(QueueSql.ExpWhere);
             var strOrderBySql = Visit.OrderBy(QueueSql.ExpOrderBy);
@@ -85,7 +84,7 @@ namespace FS.Core.Client.SqLite.SqlQuery
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
             if (!string.IsNullOrWhiteSpace(strOrderBySql)) { strOrderBySql = "ORDER BY " + strOrderBySql; }
 
-            QueueSql.Sql.AppendFormat("SELECT {0} FROM {1} {2} {3} LIMIT 0,1", strSelectSql, QueueManger.DbProvider.KeywordAegis(QueueSql.Name), strWhereSql, strOrderBySql);
+            QueueSql.Sql.AppendFormat("SELECT {0} FROM {1} {2} {3} LIMIT 1", strSelectSql, QueueManger.DbProvider.KeywordAegis(QueueSql.Name), strWhereSql, strOrderBySql);
         }
     }
 }

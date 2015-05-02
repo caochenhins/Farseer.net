@@ -1,8 +1,8 @@
 ﻿using FS.Core.Infrastructure;
 
-namespace FS.Core.Client.SqlServer.SqlQuery
+namespace FS.Core.Client.Oracle.SqlBuilder
 {
-    public class SqlProc<TEntity> : Common.SqlQuery.SqlProc<TEntity> where TEntity : class,new()
+    public sealed class SqlProc : Common.SqlBuilder.SqlProc
     {
         public SqlProc(IQueueManger queueManger, IQueue queueSql) : base(queueManger, queueSql) { }
     }

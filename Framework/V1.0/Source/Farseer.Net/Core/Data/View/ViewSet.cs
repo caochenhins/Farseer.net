@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using FS.Core.Infrastructure;
 using FS.Extend;
+using FS.Mapping.Context;
 
 namespace FS.Core.Data.View
 {
@@ -20,12 +21,16 @@ namespace FS.Core.Data.View
         private readonly ViewContext _context;
 
         private ViewQueueManger QueueManger { get { return _context.QueueManger; } }
-        private ViewQueue Queue { get { return _context.QueueManger.GetQueue(_name); } }
+        private ViewQueue Queue { get { return _context.QueueManger.GetQueue(_name, _map); } }
 
         /// <summary>
         /// 表名/视图名/存储过程名
         /// </summary>
         private readonly string _name;
+        /// <summary>
+        /// 实体类映射
+        /// </summary>
+        private readonly FieldMap _map;
 
         /// <summary>
         /// 禁止外部实例化
@@ -34,6 +39,7 @@ namespace FS.Core.Data.View
         public ViewSet(ViewContext context)
         {
             _context = context;
+            _map = typeof(TEntity);
             var contextState = _context.ContextMap.GetState(this.GetType());
             _name = contextState.Value.SetAtt.Name;
         }
@@ -106,7 +112,7 @@ namespace FS.Core.Data.View
         /// <param name="isRand">返回当前条件下随机的数据</param>
         public DataTable ToTable(int top = 0, bool isDistinct = false, bool isRand = false)
         {
-            QueueManger.SqlQuery<TEntity>(Queue).ToList(top, isDistinct, isRand);
+            QueueManger.SqlBuilder(Queue).ToList(top, isDistinct, isRand);
             return QueueManger.ExecuteTable(Queue);
         }
 
@@ -119,7 +125,7 @@ namespace FS.Core.Data.View
         /// <returns></returns>
         public DataTable ToTable(int pageSize, int pageIndex, bool isDistinct = false)
         {
-            QueueManger.SqlQuery<TEntity>(Queue).ToList(pageSize, pageIndex, isDistinct);
+            QueueManger.SqlBuilder(Queue).ToList(pageSize, pageIndex, isDistinct);
             return QueueManger.ExecuteTable(Queue);
         }
 
@@ -248,7 +254,7 @@ namespace FS.Core.Data.View
         /// </summary>
         public TEntity ToEntity()
         {
-            QueueManger.SqlQuery<TEntity>(Queue).ToEntity();
+            QueueManger.SqlBuilder(Queue).ToEntity();
             return QueueManger.ExecuteInfo<TEntity>(Queue);
         }
 
@@ -270,7 +276,7 @@ namespace FS.Core.Data.View
         /// </summary>
         public int Count(bool isDistinct = false, bool isRand = false)
         {
-            QueueManger.SqlQuery<TEntity>(Queue).Count();
+            QueueManger.SqlBuilder(Queue).Count();
             return QueueManger.ExecuteQuery<int>(Queue);
         }
 
@@ -338,7 +344,7 @@ namespace FS.Core.Data.View
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Value操作时，fieldName参数不能为空！"); }
             Select(fieldName);
 
-            QueueManger.SqlQuery<TEntity>(Queue).GetValue();
+            QueueManger.SqlBuilder(Queue).GetValue();
             return QueueManger.ExecuteQuery(Queue, defValue);
         }
 
@@ -366,7 +372,7 @@ namespace FS.Core.Data.View
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Sum操作时，fieldName参数不能为空！"); }
             Select(fieldName);
 
-            QueueManger.SqlQuery<TEntity>(Queue).Sum();
+            QueueManger.SqlBuilder(Queue).Sum();
             return QueueManger.ExecuteQuery(Queue, defValue);
         }
 
@@ -378,7 +384,7 @@ namespace FS.Core.Data.View
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Max操作时，fieldName参数不能为空！"); }
             Select(fieldName);
 
-            QueueManger.SqlQuery<TEntity>(Queue).Max();
+            QueueManger.SqlBuilder(Queue).Max();
             return QueueManger.ExecuteQuery(Queue, defValue);
         }
         /// <summary>
@@ -389,7 +395,7 @@ namespace FS.Core.Data.View
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Min操作时，fieldName参数不能为空！"); }
             Select(fieldName);
 
-            QueueManger.SqlQuery<TEntity>(Queue).Min();
+            QueueManger.SqlBuilder(Queue).Min();
             return QueueManger.ExecuteQuery(Queue, defValue);
         }
 
