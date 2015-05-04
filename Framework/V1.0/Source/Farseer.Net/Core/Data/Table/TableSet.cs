@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using FS.Core.Infrastructure;
 using FS.Extend;
 using FS.Mapping.Context;
@@ -27,25 +29,35 @@ namespace FS.Core.Data.Table
         /// 实体类映射
         /// </summary>
         private readonly FieldMap _map;
+        /// <summary>
+        /// 保存字段映射的信息
+        /// </summary>
+        private readonly SetState _setState;
 
         private TableQueueManger QueueManger { get { return _context.QueueManger; } }
         private TableQueue Queue { get { return _context.QueueManger.GetQueue(_name, _map); } }
 
+        private List<TEntity> _lstCurrentCache;
+
         /// <summary>
         /// 禁止外部实例化
         /// </summary>
-        private TableSet() { } 
+        private TableSet() { }
         public TableSet(TableContext context)
         {
             _context = context;
-            _map = typeof (TEntity);
-            var contextState = _context.ContextMap.GetState(this.GetType());
-            _name = contextState.Value.SetAtt.Name;
+            _map = typeof(TEntity);
+            _setState = _context.ContextMap.GetState(this.GetType()).Value;
+            _name = _setState.SetAtt.Name;
 
             // 缓存
-            if (contextState.Value.SetAtt.IsCache)
+            if (_setState.SetAtt.IsCache)
             {
-                
+                _lstCurrentCache = CacheManger.GetSetCache<TEntity>(_setState, () =>
+                {
+                    Queue.SqlBuilder.ToList();
+                    return QueueManger.ExecuteTable(Queue).ToList<TEntity>();
+                });
             }
         }
 
@@ -82,6 +94,8 @@ namespace FS.Core.Data.Table
         /// <param name="desc">字段选择器</param>
         public TableSet<TEntity> Desc<TKey>(Expression<Func<TEntity, TKey>> desc)
         {
+            ((List<TEntity>) CacheManger.GetSetCache(_setState)).OrderByDescending(desc.Compile());
+
             if (Queue.ExpOrderBy == null) { Queue.ExpOrderBy = new Dictionary<Expression, bool>(); }
             if (desc != null) { Queue.ExpOrderBy.Add(desc, false); }
             return this;
@@ -144,6 +158,23 @@ namespace FS.Core.Data.Table
         /// <param name="isRand">返回当前条件下随机的数据</param>
         public DataTable ToTable(int top = 0, bool isDistinct = false, bool isRand = false)
         {
+            if (_setState.SetAtt.IsCache)
+            {
+                var lst = (List<TEntity>)CacheManger.GetSetCache(_setState);
+                if (Queue.ExpWhere != null)
+                {
+                    lst = lst.Where(((Expression<Func<TEntity, bool>>)Queue.ExpWhere).Compile()).ToList();
+                }
+                if (Queue.ExpOrderBy != null)
+                {
+                    foreach (var order in Queue.ExpOrderBy)
+                    {
+                        //lst = order.Value ? lst.OrderBy(((Expression<Func<>) order.Key).Compile()).ToList() : lst.OrderByDescending(((Expression<Func<TEntity, object>>)order.Key).Compile()).ToList();
+                    }
+                }
+                QueueManger.Clear();
+                return lst.ToTable();
+            }
             Queue.SqlBuilder.ToList(top, isDistinct, isRand);
             return QueueManger.ExecuteTable(Queue);
         }

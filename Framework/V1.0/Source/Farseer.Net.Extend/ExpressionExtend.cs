@@ -12,11 +12,11 @@ namespace FS.Extend
         /// <summary>
         ///     And 操作
         /// </summary>
-        /// <typeparam name="TInfo">实体类</typeparam>
+        /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="left">左树</param>
         /// <param name="right">右树</param>
-        public static Expression<Func<TInfo, bool>> AndAlso<TInfo>(this Expression<Func<TInfo, bool>> left, Expression<Func<TInfo, bool>> right)
-            where TInfo : class
+        public static Expression<Func<TEntity, bool>> AndAlso<TEntity>(this Expression<Func<TEntity, bool>> left, Expression<Func<TEntity, bool>> right)
+            where TEntity : class
         {
             if (left == null)
             {
@@ -28,17 +28,17 @@ namespace FS.Extend
             }
 
             var param = left.Parameters[0];
-            return Expression.Lambda<Func<TInfo, bool>>(ReferenceEquals(param, right.Parameters[0]) ? Expression.AndAlso(left.Body, right.Body) : Expression.AndAlso(left.Body, Expression.Invoke(right, param)), param);
+            return Expression.Lambda<Func<TEntity, bool>>(ReferenceEquals(param, right.Parameters[0]) ? Expression.AndAlso(left.Body, right.Body) : Expression.AndAlso(left.Body, Expression.Invoke(right, param)), param);
         }
 
         /// <summary>
         ///     OR 操作
         /// </summary>
-        /// <typeparam name="TInfo">实体类</typeparam>
+        /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="left">左树</param>
         /// <param name="right">右树</param>
-        public static Expression<Func<TInfo, bool>> OrElse<TInfo>(this Expression<Func<TInfo, bool>> left, Expression<Func<TInfo, bool>> right)
-            where TInfo : class
+        public static Expression<Func<TEntity, bool>> OrElse<TEntity>(this Expression<Func<TEntity, bool>> left, Expression<Func<TEntity, bool>> right)
+            where TEntity : class
         {
             if (left == null)
             {
@@ -46,7 +46,7 @@ namespace FS.Extend
             }
 
             var param = left.Parameters[0];
-            return Expression.Lambda<Func<TInfo, bool>>(ReferenceEquals(param, right.Parameters[0]) ? Expression.OrElse(left.Body, right.Body) : Expression.OrElse(left.Body, Expression.Invoke(right, param)), param);
+            return Expression.Lambda<Func<TEntity, bool>>(ReferenceEquals(param, right.Parameters[0]) ? Expression.OrElse(left.Body, right.Body) : Expression.OrElse(left.Body, Expression.Invoke(right, param)), param);
         }
 
         /// <summary>

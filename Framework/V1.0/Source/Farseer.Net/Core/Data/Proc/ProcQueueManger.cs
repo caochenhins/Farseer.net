@@ -10,6 +10,9 @@ using FS.Mapping.Context;
 
 namespace FS.Core.Data.Proc
 {
+    /// <summary>
+    /// 队列管理
+    /// </summary>
     public class ProcQueueManger : IQueueManger
     {
         /// <summary>

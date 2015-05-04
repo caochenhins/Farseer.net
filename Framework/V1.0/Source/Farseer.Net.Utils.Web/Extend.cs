@@ -12,11 +12,11 @@ namespace FS.Extend
         /// <summary>
         ///     对List进行分页
         /// </summary>
-        /// <typeparam name="TInfo">实体类</typeparam>
+        /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="lst">List列表</param>
         /// <param name="rpt">Repeater</param>
         /// <returns></returns>
-        public static List<TInfo> ToList<TInfo>(this IEnumerable<TInfo> lst, Repeater rpt)
+        public static List<TEntity> ToList<TEntity>(this IEnumerable<TEntity> lst, Repeater rpt)
         {
             rpt.PageCount = lst.Count();
             return lst.ToList(rpt.PageSize, rpt.PageIndex);

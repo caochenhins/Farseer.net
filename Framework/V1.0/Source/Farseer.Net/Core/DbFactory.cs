@@ -18,11 +18,11 @@ namespace FS.Core
         /// <summary>
         ///     创建数据库操作
         /// </summary>
-        /// <typeparam name="TInfo">实体类</typeparam>
+        /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="tranLevel">开启事务等级</param>
-        public static DbExecutor CreateDbExecutor<TInfo>(IsolationLevel tranLevel = IsolationLevel.Serializable) where TInfo : BaseContext
+        public static DbExecutor CreateDbExecutor<TEntity>(IsolationLevel tranLevel = IsolationLevel.Serializable) where TEntity : BaseContext
         {
-            ContextMap map = typeof(TInfo);
+            ContextMap map = typeof(TEntity);
             var dataType = map.ContextProperty.DataType;
             var connetionString = map.ContextProperty.ConnStr;
             var commandTimeout = map.ContextProperty.CommandTimeout;

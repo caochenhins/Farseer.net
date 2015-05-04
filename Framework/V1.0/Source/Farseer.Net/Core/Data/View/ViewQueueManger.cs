@@ -10,7 +10,13 @@ namespace FS.Core.Data.View
 {
     public class ViewQueueManger : IQueueManger
     {
+        /// <summary>
+        /// 数据库操作
+        /// </summary>
         public DbExecutor DataBase { get; internal set; }
+        /// <summary>
+        /// 数据库提供者（不同数据库的特性）
+        /// </summary>
         public DbProvider DbProvider { get; set; }
         /// <summary>
         /// 映射关系

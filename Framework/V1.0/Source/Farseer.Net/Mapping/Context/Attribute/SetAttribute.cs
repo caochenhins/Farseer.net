@@ -21,7 +21,7 @@ namespace FS.Mapping.Context.Attribute
         public string Name { get; set; }
 
         /// <summary>
-        /// 是否缓存TableSet、ViewSet、ProcSet类型的属性
+        /// 是否开始缓存TableSet、ViewSet、ProcSet类型的数据
         /// 开启后，会缓存整张表、视图
         /// </summary>
         public bool IsCache { get; set; }

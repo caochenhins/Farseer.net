@@ -10,12 +10,12 @@ namespace FS.Extend
         /// <summary>
         ///     查找对象属性值
         /// </summary>
-        /// <typeparam name="TInfo">实体类</typeparam>
+        /// <typeparam name="TEntity">实体类</typeparam>
         /// <typeparam name="T">返回值类型</typeparam>
         /// <param name="info">当前实体类</param>
         /// <param name="propertyName">属性名</param>
         /// <param name="defValue">默认值</param>
-        public static T GetValue<TInfo, T>(this TInfo info, string propertyName, T defValue = default(T)) where TInfo : class
+        public static T GetValue<TEntity, T>(this TEntity info, string propertyName, T defValue = default(T)) where TEntity : class
         {
             if (info == null) { return defValue; }
             foreach (var property in info.GetType().GetProperties())
@@ -26,7 +26,7 @@ namespace FS.Extend
             }
             return defValue;
             //if (info == null) { return defValue; }
-            //Mapping Map = typeof(TInfo);
+            //Mapping Map = typeof(TEntity);
             //var lstModel = Map.ModelList.Where(o => o.Key.Name.IsEquals(propertyName));
             //return lstModel.Count() == 0 ? defValue : lstModel.FirstOrDefault().Key.GetValue(info, null).ConvertType(defValue);
         }
@@ -34,12 +34,12 @@ namespace FS.Extend
         /// <summary>
         ///     设置对象属性值
         /// </summary>
-        /// <typeparam name="TInfo">实体类</typeparam>
+        /// <typeparam name="TEntity">实体类</typeparam>
         /// <typeparam name="T">返回值类型</typeparam>
         /// <param name="info">当前实体类</param>
         /// <param name="propertyName">属性名</param>
         /// <param name="defValue">默认值</param>
-        public static void SetValue<TInfo>(this TInfo info, string propertyName, object objValue) where TInfo : class
+        public static void SetValue<TEntity>(this TEntity info, string propertyName, object objValue) where TEntity : class
         {
             if (info == null) { return; }
             foreach (var property in info.GetType().GetProperties())
@@ -50,7 +50,7 @@ namespace FS.Extend
             }
 
             //if (info == null) { return; }
-            //Mapping Map = typeof(TInfo);
+            //Mapping Map = typeof(TEntity);
             //var lstModel = Map.ModelList.Where(o => o.Key.Name.IsEquals(propertyName));
             //if (lstModel.Count() == 0) { return; }
             //lstModel.FirstOrDefault().Key.SetValue(info, objValue, null);
@@ -59,10 +59,10 @@ namespace FS.Extend
         /// <summary>
         /// 生成测试数据
         /// </summary>
-        /// <typeparam name="TInfo">实体</typeparam>
+        /// <typeparam name="TEntity">实体</typeparam>
         /// <param name="info">任意对象</param>
         /// <param name="subCount">如果成员包含List类型时，要填充的数量</param>
-        public static TInfo TestData<TInfo>(this TInfo info, int subCount = 10)
+        public static TEntity TestData<TEntity>(this TEntity info, int subCount = 10)
         {
             return TestData(info, 1, subCount);
         }
@@ -70,10 +70,10 @@ namespace FS.Extend
         /// <summary>
         /// 生成测试数据
         /// </summary>
-        /// <typeparam name="TInfo">实体</typeparam>
+        /// <typeparam name="TEntity">实体</typeparam>
         /// <param name="subCount">如果成员包含List类型时，要填充的数量</param>
         /// <param name="level">防止无限层</param>
-        private static TInfo TestData<TInfo>(this TInfo info, int level, int subCount)
+        private static TEntity TestData<TEntity>(this TEntity info, int level, int subCount)
         {
             var type = info.GetType();
             foreach (var item in type.GetProperties())
@@ -152,7 +152,7 @@ namespace FS.Extend
         /// <summary>
         ///     检测实体类值状况
         /// </summary>
-        public static bool Check<TInfo>(this TInfo info, Action<string, string> tip = null, string url = "") where TInfo : IVerification
+        public static bool Check<TEntity>(this TEntity info, Action<string, string> tip = null, string url = "") where TEntity : IVerification
         {
             if (info == null) { return false; }
             //if (tip == null) { tip = new Terminator().Alert; }
@@ -173,7 +173,7 @@ namespace FS.Extend
         /// <summary>
         ///     检测实体类值状况
         /// </summary>
-        public static bool Check<TInfo>(this TInfo info, Action<Dictionary<string, List<string>>> tip) where TInfo : IVerification
+        public static bool Check<TEntity>(this TEntity info, Action<Dictionary<string, List<string>>> tip) where TEntity : IVerification
         {
             //返回错误
             Dictionary<string, List<string>> dicError;

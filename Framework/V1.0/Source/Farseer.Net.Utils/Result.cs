@@ -63,9 +63,9 @@ namespace FS.Utils
         /// <summary>
         /// 检测实体类是否符合特性要求
         /// </summary>
-        /// <typeparam name="TInfo">实体类型</typeparam>
+        /// <typeparam name="TEntity">实体类型</typeparam>
         /// <param name="info">实体类</param>
-        public bool Check<TInfo>(TInfo info) where TInfo : IVerification
+        public bool Check<TEntity>(TEntity info) where TEntity : IVerification
         {
             // 检查实体情况
             Dictionary<string, List<string>> dicError;

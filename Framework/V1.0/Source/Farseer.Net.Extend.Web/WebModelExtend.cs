@@ -14,7 +14,7 @@ namespace FS.Extend
         /// <param name="info">要填入数据的实体类</param>
         /// <param name="contentPlaceHolderID">母版页面版ID</param>
         /// <param name="prefix">控件前缀</param>
-        public static void Fill<TInfo>(this TInfo info, Page page, string contentPlaceHolderID, string prefix = "hl") where TInfo : class
+        public static void Fill<TEntity>(this TEntity info, Page page, string contentPlaceHolderID, string prefix = "hl") where TEntity : class
         {
             if (info == null)
             {
@@ -36,7 +36,7 @@ namespace FS.Extend
         /// <param name="page">当前页</param>
         /// <param name="prefix">控件前缀</param>
         /// <param name="info">要填充的值</param>
-        public static void Fill<TInfo>(this TInfo info, Page page, string prefix = "hl") where TInfo : class
+        public static void Fill<TEntity>(this TEntity info, Page page, string prefix = "hl") where TEntity : class
         {
             if (info == null) { return; }
             Fill(page.Controls, info, prefix);
@@ -48,7 +48,7 @@ namespace FS.Extend
         /// <param name="controls">页面控件集合</param>
         /// <param name="infoValue">所属实体类的值</param>
         /// <param name="prefix">前缀</param>
-        private static void Fill<TInfo>(ControlCollection controls, TInfo infoValue, string prefix = "hl") where TInfo : class
+        private static void Fill<TEntity>(ControlCollection controls, TEntity infoValue, string prefix = "hl") where TEntity : class
         {
             //if (infoValue == null || controls == null)
             //{

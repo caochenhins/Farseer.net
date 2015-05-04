@@ -559,7 +559,7 @@ namespace FS.Utils
         /// <param name="prefix">控件前缀</param>
         /// <param name="tip">弹出框事件委托</param>
         /// <param name="url">跳转地址</param>
-        public static TInfo Fill<TInfo>(NameValueCollection request, Action<string, string> tip = null, string url = "", string prefix = "hl") where TInfo : class,IVerification, new()
+        public static TEntity Fill<TEntity>(NameValueCollection request, Action<string, string> tip = null, string url = "", string prefix = "hl") where TEntity : class,IVerification, new()
         {
             if (tip == null)
             {
@@ -567,7 +567,7 @@ namespace FS.Utils
             }
 
             Dictionary<string, List<string>> dicError;
-            var info = Fill<TInfo>(request, out dicError, prefix);
+            var info = Fill<TEntity>(request, out dicError, prefix);
             if (dicError.Count > 0)
             {
                 var lst = new List<string>();
@@ -588,10 +588,10 @@ namespace FS.Utils
         /// <param name="request">NameValueCollection</param>
         /// <param name="prefix">控件前缀</param>
         /// <param name="tip">弹出框事件委托</param>
-        public static TInfo Fill<TInfo>(NameValueCollection request, Action<Dictionary<string, List<string>>> tip, string prefix = "hl") where TInfo : class,IVerification, new()
+        public static TEntity Fill<TEntity>(NameValueCollection request, Action<Dictionary<string, List<string>>> tip, string prefix = "hl") where TEntity : class,IVerification, new()
         {
             Dictionary<string, List<string>> dicError;
-            var info = Fill<TInfo>(request, out dicError, prefix);
+            var info = Fill<TEntity>(request, out dicError, prefix);
             if (dicError.Count > 0)
             {
                 tip(dicError);

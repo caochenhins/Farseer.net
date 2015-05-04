@@ -15,13 +15,13 @@ namespace FS.Core.Data.Table
         public Dictionary<Expression, bool> ExpOrderBy { get; set; }
         public List<Expression> ExpSelect { get; set; }
         public Expression ExpWhere { get; set; }
-        public Dictionary<Expression, object> ExpAssign { get; set; }
         public StringBuilder Sql { get; set; }
         public List<DbParameter> Param { get; set; }
         public string Name { get; set; }
         public FieldMap FieldMap { get; set; }
-        public Action<TableQueue> LazyAct { get; set; }
         public IBuilderSqlOper SqlBuilder { get; set; }
+        public Action<TableQueue> LazyAct { get; set; }
+        public Dictionary<Expression, object> ExpAssign { get; set; }
         public TableQueue(int index, string name, FieldMap map, IQueueManger queueManger)
         {
             ID = Guid.NewGuid();

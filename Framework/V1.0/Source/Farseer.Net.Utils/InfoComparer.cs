@@ -6,17 +6,17 @@ namespace FS.Utils
     /// <summary>
     ///     对象比较的实现
     /// </summary>
-    /// <typeparam name="TInfo"></typeparam>
+    /// <typeparam name="TEntity"></typeparam>
     /// <typeparam name="T"></typeparam>
-    public class InfoComparer<TInfo, T> : IEqualityComparer<TInfo> where TInfo : class
+    public class InfoComparer<TEntity, T> : IEqualityComparer<TEntity> where TEntity : class
     {
-        private readonly Func<TInfo, T> _keySelect;
+        private readonly Func<TEntity, T> _keySelect;
 
         /// <summary>
         /// 构造
         /// </summary>
         /// <param name="keySelect"></param>
-        public InfoComparer(Func<TInfo, T> keySelect)
+        public InfoComparer(Func<TEntity, T> keySelect)
         {
             _keySelect = keySelect;
         }
@@ -27,7 +27,7 @@ namespace FS.Utils
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public bool Equals(TInfo x, TInfo y)
+        public bool Equals(TEntity x, TEntity y)
         {
             return EqualityComparer<T>.Default.Equals(_keySelect(x), _keySelect(y));
         }
@@ -37,7 +37,7 @@ namespace FS.Utils
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public int GetHashCode(TInfo obj)
+        public int GetHashCode(TEntity obj)
         {
             return EqualityComparer<T>.Default.GetHashCode(_keySelect(obj));
         }

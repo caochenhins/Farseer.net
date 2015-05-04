@@ -18,9 +18,12 @@ namespace Farseer.Net.Core.Tests
             SpeedTest.Initialize();
             SpeedTest.ConsoleTime("context", 100000, () =>
             {
-                //var context = new Demo.PO.Table();
-                var dbProvider = DbProvider.CreateInstance(DataBaseType.SqlServer);
-                var contextx = new TableContext();
+                var context = new Demo.PO.Table();
+                context.UserRole.Where(o => o.ID > 0).ToTable();
+                context.UserRole.Where(o => o.ID > 0).Asc(o => o.ID).Desc(o => o.Caption).ToTable();
+
+                //var dbProvider = DbProvider.CreateInstance(DataBaseType.SqlServer);
+                //var contextx = new TableContext();
                 //dbProvider.CreateBuilderSqlOper<UserVO>()
             });
         }

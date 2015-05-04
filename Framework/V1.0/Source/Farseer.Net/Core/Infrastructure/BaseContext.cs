@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using FS.Configs;
 using FS.Core.Data;
@@ -50,8 +51,14 @@ namespace FS.Core.Infrastructure
             }
         }
 
+        /// <summary>
+        /// 数据库操作
+        /// </summary>
         protected DbExecutor DataBase { get; private set; }
 
+        /// <summary>
+        /// TableContext、ProcContext、ViewContext 映射关系
+        /// </summary>
         public ContextMap ContextMap { get; private set; } 
 
         #region 禁用智能提示

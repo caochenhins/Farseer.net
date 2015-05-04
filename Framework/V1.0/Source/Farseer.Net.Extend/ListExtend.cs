@@ -166,15 +166,15 @@ namespace FS.Extend
         /// <summary>
         /// 生成测试数据
         /// </summary>
-        /// <typeparam name="TInfo">实体</typeparam>
+        /// <typeparam name="TEntity">实体</typeparam>
         /// <param name="lst">列表</param>
         /// <param name="count">生成的数据</param>
-        public static List<TInfo> TestData<TInfo>(this List<TInfo> lst, int count) where TInfo : class,new()
+        public static List<TEntity> TestData<TEntity>(this List<TEntity> lst, int count) where TEntity : class,new()
         {
-            lst = new List<TInfo>();
+            lst = new List<TEntity>();
             for (var i = 0; i < count; i++)
             {
-                lst.Add(new TInfo().TestData());
+                lst.Add(new TEntity().TestData());
             }
             return lst.ToList();
         }
@@ -215,7 +215,7 @@ namespace FS.Extend
         /// </summary>
         /// <param name="lst">集合</param>
         /// <returns></returns>
-        public static DataTable ToTable<TInfo>(this List<TInfo> lst) where TInfo : class
+        public static DataTable ToTable<TEntity>(this List<TEntity> lst) where TEntity : class
         {
             var dt = new DataTable();
             if (lst.Count == 0) { return dt; }
@@ -264,93 +264,11 @@ namespace FS.Extend
         }
 
         /// <summary>
-        ///     将集合类转换成DataTable
-        /// </summary>
-        /// <param name="list">集合</param>
-        /// <returns></returns>
-        public static DataTable ToTable(this IList list)
-        {
-            var result = new DataTable();
-            if (list.Count > 0)
-            {
-                var propertys = list[0].GetType().GetProperties();
-                foreach (var pi in propertys)
-                {
-                    result.Columns.Add(pi.Name, pi.PropertyType);
-                }
-
-                foreach (var info in list)
-                {
-                    var tempList = new ArrayList();
-                    foreach (var pi in propertys)
-                    {
-                        var obj = pi.GetValue(info, null);
-                        tempList.Add(obj);
-                    }
-                    var array = tempList.ToArray();
-                    result.LoadDataRow(array, true);
-                }
-            }
-            return result;
-        }
-
-        /// <summary>
-        ///     将泛型集合类转换成DataTable
-        /// </summary>
-        /// <param name="list">集合</param>
-        /// <param name="propertyName">需要返回的列的列名</param>
-        /// <returns>数据集(表)</returns>
-        public static DataTable ToTable(this IList list, params string[] propertyName)
-        {
-            var propertyNameList = new List<string>();
-            if (propertyName != null)
-                propertyNameList.AddRange(propertyName);
-
-            var result = new DataTable();
-            if (list.Count <= 0) { return result; }
-            var propertys = list[0].GetType().GetProperties();
-            foreach (var pi in propertys)
-            {
-                if (propertyNameList.Count == 0)
-                {
-                    result.Columns.Add(pi.Name, pi.PropertyType);
-                }
-                else
-                {
-                    if (propertyNameList.Contains(pi.Name))
-                        result.Columns.Add(pi.Name, pi.PropertyType);
-                }
-            }
-
-            foreach (var info in list)
-            {
-                var tempList = new ArrayList();
-                foreach (var pi in propertys)
-                {
-                    if (propertyNameList.Count == 0)
-                    {
-                        var obj = pi.GetValue(info, null);
-                        tempList.Add(obj);
-                    }
-                    else
-                    {
-                        if (!propertyNameList.Contains(pi.Name)) continue;
-                        var obj = pi.GetValue(info, null);
-                        tempList.Add(obj);
-                    }
-                }
-                var array = tempList.ToArray();
-                result.LoadDataRow(array, true);
-            }
-            return result;
-        }
-
-        /// <summary>
         ///     获取下一条记录
         /// </summary>
         /// <param name="lst">要获取值的列表</param>
         /// <param name="ID">当前ID</param>
-        public static TInfo ToNextInfo<TInfo>(this IEnumerable<TInfo> lst, int ID) where TInfo : IEntity
+        public static TEntity ToNextInfo<TEntity>(this IEnumerable<TEntity> lst, int ID) where TEntity : IEntity
         {
             return lst.Where(o => o.ID > ID).OrderBy(o => o.ID).FirstOrDefault();
         }
@@ -360,7 +278,7 @@ namespace FS.Extend
         /// </summary>
         /// <param name="lst">要获取值的列表</param>
         /// <param name="ID">当前ID</param>
-        public static TInfo ToPreviousInfo<TInfo>(this IEnumerable<TInfo> lst, int ID) where TInfo : IEntity
+        public static TEntity ToPreviousInfo<TEntity>(this IEnumerable<TEntity> lst, int ID) where TEntity : IEntity
         {
             return lst.Where(o => o.ID < ID).OrderByDescending(o => o.ID).FirstOrDefault();
         }
@@ -404,10 +322,10 @@ namespace FS.Extend
         /// <summary>
         ///     获取List列表
         /// </summary>
-        /// <typeparam name="TInfo">实体类</typeparam>
+        /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="lst">List列表</param>
         /// <param name="IDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
-        public static List<TInfo> ToList<TInfo>(this IEnumerable<TInfo> lst, List<int> IDs) where TInfo : IEntity
+        public static List<TEntity> ToList<TEntity>(this IEnumerable<TEntity> lst, List<int> IDs) where TEntity : IEntity
         {
             return lst.Where(o => IDs.Contains(o.ID)).ToList();
         }
@@ -415,9 +333,9 @@ namespace FS.Extend
         /// <summary>
         ///     获取Info
         /// </summary>
-        /// <typeparam name="TInfo">实体类</typeparam>
+        /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="lst">List列表</param>
-        public static TInfo ToInfo<TInfo>(this IEnumerable<TInfo> lst)
+        public static TEntity ToEntity<TEntity>(this IEnumerable<TEntity> lst)
         {
             return lst.FirstOrDefault();
         }
@@ -425,10 +343,10 @@ namespace FS.Extend
         /// <summary>
         ///     获取Info
         /// </summary>
-        /// <typeparam name="TInfo">实体类</typeparam>
+        /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="lst">List列表</param>
         /// <param name="ID">条件，等同于：o=> o.ID == ID的操作</param>
-        public static TInfo ToInfo<TInfo>(this IEnumerable<TInfo> lst, int? ID) where TInfo : IEntity
+        public static TEntity ToEntity<TEntity>(this IEnumerable<TEntity> lst, int? ID) where TEntity : IEntity
         {
             return lst.FirstOrDefault(o => o.ID == ID);
         }
@@ -436,10 +354,10 @@ namespace FS.Extend
         /// <summary>
         ///     获取数量
         /// </summary>
-        /// <typeparam name="TInfo">实体类</typeparam>
+        /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="lst">List列表</param>
         /// <param name="IDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
-        public static int Count<TInfo>(this IEnumerable<TInfo> lst, List<int> IDs) where TInfo : IEntity
+        public static int Count<TEntity>(this IEnumerable<TEntity> lst, List<int> IDs) where TEntity : IEntity
         {
             return lst.Count(o => IDs.Contains(o.ID));
         }
@@ -447,10 +365,10 @@ namespace FS.Extend
         /// <summary>
         ///     获取数量
         /// </summary>
-        /// <typeparam name="TInfo">实体类</typeparam>
+        /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="lst">List列表</param>
         /// <param name="ID">条件，等同于：o=> o.ID == ID 的操作</param>
-        public static int Count<TInfo>(this IEnumerable<TInfo> lst, int? ID) where TInfo : IEntity
+        public static int Count<TEntity>(this IEnumerable<TEntity> lst, int? ID) where TEntity : IEntity
         {
             return lst.Count(o => o.ID == ID);
         }
@@ -458,7 +376,7 @@ namespace FS.Extend
         /// <summary>
         ///     判断是否存在记录
         /// </summary>
-        public static bool IsHaving<TInfo>(this IEnumerable<TInfo> lst)
+        public static bool IsHaving<TEntity>(this IEnumerable<TEntity> lst)
         {
             return lst.Any();
         }
@@ -467,7 +385,7 @@ namespace FS.Extend
         ///     判断是否存在记录
         /// </summary>
         /// <param name="ID">条件，等同于：o=>o.ID == ID 的操作</param>
-        public static bool IsHaving<TInfo>(this IEnumerable<TInfo> lst, int? ID) where TInfo : IEntity
+        public static bool IsHaving<TEntity>(this IEnumerable<TEntity> lst, int? ID) where TEntity : IEntity
         {
             return lst.Count(o => o.ID == ID) > 0;
         }
@@ -476,7 +394,7 @@ namespace FS.Extend
         ///     判断是否存在记录
         /// </summary>
         /// <param name="IDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
-        public static bool IsHaving<TInfo>(this IEnumerable<TInfo> lst, List<int> IDs) where TInfo : IEntity
+        public static bool IsHaving<TEntity>(this IEnumerable<TEntity> lst, List<int> IDs) where TEntity : IEntity
         {
             return lst.Any(o => IDs.Contains(o.ID));
         }
@@ -484,12 +402,12 @@ namespace FS.Extend
         /// <summary>
         ///     获取单个值
         /// </summary>
-        /// <typeparam name="TInfo">实体类</typeparam>
+        /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="lst">List列表</param>
         /// <param name="select">字段选择器</param>
         /// <param name="defValue">默认值</param>
         /// <typeparam name="T">ModelInfo</typeparam>
-        public static T GetValue<TInfo, T>(this IEnumerable<TInfo> lst, Func<TInfo, T> select, T defValue = default(T))
+        public static T GetValue<TEntity, T>(this IEnumerable<TEntity> lst, Func<TEntity, T> select, T defValue = default(T))
         {
             if (lst == null) { return defValue; }
             var value = lst.Select(select).FirstOrDefault();
@@ -499,13 +417,13 @@ namespace FS.Extend
         /// <summary>
         ///     获取单个值
         /// </summary>
-        /// <typeparam name="TInfo">实体类</typeparam>
+        /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="lst">List列表</param>
         /// <param name="ID">条件，等同于：o=> o.ID == ID 的操作</param>
         /// <param name="select">字段选择器</param>
         /// <param name="defValue">默认值</param>
         /// <typeparam name="T">ModelInfo</typeparam>
-        public static T GetValue<TInfo, T>(this IEnumerable<TInfo> lst, int? ID, Func<TInfo, T> select, T defValue = default(T)) where TInfo : IEntity
+        public static T GetValue<TEntity, T>(this IEnumerable<TEntity> lst, int? ID, Func<TEntity, T> select, T defValue = default(T)) where TEntity : IEntity
         {
             if (lst == null) { return defValue; }
             lst = lst.Where(o => o.ID == ID).ToList();
@@ -524,7 +442,7 @@ namespace FS.Extend
         /// <param name="select">字段选择器</param>
         /// <param name="IDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
         /// <param name="lst">列表</param>
-        public static List<T> ToSelectList<TInfo, T>(this IEnumerable<TInfo> lst, Func<TInfo, T> select)
+        public static List<T> ToSelectList<TEntity, T>(this IEnumerable<TEntity> lst, Func<TEntity, T> select)
         {
             if (lst == null) { return null; }
             return lst.Select(select).ToList();
@@ -536,7 +454,7 @@ namespace FS.Extend
         /// <param name="select">字段选择器</param>
         /// <param name="IDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
         /// <param name="lst">列表</param>
-        public static List<T> ToSelectList<TInfo, T>(this IEnumerable<TInfo> lst, int top, Func<TInfo, T> select)
+        public static List<T> ToSelectList<TEntity, T>(this IEnumerable<TEntity> lst, int top, Func<TEntity, T> select)
         {
             return lst.Select(select).Take(top).ToList();
         }
@@ -547,7 +465,7 @@ namespace FS.Extend
         /// <param name="select">字段选择器</param>
         /// <param name="IDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
         /// <param name="lst">列表</param>
-        public static List<T> ToSelectList<TInfo, T>(this IEnumerable<TInfo> lst, List<int> IDs, Func<TInfo, T> select) where TInfo : IEntity
+        public static List<T> ToSelectList<TEntity, T>(this IEnumerable<TEntity> lst, List<int> IDs, Func<TEntity, T> select) where TEntity : IEntity
         {
             return lst.Where(o => IDs.Contains(o.ID)).ToSelectList(select);
         }
@@ -558,7 +476,7 @@ namespace FS.Extend
         /// <param name="select">字段选择器</param>
         /// <param name="IDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
         /// <param name="lst">列表</param>
-        public static List<T> ToSelectList<TInfo, T>(this IEnumerable<TInfo> lst, List<int> IDs, int top, Func<TInfo, T> select) where TInfo : IEntity
+        public static List<T> ToSelectList<TEntity, T>(this IEnumerable<TEntity> lst, List<int> IDs, int top, Func<TEntity, T> select) where TEntity : IEntity
         {
             return lst.ToSelectList(IDs, select).Take(top).ToList();
         }
@@ -569,9 +487,9 @@ namespace FS.Extend
         ///// <param name="select">字段选择器</param>
         ///// <param name="IDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
         ///// <param name="lst">列表</param>
-        //public static List<TInfo> ToDistinctList<TInfo, T>(this IEnumerable<TInfo> lst, Func<TInfo, T> select) where TInfo : class
+        //public static List<TEntity> ToDistinctList<TEntity, T>(this IEnumerable<TEntity> lst, Func<TEntity, T> select) where TEntity : class
         //{
-        //    return lst.Distinct(new InfoComparer<TInfo, T>(select)).ToList();
+        //    return lst.Distinct(new InfoComparer<TEntity, T>(select)).ToList();
         //}
 
         ///// <summary>
@@ -580,9 +498,9 @@ namespace FS.Extend
         ///// <param name="select">字段选择器</param>
         ///// <param name="IDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
         ///// <param name="lst">列表</param>
-        //public static List<TInfo> ToDistinctList<TInfo, T>(this IEnumerable<TInfo> lst, List<int> IDs, Func<TInfo, T> select) where TInfo : class
+        //public static List<TEntity> ToDistinctList<TEntity, T>(this IEnumerable<TEntity> lst, List<int> IDs, Func<TEntity, T> select) where TEntity : class
         //{
-        //    return lst.Where(o => IDs.Contains(o.ID)).Distinct(new InfoComparer<TInfo, T>(select)).ToList();
+        //    return lst.Where(o => IDs.Contains(o.ID)).Distinct(new InfoComparer<TEntity, T>(select)).ToList();
         //}
 
         #region Cate
@@ -594,7 +512,7 @@ namespace FS.Extend
         /// <param name="ID">上级ID</param>
         /// <param name="isAddMySelf">是否添加自己</param>
         /// <param name="lstCate">分类列表</param>
-        public static List<int> GetSubIDList<TInfo>(this List<TInfo> lstCate, int? ID, bool isContainsSub = true, bool isAddMySelf = false) where TInfo : class,ICate, new()
+        public static List<int> GetSubIDList<TEntity>(this List<TEntity> lstCate, int? ID, bool isContainsSub = true, bool isAddMySelf = false) where TEntity : class,ICate, new()
         {
             var lst = lstCate.GetSubList(ID, isContainsSub, isAddMySelf);
             return lst == null ? new List<int>() : lst.Select(o => o.ID.GetValueOrDefault()).ToList();
@@ -607,7 +525,7 @@ namespace FS.Extend
         /// <param name="isContainsSub">是否获取子节点</param>
         /// <param name="isAddMySelf">是否添加自己</param>
         /// <param name="lstCate">分类列表</param>
-        public static List<int> GetSubIDList<TInfo>(this List<TInfo> lstCate, string caption, bool isContainsSub = true, bool isAddMySelf = false) where TInfo : class,ICate, new()
+        public static List<int> GetSubIDList<TEntity>(this List<TEntity> lstCate, string caption, bool isContainsSub = true, bool isAddMySelf = false) where TEntity : class,ICate, new()
         {
             var lst = lstCate.GetSubList(caption, isContainsSub, isAddMySelf);
             return lst == null ? new List<int>() : lst.Select(o => o.ID.GetValueOrDefault()).ToList();
@@ -620,9 +538,9 @@ namespace FS.Extend
         /// <param name="isContainsSub">是否获取子节点</param>
         /// <param name="isAddMySelf">是否添加自己</param>
         /// <param name="lstCate">分类列表</param>
-        public static List<TInfo> GetSubList<TInfo>(this List<TInfo> lstCate, int? ID, bool isContainsSub = true, bool isAddMySelf = false) where TInfo : class,ICate, new()
+        public static List<TEntity> GetSubList<TEntity>(this List<TEntity> lstCate, int? ID, bool isContainsSub = true, bool isAddMySelf = false) where TEntity : class,ICate, new()
         {
-            var lst = new List<TInfo>();
+            var lst = new List<TEntity>();
             if (isAddMySelf)
             {
                 var info = lstCate.FirstOrDefault(o => o.ID == ID);
@@ -645,10 +563,10 @@ namespace FS.Extend
         /// <param name="isContainsSub">是否获取子节点</param>
         /// <param name="isAddMySelf">是否添加自己</param>
         /// <param name="lstCate">分类列表</param>
-        public static List<TInfo> GetSubList<TInfo>(this List<TInfo> lstCate, string caption, bool isContainsSub = true, bool isAddMySelf = false) where TInfo : class,ICate, new()
+        public static List<TEntity> GetSubList<TEntity>(this List<TEntity> lstCate, string caption, bool isContainsSub = true, bool isAddMySelf = false) where TEntity : class,ICate, new()
         {
             var info = lstCate.GetInfo(caption);
-            return info == null ? new List<TInfo>() : lstCate.GetSubList(info.ID, isContainsSub, isAddMySelf);
+            return info == null ? new List<TEntity>() : lstCate.GetSubList(info.ID, isContainsSub, isAddMySelf);
         }
 
         /// <summary>
@@ -656,7 +574,7 @@ namespace FS.Extend
         /// </summary>
         /// <param name="caption">分类标题</param>
         /// <param name="lstCate">分类列表</param>
-        public static int GetID<TInfo>(this List<TInfo> lstCate, string caption) where TInfo : class,ICate, new()
+        public static int GetID<TEntity>(this List<TEntity> lstCate, string caption) where TEntity : class,ICate, new()
         {
             var info = lstCate.GetInfo(caption);
             return info == null ? 0 : info.ID.GetValueOrDefault();
@@ -667,7 +585,7 @@ namespace FS.Extend
         /// </summary>
         /// <param name="caption">分类标题</param>
         /// <param name="lstCate">分类列表</param>
-        public static TInfo GetInfo<TInfo>(this List<TInfo> lstCate, string caption) where TInfo : class,ICate, new()
+        public static TEntity GetInfo<TEntity>(this List<TEntity> lstCate, string caption) where TEntity : class,ICate, new()
         {
             var info = lstCate.FirstOrDefault(o => o.Caption.IsEquals(caption));
             return info;
@@ -678,7 +596,7 @@ namespace FS.Extend
         /// </summary>
         /// <param name="ID">当前分类数据ID</param>
         /// <param name="lstCate">分类列表</param>
-        public static int GetFirstID<TInfo>(this List<TInfo> lstCate, int? ID) where TInfo : class,ICate, new()
+        public static int GetFirstID<TEntity>(this List<TEntity> lstCate, int? ID) where TEntity : class,ICate, new()
         {
             var info = lstCate.GetFirstInfo(ID);
             return info == null ? 0 : info.ID.GetValueOrDefault();
@@ -689,7 +607,7 @@ namespace FS.Extend
         /// </summary>
         /// <param name="ID">当前分类数据ID</param>
         /// <param name="lstCate">分类列表</param>
-        public static TInfo GetFirstInfo<TInfo>(this List<TInfo> lstCate, int? ID) where TInfo : class,ICate, new()
+        public static TEntity GetFirstInfo<TEntity>(this List<TEntity> lstCate, int? ID) where TEntity : class,ICate, new()
         {
             var info = lstCate.FirstOrDefault(o => o.ID == ID);
             if (info == null) { return null; }
@@ -704,7 +622,7 @@ namespace FS.Extend
         /// </summary>
         /// <param name="caption">分类标题</param>
         /// <param name="lstCate">分类列表</param>
-        public static int GetFirstID<TInfo>(this List<TInfo> lstCate, string caption) where TInfo : class,ICate, new()
+        public static int GetFirstID<TEntity>(this List<TEntity> lstCate, string caption) where TEntity : class,ICate, new()
         {
             var info = lstCate.GetFirstInfo(caption);
             return info == null ? 0 : info.ID.GetValueOrDefault();
@@ -715,7 +633,7 @@ namespace FS.Extend
         /// </summary>
         /// <param name="caption">分类标题</param>
         /// <param name="lstCate">分类列表</param>
-        public static TInfo GetFirstInfo<TInfo>(this List<TInfo> lstCate, string caption) where TInfo : class,ICate, new()
+        public static TEntity GetFirstInfo<TEntity>(this List<TEntity> lstCate, string caption) where TEntity : class,ICate, new()
         {
             var info = lstCate.GetInfo(caption);
             return info == null ? null : lstCate.GetFirstInfo(info.ParentID);
@@ -726,7 +644,7 @@ namespace FS.Extend
         /// </summary>
         /// <param name="ID">当前分类数据ID</param>
         /// <param name="lstCate">分类列表</param>
-        public static int GetParentID<TInfo>(this List<TInfo> lstCate, int? ID) where TInfo : class,ICate, new()
+        public static int GetParentID<TEntity>(this List<TEntity> lstCate, int? ID) where TEntity : class,ICate, new()
         {
             var info = lstCate.GetParentInfo(ID);
             return info == null ? 0 : info.ID.GetValueOrDefault();
@@ -737,7 +655,7 @@ namespace FS.Extend
         /// </summary>
         /// <param name="ID">当前分类数据ID</param>
         /// <param name="lstCate">分类列表</param>
-        public static TInfo GetParentInfo<TInfo>(this List<TInfo> lstCate, int? ID) where TInfo : class,ICate, new()
+        public static TEntity GetParentInfo<TEntity>(this List<TEntity> lstCate, int? ID) where TEntity : class,ICate, new()
         {
             var info = lstCate.FirstOrDefault(o => o.ID == ID);
             if (info != null) { info = lstCate.FirstOrDefault(o => o.ID == info.ParentID); }
@@ -749,7 +667,7 @@ namespace FS.Extend
         /// </summary>
         /// <param name="caption">分类标题</param>
         /// <param name="lstCate">分类列表</param>
-        public static int GetParentID<TInfo>(this List<TInfo> lstCate, string caption) where TInfo : class,ICate, new()
+        public static int GetParentID<TEntity>(this List<TEntity> lstCate, string caption) where TEntity : class,ICate, new()
         {
             var info = lstCate.GetParentInfo(caption);
             return info == null ? 0 : info.ID.GetValueOrDefault();
@@ -760,7 +678,7 @@ namespace FS.Extend
         /// </summary>
         /// <param name="caption">分类标题</param>
         /// <param name="lstCate">分类列表</param>
-        public static TInfo GetParentInfo<TInfo>(this List<TInfo> lstCate, string caption) where TInfo : class,ICate, new()
+        public static TEntity GetParentInfo<TEntity>(this List<TEntity> lstCate, string caption) where TEntity : class,ICate, new()
         {
             var info = lstCate.GetInfo(caption);
             return info == null ? null : lstCate.GetParentInfo(info.ID);
@@ -772,7 +690,7 @@ namespace FS.Extend
         /// <param name="ID">当前分类数据ID</param>
         /// <param name="isAddMySelf">是否添加自己</param>
         /// <param name="lstCate">分类列表</param>
-        public static List<int> GetParentIDList<TInfo>(this List<TInfo> lstCate, int? ID, bool isAddMySelf = false) where TInfo : class,ICate, new()
+        public static List<int> GetParentIDList<TEntity>(this List<TEntity> lstCate, int? ID, bool isAddMySelf = false) where TEntity : class,ICate, new()
         {
             var lst = lstCate.GetParentList(ID, isAddMySelf);
             return lst == null ? new List<int>() : lst.Select(o => o.ID.GetValueOrDefault()).ToList();
@@ -784,9 +702,9 @@ namespace FS.Extend
         /// <param name="ID">当前分类数据ID</param>
         /// <param name="isAddMySelf">是否添加自己</param>
         /// <param name="lstCate">分类列表</param>
-        public static List<TInfo> GetParentList<TInfo>(this List<TInfo> lstCate, int? ID, bool isAddMySelf = false) where TInfo : class,ICate, new()
+        public static List<TEntity> GetParentList<TEntity>(this List<TEntity> lstCate, int? ID, bool isAddMySelf = false) where TEntity : class,ICate, new()
         {
-            var lst = new List<TInfo>();
+            var lst = new List<TEntity>();
             var info = lstCate.FirstOrDefault(o => o.ID == ID);
             if (info == null) { return lst; }
 
@@ -801,7 +719,7 @@ namespace FS.Extend
         /// <param name="caption">分类标题</param>
         /// <param name="isAddMySelf">是否添加自己</param>
         /// <param name="lstCate">分类列表</param>
-        public static List<int> GetParentIDList<TInfo>(this List<TInfo> lstCate, string caption, bool isAddMySelf = false) where TInfo : class,ICate, new()
+        public static List<int> GetParentIDList<TEntity>(this List<TEntity> lstCate, string caption, bool isAddMySelf = false) where TEntity : class,ICate, new()
         {
             var lst = lstCate.GetParentList(caption, isAddMySelf);
             return lst == null ? new List<int>() : lst.Select(o => o.ID.GetValueOrDefault()).ToList();
@@ -813,10 +731,10 @@ namespace FS.Extend
         /// <param name="caption">分类标题</param>
         /// <param name="isAddMySelf">是否添加自己</param>
         /// <param name="lstCate">分类列表</param>
-        public static List<TInfo> GetParentList<TInfo>(this List<TInfo> lstCate, string caption, bool isAddMySelf = false) where TInfo : class,ICate, new()
+        public static List<TEntity> GetParentList<TEntity>(this List<TEntity> lstCate, string caption, bool isAddMySelf = false) where TEntity : class,ICate, new()
         {
             var info = lstCate.GetInfo(caption);
-            return info == null ? new List<TInfo>() : lstCate.GetParentList(info.ID, isAddMySelf);
+            return info == null ? new List<TEntity>() : lstCate.GetParentList(info.ID, isAddMySelf);
         }
         #endregion
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using FS.Configs;
@@ -32,6 +33,8 @@ namespace FS.Core
         /// 连接字符串缓存
         /// </summary>
         private static readonly Dictionary<int, string> ConnList = new Dictionary<int, string>();
+        // 实体数据缓存
+        private static Dictionary<SetState, IList> SetCache = new Dictionary<SetState, IList>();
 
         /// <summary>
         ///     返回Context映射的信息
@@ -67,7 +70,6 @@ namespace FS.Core
 
             return FieldMapList[type];
         }
-
         /// <summary>
         ///     返回验证的实体类映射的信息
         /// </summary>
@@ -106,6 +108,44 @@ namespace FS.Core
 
 
         }
+
+        /// <summary>
+        /// 获取实体数据缓存
+        /// </summary>
+        /// <param name="setState"></param>
+        /// <param name="initCache">不存在数据时，初始化操作</param>
+        /// <returns></returns>
+        public static List<TEntity> GetSetCache<TEntity>(SetState setState, Func<IList> initCache = null)
+        {
+            return (List<TEntity>)GetSetCache(setState, initCache);
+        }
+
+        /// <summary>
+        /// 获取实体数据缓存
+        /// </summary>
+        /// <param name="setState"></param>
+        /// <param name="initCache">不存在数据时，初始化操作</param>
+        /// <returns></returns>
+        public static IList GetSetCache(SetState setState, Func<IList> initCache = null)
+        {
+            if (SetCache.ContainsKey(setState)) { return SetCache[setState]; }
+            if (initCache == null) { return null; }
+
+            lock (LockObject)
+            {
+                if (!SetCache.ContainsKey(setState)) { SetCache.Add(setState, initCache()); }
+            }
+            return SetCache[setState];
+        }
+
+
+
+
+
+
+
+
+
 
         private static InstanceCache InstanceCacheEx { get; set; }
 

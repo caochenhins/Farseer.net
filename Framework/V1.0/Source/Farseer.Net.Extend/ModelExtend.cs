@@ -67,10 +67,10 @@
         /////     插入数据
         ///// </summary>
         ///// <param name="db">可传入事务的db</param>
-        //public static bool Insert<TInfo>(this TInfo info, DbExecutor db = null) where TInfo : class
+        //public static bool Insert<TEntity>(this TEntity info, DbExecutor db = null) where TEntity : class
         //{
-        //    if (info is BaseCacheModel<TInfo>) { return BaseCacheModel<TInfo>.Data.Insert(info, db); }
-        //    return BaseModel<TInfo>.Data.Insert(info, db);
+        //    if (info is BaseCacheModel<TEntity>) { return BaseCacheModel<TEntity>.Data.Insert(info, db); }
+        //    return BaseModel<TEntity>.Data.Insert(info, db);
         //}
 
         ///// <summary>
@@ -78,20 +78,20 @@
         ///// </summary>
         ///// <param name="db">可传入事务的db</param>
         ///// <param name="identity">标识，刚插入的ID</param>
-        //public static bool Insert<TInfo>(this TInfo info, out int identity, DbExecutor db = null) where TInfo : class
+        //public static bool Insert<TEntity>(this TEntity info, out int identity, DbExecutor db = null) where TEntity : class
         //{
-        //    if ((new TInfo()) is BaseCacheModel<TInfo>) { return BaseCacheModel<TInfo>.Data.Insert(info, out identity, db); }
-        //    return BaseModel<TInfo>.Data.Insert(info, out identity, db);
+        //    if ((new TEntity()) is BaseCacheModel<TEntity>) { return BaseCacheModel<TEntity>.Data.Insert(info, out identity, db); }
+        //    return BaseModel<TEntity>.Data.Insert(info, out identity, db);
         //}
 
         ///// <summary>
         /////     更改实体类
         ///// </summary>
         ///// <param name="db">可传入事务的db</param>
-        //public static bool Update<TInfo>(this TInfo info, DbExecutor db = null) where TInfo : class
+        //public static bool Update<TEntity>(this TEntity info, DbExecutor db = null) where TEntity : class
         //{
-        //    if ((new TInfo()) is BaseCacheModel<TInfo>) { return BaseCacheModel<TInfo>.Data.Update(info, db); }
-        //    return BaseModel<TInfo>.Data.Update(info, db);
+        //    if ((new TEntity()) is BaseCacheModel<TEntity>) { return BaseCacheModel<TEntity>.Data.Update(info, db); }
+        //    return BaseModel<TEntity>.Data.Update(info, db);
         //}
 
         ///// <summary>
@@ -99,10 +99,10 @@
         ///// </summary>
         ///// <param name="where">条件</param>
         ///// <param name="db">可传入事务的db</param>
-        //public static bool Update<TInfo>(this TInfo info, Expression<Func<TInfo, bool>> where, DbExecutor db = null) where TInfo : class
+        //public static bool Update<TEntity>(this TEntity info, Expression<Func<TEntity, bool>> where, DbExecutor db = null) where TEntity : class
         //{
-        //    if ((new TInfo()) is BaseCacheModel<TInfo>) { return BaseCacheModel<TInfo>.Data.Where(where).Update(info, db); }
-        //    return BaseModel<TInfo>.Data.Where(where).Update(info, db);
+        //    if ((new TEntity()) is BaseCacheModel<TEntity>) { return BaseCacheModel<TEntity>.Data.Where(where).Update(info, db); }
+        //    return BaseModel<TEntity>.Data.Where(where).Update(info, db);
         //}
 
         ///// <summary>
@@ -110,10 +110,10 @@
         ///// </summary>
         ///// <param name="db">可传入事务的db</param>
         ///// <param name="ID">条件，等同于：o=>o.ID == ID 的操作</param>
-        //public static bool Update<TInfo>(this TInfo info, int? ID, DbExecutor db = null) where TInfo : class
+        //public static bool Update<TEntity>(this TEntity info, int? ID, DbExecutor db = null) where TEntity : class
         //{
-        //    if ((new TInfo()) is BaseCacheModel<TInfo>) { return BaseCacheModel<TInfo>.Data.Where(o => o.ID == ID).Update(info, db); }
-        //    return BaseModel<TInfo>.Data.Where(o => o.ID == ID).Update(info, db);
+        //    if ((new TEntity()) is BaseCacheModel<TEntity>) { return BaseCacheModel<TEntity>.Data.Where(o => o.ID == ID).Update(info, db); }
+        //    return BaseModel<TEntity>.Data.Where(o => o.ID == ID).Update(info, db);
         //}
 
         ///// <summary>
@@ -121,10 +121,10 @@
         ///// </summary>
         ///// <param name="db">可传入事务的db</param>
         ///// <param name="IDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
-        //public static bool Update<TInfo>(this TInfo info, List<int> IDs, DbExecutor db = null) where TInfo : class
+        //public static bool Update<TEntity>(this TEntity info, List<int> IDs, DbExecutor db = null) where TEntity : class
         //{
-        //    if ((new TInfo()) is BaseCacheModel<TInfo>) { return BaseCacheModel<TInfo>.Data.Where(o => IDs.Contains(o.ID)).Update(info, db); }
-        //    return BaseModel<TInfo>.Data.Where(o => IDs.Contains(o.ID)).Update(info, db);
+        //    if ((new TEntity()) is BaseCacheModel<TEntity>) { return BaseCacheModel<TEntity>.Data.Where(o => IDs.Contains(o.ID)).Update(info, db); }
+        //    return BaseModel<TEntity>.Data.Where(o => IDs.Contains(o.ID)).Update(info, db);
         //}
 
         ///// <summary>
@@ -135,11 +135,11 @@
         ///// <param name="actInsert">插入时的方法委托</param>
         ///// <param name="actUpdate">更新时的方法委托</param>
         ///// <param name="actSuccess">成功后的方法委托</param>
-        //public static void Save<TInfo>(this TInfo info, int reqID, Action<string, string> tip = null, Action<TInfo, DbExecutor> actInsert = null, Action<TInfo, DbExecutor> actUpdate = null, Action<int, TInfo, DbExecutor> actSuccess = null) where TInfo : IVerification, IEntity
+        //public static void Save<TEntity>(this TEntity info, int reqID, Action<string, string> tip = null, Action<TEntity, DbExecutor> actInsert = null, Action<TEntity, DbExecutor> actUpdate = null, Action<int, TEntity, DbExecutor> actSuccess = null) where TEntity : IVerification, IEntity
         //{
         //    if (!info.Check(tip)) { return; }
 
-        //    using (DbExecutor db = typeof(TInfo))
+        //    using (DbExecutor db = typeof(TEntity))
         //    {
         //        if (reqID > 0) { if (actUpdate != null) { actUpdate(info, db); } info.Update(reqID, db); }
         //        else { if (actInsert != null) { actInsert(info, db); } info.Insert(out reqID, db); }

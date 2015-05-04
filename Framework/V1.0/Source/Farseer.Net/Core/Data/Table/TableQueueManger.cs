@@ -32,6 +32,10 @@ namespace FS.Core.Data.Table
         /// </summary>
         public DbProvider DbProvider { get; set; }
         /// <summary>
+        /// 映射关系
+        /// </summary>
+        public ContextMap ContextMap { get; set; }
+        /// <summary>
         /// 所有队列的参数
         /// </summary>
         public List<DbParameter> Param
@@ -46,10 +50,6 @@ namespace FS.Core.Data.Table
                 return lst;
             }
         }
-        /// <summary>
-        /// 映射关系
-        /// </summary>
-        public ContextMap ContextMap { get; set; }
 
         /// <summary>
         /// 构造函数
@@ -111,7 +111,7 @@ namespace FS.Core.Data.Table
         /// <summary>
         /// 清除当前队列
         /// </summary>
-        private void Clear()
+        public void Clear()
         {
             _queue = null;
         }

@@ -15,7 +15,7 @@ namespace FS.Extend
         /// <param name="parentID">所属上级节点</param>
         /// <param name="isUsePrefix">是否需要加上前缀</param>
         /// <param name="lstCate">分类列表</param>
-        public static void Bind<TInfo>(this List<TInfo> lstCate, DropDownList ddl, int selectedValue, int parentID, bool isUsePrefix = true) where TInfo : ICate, new()
+        public static void Bind<TEntity>(this List<TEntity> lstCate, DropDownList ddl, int selectedValue, int parentID, bool isUsePrefix = true) where TEntity : ICate, new()
         {
             ddl.Items.Clear();
 
@@ -33,7 +33,7 @@ namespace FS.Extend
         /// <param name="isContainsSub">筛选条件是否包含子节点</param>
         /// <param name="isUsePrefix">是否需要加上前缀</param>
         /// <param name="lstCate">分类列表</param>
-        public static void Bind<TInfo>(this List<TInfo> lstCate, DropDownList ddl, int selectedValue = 0, Func<TInfo, bool> where = null, bool isContainsSub = false, bool isUsePrefix = true) where TInfo : ICate, new()
+        public static void Bind<TEntity>(this List<TEntity> lstCate, DropDownList ddl, int selectedValue = 0, Func<TEntity, bool> where = null, bool isContainsSub = false, bool isUsePrefix = true) where TEntity : ICate, new()
         {
             ddl.Items.Clear();
 
@@ -45,9 +45,9 @@ namespace FS.Extend
         /// <summary>
         ///     递归绑定
         /// </summary>
-        private static void Bind<TInfo>(this List<TInfo> lstCate, DropDownList ddl, int parentID, int tagNum, Func<TInfo, bool> where, bool isContainsSub, bool isUsePrefix) where TInfo : ICate, new()
+        private static void Bind<TEntity>(this List<TEntity> lstCate, DropDownList ddl, int parentID, int tagNum, Func<TEntity, bool> where, bool isContainsSub, bool isUsePrefix) where TEntity : ICate, new()
         {
-            List<TInfo> lst;
+            List<TEntity> lst;
 
             lst = lstCate.FindAll(o => o.ParentID == parentID);
             if (lst == null || lst.Count == 0) { return; }

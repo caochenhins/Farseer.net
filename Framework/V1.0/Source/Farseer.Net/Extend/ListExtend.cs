@@ -28,11 +28,11 @@ namespace FS.Extend
         /// <summary>
         ///     对List进行分页
         /// </summary>
-        /// <typeparam name="TInfo">实体类</typeparam>
+        /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="lst">List列表</param>
         /// <param name="pageSize">每页大小</param>
         /// <param name="pageIndex">索引</param>
-        public static List<TInfo> ToList<TInfo>(this IEnumerable<TInfo> lst, int pageSize, int pageIndex = 1)
+        public static List<TEntity> ToList<TEntity>(this IEnumerable<TEntity> lst, int pageSize, int pageIndex = 1)
         {
             if (pageSize == 0) { return lst.ToList(); }
 
@@ -59,12 +59,12 @@ namespace FS.Extend
         /// <summary>
         ///     对List进行分页
         /// </summary>
-        /// <typeparam name="TInfo">实体类</typeparam>
+        /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="lst">List列表</param>
         /// <param name="IDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
         /// <param name="pageSize">每页大小</param>
         /// <param name="pageIndex">索引</param>
-        public static List<TInfo> ToList<TInfo>(this IEnumerable<TInfo> lst, List<int> IDs, int pageSize, int pageIndex = 1) where TInfo : IEntity
+        public static List<TEntity> ToList<TEntity>(this IEnumerable<TEntity> lst, List<int> IDs, int pageSize, int pageIndex = 1) where TEntity : IEntity
         {
             return ToList(lst.Where(o => IDs.Contains(o.ID.GetValueOrDefault())), pageSize, pageIndex);
         }
@@ -73,12 +73,12 @@ namespace FS.Extend
         /// </summary>
         /// <param name="lst">集合</param>
         /// <returns></returns>
-        public static DataTable ToTable<TInfo>(this List<TInfo> lst) where TInfo : class
+        public static DataTable ToTable<TEntity>(this List<TEntity> lst) where TEntity : class
         {
             var dt = new DataTable();
             if (lst.Count == 0) { return dt; }
             var map = CacheManger.GetFieldMap(lst[0].GetType());
-            var lstFields = map.MapList.Where(o => o.Value.FieldAtt.IsMap);
+            var lstFields = map.MapList.Where(o => o.Value.FieldAtt.IsMap).ToList();
             foreach (var field in lstFields)
             {
                 var type = field.Key.PropertyType;
@@ -102,6 +102,79 @@ namespace FS.Extend
                 }
             }
             return dt;
+        }
+
+        /// <summary>
+        ///     将集合类转换成DataTable
+        /// </summary>
+        /// <param name="list">集合</param>
+        /// <returns></returns>
+        public static DataTable ToTable(this IList list)
+        {
+            var result = new DataTable();
+            if (list.Count <= 0) { return result; }
+
+            var propertys = list[0].GetType().GetProperties();
+            foreach (var pi in propertys) { result.Columns.Add(pi.Name, pi.PropertyType); }
+
+            foreach (var info in list)
+            {
+                var tempList = new ArrayList();
+                foreach (var obj in propertys.Select(pi => pi.GetValue(info, null))) { tempList.Add(obj); }
+                var array = tempList.ToArray();
+                result.LoadDataRow(array, true);
+            }
+            return result;
+        }
+
+        /// <summary>
+        ///     将泛型集合类转换成DataTable
+        /// </summary>
+        /// <param name="list">集合</param>
+        /// <param name="propertyName">需要返回的列的列名</param>
+        /// <returns>数据集(表)</returns>
+        public static DataTable ToTable(this IList list, params string[] propertyName)
+        {
+            var propertyNameList = new List<string>();
+            if (propertyName != null)
+                propertyNameList.AddRange(propertyName);
+
+            var result = new DataTable();
+            if (list.Count <= 0) { return result; }
+            var propertys = list[0].GetType().GetProperties();
+            foreach (var pi in propertys)
+            {
+                if (propertyNameList.Count == 0)
+                {
+                    result.Columns.Add(pi.Name, pi.PropertyType);
+                }
+                else
+                {
+                    if (propertyNameList.Contains(pi.Name)) { result.Columns.Add(pi.Name, pi.PropertyType); }
+                }
+            }
+
+            foreach (var info in list)
+            {
+                var tempList = new ArrayList();
+                foreach (var pi in propertys)
+                {
+                    if (propertyNameList.Count == 0)
+                    {
+                        var obj = pi.GetValue(info, null);
+                        tempList.Add(obj);
+                    }
+                    else
+                    {
+                        if (!propertyNameList.Contains(pi.Name)) continue;
+                        var obj = pi.GetValue(info, null);
+                        tempList.Add(obj);
+                    }
+                }
+                var array = tempList.ToArray();
+                result.LoadDataRow(array, true);
+            }
+            return result;
         }
     }
 }
