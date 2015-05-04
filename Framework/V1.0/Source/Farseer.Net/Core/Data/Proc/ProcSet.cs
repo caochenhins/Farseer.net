@@ -14,8 +14,8 @@ namespace FS.Core.Data.Proc
         /// </summary>
         private readonly ProcContext _context;
 
-        private ProcQueueManger QueueManger { get { return _context.QueueManger; } }
-        private ProcQueue Queue { get { return _context.QueueManger.GetQueue(_name, _map); } }
+        private ProcQueueManger QueueManger { get { return (ProcQueueManger)_context.QueueManger; } }
+        private Queue Queue { get { return _context.QueueManger.GetQueue(_name, _map); } }
 
         /// <summary>
         /// 表名/视图名/存储过程名

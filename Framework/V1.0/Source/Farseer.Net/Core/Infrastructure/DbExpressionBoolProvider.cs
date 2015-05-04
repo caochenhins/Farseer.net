@@ -36,7 +36,7 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 包含数据库SQL操作的队列
         /// </summary>
-        protected readonly IQueueSql QueueSql;
+        protected readonly IQueue Queue;
 
         /// <summary>
         /// 是否包括Not条件
@@ -47,12 +47,12 @@ namespace FS.Core.Infrastructure
         /// 默认构造器
         /// </summary>
         /// <param name="queueManger">队列管理模块</param>
-        /// <param name="queueSql">包含数据库SQL操作的队列</param>
-        public DbExpressionBoolProvider(IQueueManger queueManger, IQueueSql queueSql)
+        /// <param name="queue">包含数据库SQL操作的队列</param>
+        public DbExpressionBoolProvider(IQueueManger queueManger, IQueue queue)
         {
             QueueManger = queueManger;
-            QueueSql = queueSql;
-            if (QueueSql.Param == null) { QueueSql.Param = new List<DbParameter>(); }
+            Queue = queue;
+            if (Queue.Param == null) { Queue.Param = new List<DbParameter>(); }
         }
 
         /// <summary>
@@ -198,7 +198,7 @@ namespace FS.Core.Infrastructure
             {
                 _paramsCount++;
                 //  查找组中是否存在已有的参数，有则直接取出
-                var newParam = QueueManger.DbProvider.CreateDbParam(QueueSql.Index + "_" + _paramsCount + "_" + _currentFieldName, cexp.Value, QueueManger.Param, QueueSql.Param);
+                var newParam = QueueManger.DbProvider.CreateDbParam(Queue.Index + "_" + _paramsCount + "_" + _currentFieldName, cexp.Value, QueueManger.Param, Queue.Param);
                 CurrentDbParameter = newParam;
                 SqlList.Push(newParam.ParameterName);
             }
@@ -214,7 +214,7 @@ namespace FS.Core.Infrastructure
             if (m == null) return null;
             if (m.NodeType == ExpressionType.Constant) { return Visit(VisitConvertExp(m)); }
 
-            var keyValue = QueueSql.FieldMap.GetState(m.Member.Name);
+            var keyValue = Queue.FieldMap.GetState(m.Member.Name);
             // 解析带SQL函数的字段
             if (keyValue.Key == null) { return CreateFunctionFieldName(m); }
 
@@ -465,9 +465,9 @@ namespace FS.Core.Infrastructure
         /// </summary>
         protected virtual bool ClearCallSql()
         {
-            if (QueueSql.Param != null && QueueSql.Param.Count > 0 && string.IsNullOrWhiteSpace(QueueSql.Param.Last().Value.ToString()))
+            if (Queue.Param != null && Queue.Param.Count > 0 && string.IsNullOrWhiteSpace(Queue.Param.Last().Value.ToString()))
             {
-                QueueSql.Param.RemoveAt(QueueSql.Param.Count - 1);
+                Queue.Param.RemoveAt(Queue.Param.Count - 1);
                 SqlList.Pop();
                 SqlList.Pop();
                 SqlList.Push("1<>1");
@@ -481,11 +481,11 @@ namespace FS.Core.Infrastructure
         /// </summary>
         protected virtual string SqlTrue(string sql)
         {
-            var dbParam = QueueSql.Param.FirstOrDefault(o => o.ParameterName == sql);
+            var dbParam = Queue.Param.FirstOrDefault(o => o.ParameterName == sql);
             if (dbParam != null)
             {
                 var result = dbParam.Value.ToString().Equals("true");
-                QueueSql.Param.RemoveAll(o => o.ParameterName == sql);
+                Queue.Param.RemoveAll(o => o.ParameterName == sql);
                 return result ? "1=1" : "1<>1";
             }
             return sql;

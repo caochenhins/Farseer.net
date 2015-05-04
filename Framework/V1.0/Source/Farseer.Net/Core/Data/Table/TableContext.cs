@@ -30,12 +30,7 @@ namespace FS.Core.Data.Table
         /// <param name="dbType">数据库类型</param>
         /// <param name="commandTimeout">SQL执行超时时间</param>
         protected TableContext(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, int commandTimeout = 30) : base(connectionString, dbType, commandTimeout) { InstanceProperty(); }
-
-        /// <summary>
-        /// 队列管理
-        /// </summary>
-        protected internal TableQueueManger QueueManger { get; private set; }
-
+        
         /// <summary>
         /// true:启用合并执行命令、并延迟加载
         /// </summary>
@@ -82,8 +77,7 @@ namespace FS.Core.Data.Table
             //释放托管资源
             if (disposing)
             {
-                QueueManger.DataBase.Dispose();
-                QueueManger.DataBase = null;
+                QueueManger.Dispose();
             }
         }
     }

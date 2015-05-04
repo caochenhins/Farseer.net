@@ -29,7 +29,7 @@ namespace FS.Core.Client
         /// <summary>
         /// 包含数据库SQL操作的队列
         /// </summary>
-        protected readonly IQueueSql QueueSql;
+        protected readonly IQueue Queue;
 
         /// <summary>
         /// 禁止无参数构造器
@@ -40,14 +40,14 @@ namespace FS.Core.Client
         /// 默认构造器
         /// </summary>
         /// <param name="queueManger">队列管理模块</param>
-        /// <param name="queueSql">包含数据库SQL操作的队列</param>
-        public ExpressionVisit(IQueueManger queueManger, IQueueSql queueSql)
+        /// <param name="queue">包含数据库SQL操作的队列</param>
+        public ExpressionVisit(IQueueManger queueManger, IQueue queue)
         {
             QueueManger = queueManger;
-            QueueSql = queueSql;
+            Queue = queue;
 
-            _expNewProvider = new ExpressionNew(QueueManger, QueueSql);
-            _expBoolProvider = new ExpressionBool(QueueManger, QueueSql);
+            _expNewProvider = new ExpressionNew(QueueManger, Queue);
+            _expBoolProvider = new ExpressionBool(QueueManger, Queue);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace FS.Core.Client
                 if (obj == null || obj is TableSet<TEntity>) { continue; }
 
                 //  查找组中是否存在已有的参数，有则直接取出
-                var newParam = QueueManger.DbProvider.CreateDbParam(QueueSql.Index + "_" + kic.Value.FieldAtt.Name, obj, QueueManger.Param, QueueSql.Param);
+                var newParam = QueueManger.DbProvider.CreateDbParam(Queue.Index + "_" + kic.Value.FieldAtt.Name, obj, QueueManger.Param, Queue.Param);
 
                 //  添加参数到列表
                 sb.AppendFormat("{0} = {1} ,", QueueManger.DbProvider.KeywordAegis(kic.Key.Name), newParam.ParameterName);
@@ -115,7 +115,7 @@ namespace FS.Core.Client
 
                 //  查找组中是否存在已有的参数，有则直接取出
 
-                var newParam = QueueManger.DbProvider.CreateDbParam(QueueSql.Index + "_" + kic.Value.FieldAtt.Name, obj, QueueManger.Param, QueueSql.Param);
+                var newParam = QueueManger.DbProvider.CreateDbParam(Queue.Index + "_" + kic.Value.FieldAtt.Name, obj, QueueManger.Param, Queue.Param);
 
                 //  添加参数到列表
                 strFields.AppendFormat("{0},", QueueManger.DbProvider.KeywordAegis(kic.Key.Name));

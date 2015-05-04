@@ -11,18 +11,18 @@ namespace FS.Core.Client.SqlServer
             get { return DbProviderFactories.GetFactory("System.Data.SqlClient"); }
         }
 
-        public override IBuilderSqlQuery CreateBuilderSqlQuery(IQueueManger queueManger, IQueueSql queueSql)
+        public override IBuilderSqlQuery CreateBuilderSqlQuery(IQueueManger queueManger, IQueue queue)
         {
             switch (queueManger.ContextMap.ContextProperty.DataVer)
             {
-                case "2000": return new SqlQuery2000(queueManger, queueSql);
+                case "2000": return new SqlQuery2000(queueManger, queue);
             }
-            return new SqlQuery(queueManger, queueSql);
+            return new SqlQuery(queueManger, queue);
         }
 
-        public override IBuilderSqlOper CreateBuilderSqlOper(IQueueManger queueManger, IQueueSql queueSql)
+        public override IBuilderSqlOper CreateBuilderSqlOper(IQueueManger queueManger, IQueue queue)
         {
-            return new SqlOper(queueManger, queueSql);
+            return new SqlOper(queueManger, queue);
         }
     }
 }

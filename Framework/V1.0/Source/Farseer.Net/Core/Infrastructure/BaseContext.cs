@@ -59,7 +59,12 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// TableContext、ProcContext、ViewContext 映射关系
         /// </summary>
-        public ContextMap ContextMap { get; private set; } 
+        public ContextMap ContextMap { get; private set; }
+
+        /// <summary>
+        /// 队列管理
+        /// </summary>
+        protected internal IQueueManger QueueManger { get; protected set; }
 
         #region 禁用智能提示
         [EditorBrowsable(EditorBrowsableState.Never)]

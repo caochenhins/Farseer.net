@@ -21,7 +21,7 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 包含数据库SQL操作的队列
         /// </summary>
-        protected readonly IQueueSql QueueSql;
+        protected readonly IQueue Queue;
         /// <summary>
         /// 是否是字段筛选
         /// </summary>
@@ -31,11 +31,11 @@ namespace FS.Core.Infrastructure
         /// 提供ExpressionNew表达式树的解析
         /// </summary>
         /// <param name="queueManger">队列管理模块</param>
-        /// <param name="queueSql">包含数据库SQL操作的队列</param>
-        public DbExpressionNewProvider(IQueueManger queueManger, IQueueSql queueSql)
+        /// <param name="queue">包含数据库SQL操作的队列</param>
+        public DbExpressionNewProvider(IQueueManger queueManger, IQueue queue)
         {
             QueueManger = queueManger;
-            QueueSql = queueSql;
+            Queue = queue;
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace FS.Core.Infrastructure
         {
             if (m == null) return null;
 
-            var keyValue = QueueSql.FieldMap.GetState(m.Member.Name);
+            var keyValue = Queue.FieldMap.GetState(m.Member.Name);
             if (keyValue.Key == null) { return CreateFieldName((MemberExpression)m.Expression); }
 
             // 加入Sql队列

@@ -125,11 +125,7 @@
     <Compile Include="Core\Infrastructure\BaseContext.cs" />
     <Compile Include="Core\Infrastructure\ICate.cs" />
     <Compile Include="Core\Infrastructure\IQueue.cs" />
-    <Compile Include="Core\Infrastructure\IQueueSql.cs" />
     <Compile Include="Core\Data\Proc\ProcContext`1.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Core\Data\Proc\ProcQueue.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Data\Proc\ProcQueueManger.cs">
@@ -148,7 +144,6 @@
     <Compile Include="Core\Infrastructure\DbExpressionNewProvider.cs" />
     <Compile Include="Core\Client\SqlServer\SqlServerProvider.cs" />
     <Compile Include="Core\Data\Table\TableQueueManger.cs" />
-    <Compile Include="Core\Data\Table\TableQueue.cs" />
     <Compile Include="Core\Client\SqlServer\SqlBuilder\SqlOper.cs" />
     <Compile Include="Core\Infrastructure\DbProvider.cs" />
     <Compile Include="Core\Infrastructure\IEntity.cs" />
@@ -159,9 +154,6 @@
     <Compile Include="Core\Infrastructure\IBuilderSqlQuery.cs" />
     <Compile Include="Core\Infrastructure\IBuilderSqlOper.cs" />
     <Compile Include="Core\Data\View\ViewContext`1.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Core\Data\View\ViewQueue.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Data\View\ViewQueueManger.cs">

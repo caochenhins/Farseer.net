@@ -34,8 +34,8 @@ namespace FS.Core.Data.Table
         /// </summary>
         private readonly SetState _setState;
 
-        private TableQueueManger QueueManger { get { return _context.QueueManger; } }
-        private TableQueue Queue { get { return _context.QueueManger.GetQueue(_name, _map); } }
+        private TableQueueManger QueueManger { get { return (TableQueueManger)_context.QueueManger; } }
+        private Queue Queue { get { return _context.QueueManger.GetQueue(_name, _map); } }
 
         private List<TEntity> _lstCurrentCache;
 

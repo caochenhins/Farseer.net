@@ -40,11 +40,6 @@ namespace FS.Core.Data.View
             InstanceProperty(this, "ViewSet`1");
         }
 
-        /// <summary> 
-        /// 队列管理
-        /// </summary>
-        protected internal ViewQueueManger QueueManger { get; private set; }
-
         /// <summary>
         /// 释放资源
         /// </summary>
@@ -55,8 +50,7 @@ namespace FS.Core.Data.View
             //释放托管资源
             if (disposing)
             {
-                QueueManger.DataBase.Dispose();
-                QueueManger.DataBase = null;
+                QueueManger.Dispose();
             }
         }
     }

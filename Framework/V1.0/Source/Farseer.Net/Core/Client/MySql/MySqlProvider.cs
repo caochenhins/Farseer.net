@@ -15,14 +15,14 @@ namespace FS.Core.Client.MySql
         {
             return string.Format("`{0}`", fieldName);
         }
-        public override IBuilderSqlQuery CreateBuilderSqlQuery(IQueueManger queueManger, IQueueSql queueSql)
+        public override IBuilderSqlQuery CreateBuilderSqlQuery(IQueueManger queueManger, IQueue queue)
         {
-            return new SqlQuery(queueManger, queueSql);
+            return new SqlQuery(queueManger, queue);
         }
 
-        public override IBuilderSqlOper CreateBuilderSqlOper(IQueueManger queueManger, IQueueSql queueSql)
+        public override IBuilderSqlOper CreateBuilderSqlOper(IQueueManger queueManger, IQueue queue)
         {
-            return new SqlOper(queueManger, queueSql);
+            return new SqlOper(queueManger, queue);
         }
     }
 }

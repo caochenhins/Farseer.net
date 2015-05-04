@@ -8,7 +8,7 @@ namespace FS.Core.Client.Common
 {
     public class ExpressionBool : DbExpressionBoolProvider
     {
-        public ExpressionBool(IQueueManger queueManger, IQueueSql queueSql) : base(queueManger, queueSql) { }
+        public ExpressionBool(IQueueManger queueManger, IQueue queue) : base(queueManger, queue) { }
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
@@ -77,7 +77,7 @@ namespace FS.Core.Client.Common
             if (paramType != null && (!paramType.IsGenericType || paramType.GetGenericTypeDefinition() == typeof(Nullable<>)))
             {
                 #region 搜索值串的处理
-                var param = QueueSql.Param.Find(o => o.ParameterName == paramName);
+                var param = Queue.Param.Find(o => o.ParameterName == paramName);
                 if (param != null && Regex.IsMatch(param.Value.ToString(), @"[\d]+") && (Type.GetTypeCode(fieldType) == TypeCode.Int16 || Type.GetTypeCode(fieldType) == TypeCode.Int32 || Type.GetTypeCode(fieldType) == TypeCode.Decimal || Type.GetTypeCode(fieldType) == TypeCode.Double || Type.GetTypeCode(fieldType) == TypeCode.Int64 || Type.GetTypeCode(fieldType) == TypeCode.UInt16 || Type.GetTypeCode(fieldType) == TypeCode.UInt32 || Type.GetTypeCode(fieldType) == TypeCode.UInt64))
                 {
                     param.Value = "," + param.Value + ",";
@@ -94,7 +94,7 @@ namespace FS.Core.Client.Common
 
                 // 不使用参数化形式，同时移除参数
                 var paramValue = CurrentDbParameter.Value;
-                QueueSql.Param.RemoveAt(QueueSql.Param.Count - 1);
+                Queue.Param.RemoveAt(Queue.Param.Count - 1);
 
                 // 字段是字符类型的，需要加入''符号
                 if (Type.GetTypeCode(fieldType) == TypeCode.String) { paramValue = "'" + paramValue.ToString().Replace(",", "','") + "'"; }

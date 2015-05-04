@@ -18,11 +18,11 @@ namespace FS.Core.Data.Table
         /// <summary>
         /// 当前所有持久化列表
         /// </summary>
-        private readonly List<TableQueue> _groupQueueList;
+        private readonly List<Queue> _groupQueueList;
         /// <summary>
         /// 当前组查询队列（支持批量提交SQL）
         /// </summary>
-        private TableQueue _queue;
+        private Queue _queue;
         /// <summary>
         /// 数据库操作
         /// </summary>
@@ -62,7 +62,7 @@ namespace FS.Core.Data.Table
             ContextMap = contextMap;
 
             DbProvider = DbProvider.CreateInstance(database.DataType);
-            _groupQueueList = new List<TableQueue>();
+            _groupQueueList = new List<Queue>();
             Clear();
         }
 
@@ -71,9 +71,9 @@ namespace FS.Core.Data.Table
         /// </summary>
         /// <param name="map">字段映射</param>
         /// <param name="name">表名称</param>
-        public TableQueue GetQueue(string name, FieldMap map)
+        public Queue GetQueue(string name, FieldMap map)
         {
-            return _queue ?? (_queue = new TableQueue(_groupQueueList.Count, name, map, this));
+            return _queue ?? (_queue = new Queue(_groupQueueList.Count, name, map, this));
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace FS.Core.Data.Table
         {
             _queue = null;
         }
-        public int Execute(IQueueSql queue)
+        public int Execute(IQueue queue)
         {
             var param = queue.Param == null ? null : queue.Param.ToArray();
             var result = queue.Sql.Length < 1 ? 0 : DataBase.ExecuteNonQuery(CommandType.Text, queue.Sql.ToString(), param);
@@ -123,14 +123,14 @@ namespace FS.Core.Data.Table
             Clear();
             return result;
         }
-        public DataTable ExecuteTable(IQueueSql queue)
+        public DataTable ExecuteTable(IQueue queue)
         {
             var param = queue.Param == null ? null : queue.Param.ToArray();
             var table = DataBase.GetDataTable(CommandType.Text, queue.Sql.ToString(), param);
             Clear();
             return table;
         }
-        public TEntity ExecuteInfo<TEntity>(IQueueSql queue) where TEntity : class, new()
+        public TEntity ExecuteInfo<TEntity>(IQueue queue) where TEntity : class, new()
         {
             var param = queue.Param == null ? null : queue.Param.ToArray();
             TEntity t;
@@ -144,7 +144,7 @@ namespace FS.Core.Data.Table
             Clear();
             return t;
         }
-        public T ExecuteQuery<T>(IQueueSql queue, T defValue = default(T))
+        public T ExecuteQuery<T>(IQueue queue, T defValue = default(T))
         {
             var param = queue.Param == null ? null : queue.Param.ToArray();
             var value = DataBase.ExecuteScalar(CommandType.Text, queue.Sql.ToString(), param);
@@ -152,6 +152,28 @@ namespace FS.Core.Data.Table
 
             Clear();
             return t;
+        }
+
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        /// <param name="disposing">是否释放托管资源</param>
+        private void Dispose(bool disposing)
+        {
+            //释放托管资源
+            if (disposing)
+            {
+                DataBase.Dispose();
+                DataBase = null;
+            }
+        }
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

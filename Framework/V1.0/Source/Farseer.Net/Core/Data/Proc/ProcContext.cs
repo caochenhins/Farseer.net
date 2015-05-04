@@ -30,12 +30,7 @@ namespace FS.Core.Data.Proc
         /// <param name="dbType">数据库类型</param>
         /// <param name="commandTimeout">SQL执行超时时间</param>
         protected ProcContext(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, int commandTimeout = 30) : base(connectionString, dbType, commandTimeout) { InstanceProperty(); }
-
-        /// <summary>
-        /// 队列管理
-        /// </summary>
-        protected internal ProcQueueManger QueueManger { get; private set; }
-
+        
         /// <summary>
         /// true:启用合并执行命令、并延迟加载
         /// </summary>
@@ -82,8 +77,7 @@ namespace FS.Core.Data.Proc
             //释放托管资源
             if (disposing)
             {
-                QueueManger.DataBase.Dispose();
-                QueueManger.DataBase = null;
+                QueueManger.Dispose();
             }
         }
     }

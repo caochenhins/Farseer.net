@@ -18,11 +18,11 @@ namespace FS.Core.Data.Proc
         /// <summary>
         /// 当前所有持久化列表
         /// </summary>
-        private readonly List<ProcQueue> _groupQueueList;
+        private readonly List<Queue> _groupQueueList;
         /// <summary>
         /// 当前组查询队列（支持批量提交SQL）
         /// </summary>
-        private ProcQueue _queue;
+        private Queue _queue;
         /// <summary>
         /// 数据库操作
         /// </summary>
@@ -58,7 +58,7 @@ namespace FS.Core.Data.Proc
             DataBase = database;
             ContextMap = contextMap;
             DbProvider = DbProvider.CreateInstance(database.DataType);
-            _groupQueueList = new List<ProcQueue>();
+            _groupQueueList = new List<Queue>();
             Clear();
         }
 
@@ -67,9 +67,9 @@ namespace FS.Core.Data.Proc
         /// </summary>
         /// <param name="map">字段映射</param>
         /// <param name="name">表名称</param>
-        public ProcQueue GetQueue(string name, FieldMap map)
+        public Queue GetQueue(string name, FieldMap map)
         {
-            return _queue ?? (_queue = new ProcQueue(_groupQueueList.Count, name, map, this));
+            return _queue ?? (_queue = new Queue(_groupQueueList.Count, name, map, this));
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace FS.Core.Data.Proc
         /// <summary>
         /// 清除当前队列
         /// </summary>
-        private void Clear()
+        public void Clear()
         {
             _queue = null;
         }
@@ -124,7 +124,6 @@ namespace FS.Core.Data.Proc
                 kic.Key.SetValue(entity, queue.Param.Find(o => o.ParameterName == DbProvider.ParamsPrefix + kic.Value.FieldAtt.Name).Value.ConvertType(kic.Key.PropertyType), null);
             }
         }
-
         /// <summary>
         /// 存储过程创建SQL 输入、输出参数化
         /// </summary>
@@ -144,7 +143,6 @@ namespace FS.Core.Data.Proc
             }
             return queue.Param;
         }
-
 
         public int Execute<TEntity>(IQueue queue, TEntity entity = null) where TEntity : class,new()
         {
@@ -193,6 +191,28 @@ namespace FS.Core.Data.Proc
             SetParamToEntity(queue, entity);
             Clear();
             return t;
+        }
+
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        /// <param name="disposing">是否释放托管资源</param>
+        private void Dispose(bool disposing)
+        {
+            //释放托管资源
+            if (disposing)
+            {
+                DataBase.Dispose();
+                DataBase = null;
+            }
+        }
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

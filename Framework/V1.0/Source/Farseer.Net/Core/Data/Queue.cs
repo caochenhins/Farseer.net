@@ -8,7 +8,7 @@ using FS.Mapping.Context;
 
 namespace FS.Core.Data
 {
-    public class Queue : IQueueSql
+    public class Queue : IQueue
     {
         public Guid ID { get; set; }
         public int Index { get; set; }
@@ -31,14 +31,26 @@ namespace FS.Core.Data
             FieldMap = map;
             SqlBuilder = queueManger.DbProvider.CreateBuilderSqlOper(queueManger, this);
         }
+
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        /// <param name="disposing">是否释放托管资源</param>
+        private void Dispose(bool disposing)
+        {
+            //释放托管资源
+            if (disposing)
+            {
+                if (Sql != null) { Sql.Clear(); Sql = null; }
+
+                ExpOrderBy = null;
+                ExpSelect = null;
+                ExpWhere = null;
+            }
+        }
         public void Dispose()
         {
-            if (Sql != null) { Sql.Clear(); Sql = null; }
-
-            ExpOrderBy = null;
-            ExpSelect = null;
-            ExpWhere = null;
-
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
     }

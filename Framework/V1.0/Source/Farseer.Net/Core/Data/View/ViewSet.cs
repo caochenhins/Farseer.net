@@ -20,8 +20,8 @@ namespace FS.Core.Data.View
         /// </summary>
         private readonly ViewContext _context;
 
-        private ViewQueueManger QueueManger { get { return _context.QueueManger; } }
-        private ViewQueue Queue { get { return _context.QueueManger.GetQueue(_name, _map); } }
+        private ViewQueueManger QueueManger { get { return (ViewQueueManger)_context.QueueManger; } }
+        private Queue Queue { get { return _context.QueueManger.GetQueue(_name, _map); } }
 
         /// <summary>
         /// 表名/视图名/存储过程名

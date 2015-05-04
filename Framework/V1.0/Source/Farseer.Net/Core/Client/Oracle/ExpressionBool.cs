@@ -4,6 +4,6 @@ namespace FS.Core.Client.Oracle
 {
     public class ExpressionBool : Common.ExpressionBool
     {
-        public ExpressionBool(IQueueManger queueManger, IQueueSql queueSql) : base(queueManger, queueSql) { }
+        public ExpressionBool(IQueueManger queueManger, IQueue queue) : base(queueManger, queue) { }
     }
 }
