@@ -56,7 +56,6 @@
     <Compile Include="Core\CacheManger.cs" />
     <Compile Include="Core\Client\Common\ExpressionBool.cs" />
     <Compile Include="Core\Client\Common\SqlBuilder\SqlOper.cs" />
-    <Compile Include="Core\Client\Common\SqlBuilder\SqlProc.cs" />
     <Compile Include="Core\Client\Common\SqlBuilder\SqlQuery.cs" />
     <Compile Include="Core\Client\MySql\ExpressionBool.cs">
       <SubType>Code</SubType>
@@ -65,9 +64,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Client\MySql\MySqlProvider.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Core\Client\MySql\SqlBuilder\SqlProc.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Client\MySql\SqlBuilder\SqlOper.cs">
@@ -85,9 +81,6 @@
     <Compile Include="Core\Client\OleDb\OleDbProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Client\OleDb\SqlBuilder\SqlProc.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Core\Client\OleDb\SqlBuilder\SqlOper.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -101,9 +94,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Client\Oracle\OracleProvider.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Core\Client\Oracle\SqlBuilder\SqlProc.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Client\Oracle\SqlBuilder\SqlOper.cs">
@@ -121,9 +111,6 @@
     <Compile Include="Core\Client\SqLite\SqLiteProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Client\SqLite\SqlBuilder\SqlProc.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Core\Client\SqLite\SqlBuilder\SqlOper.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -132,6 +119,7 @@
     </Compile>
     <Compile Include="Core\Client\SqlServer\ExpressionNew.cs" />
     <Compile Include="Core\Data\Proc\ProcContext.cs" />
+    <Compile Include="Core\Data\Queue.cs" />
     <Compile Include="Core\Data\Table\TableContext.cs" />
     <Compile Include="Core\Data\View\ViewContext.cs" />
     <Compile Include="Core\Infrastructure\BaseContext.cs" />
@@ -154,7 +142,6 @@
     <Compile Include="Core\Client\SqlServer\ExpressionBool.cs" />
     <Compile Include="Core\Client\ExpressionVisit.cs" />
     <Compile Include="Core\Client\Common\ExpressionNew.cs" />
-    <Compile Include="Core\Client\SqlServer\SqlBuilder\SqlProc.cs" />
     <Compile Include="Core\Client\SqlServer\SqlBuilder\SqlQuery.cs" />
     <Compile Include="Core\Client\SqlServer\SqlBuilder\SqlQuery2000.cs" />
     <Compile Include="Core\Infrastructure\DbExpressionBoolProvider.cs" />
@@ -169,7 +156,6 @@
     <Compile Include="Core\Data\Table\TableSet.cs" />
     <Compile Include="Core\Data\DbExecutor.cs" />
     <Compile Include="Core\DbFactory.cs" />
-    <Compile Include="Core\Infrastructure\IBuilderSqlProc.cs" />
     <Compile Include="Core\Infrastructure\IBuilderSqlQuery.cs" />
     <Compile Include="Core\Infrastructure\IBuilderSqlOper.cs" />
     <Compile Include="Core\Data\View\ViewContext`1.cs">

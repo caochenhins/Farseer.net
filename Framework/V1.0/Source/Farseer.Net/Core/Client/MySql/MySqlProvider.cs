@@ -20,11 +20,6 @@ namespace FS.Core.Client.MySql
             return new SqlQuery(queueManger, queueSql);
         }
 
-        public override IBuilderSqlProc CreateBuilderSqlProc(IQueueManger queueManger, IQueue queueSql)
-        {
-            return new SqlProc(queueManger, queueSql);
-        }
-
         public override IBuilderSqlOper CreateBuilderSqlOper(IQueueManger queueManger, IQueueSql queueSql)
         {
             return new SqlOper(queueManger, queueSql);

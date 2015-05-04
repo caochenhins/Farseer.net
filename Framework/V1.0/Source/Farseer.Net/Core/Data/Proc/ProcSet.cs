@@ -43,7 +43,6 @@ namespace FS.Core.Data.Proc
         /// </summary>
         public T GetValue<T>(TEntity entity = null, T t = default(T))
         {
-            Queue.SqlBuilder.CreateParam(entity);
             return QueueManger.ExecuteValue(Queue, entity, t);
         }
 
@@ -52,7 +51,6 @@ namespace FS.Core.Data.Proc
         /// </summary>
         public void Execute(TEntity entity = null)
         {
-            Queue.SqlBuilder.CreateParam(entity);
             QueueManger.Execute(Queue, entity);
         }
 
@@ -61,7 +59,6 @@ namespace FS.Core.Data.Proc
         /// </summary>
         public TEntity ToEntity(TEntity entity = null)
         {
-            Queue.SqlBuilder.CreateParam(entity);
             return QueueManger.ExecuteInfo(Queue, entity);
         }
 
@@ -70,7 +67,6 @@ namespace FS.Core.Data.Proc
         /// </summary>
         public List<TEntity> ToList(TEntity entity = null)
         {
-            Queue.SqlBuilder.CreateParam(entity);
             return QueueManger.ExecuteList(Queue, entity);
         }
     }

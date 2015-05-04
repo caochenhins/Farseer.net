@@ -94,7 +94,7 @@ namespace FS.Core.Data.Table
         /// <param name="desc">字段选择器</param>
         public TableSet<TEntity> Desc<TKey>(Expression<Func<TEntity, TKey>> desc)
         {
-            ((List<TEntity>) CacheManger.GetSetCache(_setState)).OrderByDescending(desc.Compile());
+            //((List<TEntity>) CacheManger.GetSetCache(_setState)).OrderByDescending(desc.Compile());
 
             if (Queue.ExpOrderBy == null) { Queue.ExpOrderBy = new Dictionary<Expression, bool>(); }
             if (desc != null) { Queue.ExpOrderBy.Add(desc, false); }
