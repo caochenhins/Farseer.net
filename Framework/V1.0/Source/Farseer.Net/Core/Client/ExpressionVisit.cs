@@ -105,8 +105,6 @@ namespace FS.Core.Client
             //  值
             var strValues = new StringBuilder();
 
-            //var lstParam = QueryQueue.Param;
-
             //  迭代实体赋值情况
             foreach (var kic in map.MapList.Where(o => o.Value.FieldAtt.IsMap))
             {
@@ -114,7 +112,6 @@ namespace FS.Core.Client
                 if (obj == null || obj is TableSet<TEntity>) { continue; }
 
                 //  查找组中是否存在已有的参数，有则直接取出
-
                 var newParam = QueueManger.DbProvider.CreateDbParam(Queue.Index + "_" + kic.Value.FieldAtt.Name, obj, QueueManger.Param, Queue.Param);
 
                 //  添加参数到列表

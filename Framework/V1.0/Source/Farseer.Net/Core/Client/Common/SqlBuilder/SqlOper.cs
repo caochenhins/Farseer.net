@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using FS.Core.Data.Table;
 using FS.Core.Infrastructure;
 
 namespace FS.Core.Client.Common.SqlBuilder

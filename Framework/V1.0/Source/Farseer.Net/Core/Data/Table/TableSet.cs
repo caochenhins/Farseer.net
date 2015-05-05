@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using FS.Core.Infrastructure;
 using FS.Extend;
 using FS.Mapping.Context;
@@ -20,7 +18,7 @@ namespace FS.Core.Data.Table
         /// <summary>
         /// 数据库上下文
         /// </summary>
-        private readonly TableContext _context;
+        internal readonly TableContext _context;
         /// <summary>
         /// 表名/视图名/存储过程名
         /// </summary>
@@ -32,12 +30,10 @@ namespace FS.Core.Data.Table
         /// <summary>
         /// 保存字段映射的信息
         /// </summary>
-        private readonly SetState _setState;
+        internal readonly SetState _setState;
 
-        private TableQueueManger QueueManger { get { return (TableQueueManger)_context.QueueManger; } }
-        private Queue Queue { get { return _context.QueueManger.GetQueue(_name, _map); } }
-
-        private List<TEntity> _lstCurrentCache;
+        internal TableQueueManger QueueManger { get { return (TableQueueManger)_context.QueueManger; } }
+        internal Queue Queue { get { return _context.QueueManger.GetQueue(_name, _map); } }
 
         /// <summary>
         /// 禁止外部实例化
@@ -49,16 +45,6 @@ namespace FS.Core.Data.Table
             _map = typeof(TEntity);
             _setState = _context.ContextMap.GetState(this.GetType()).Value;
             _name = _setState.SetAtt.Name;
-
-            // 缓存
-            if (_setState.SetAtt.IsCache)
-            {
-                _lstCurrentCache = CacheManger.GetSetCache<TEntity>(_setState, () =>
-                {
-                    Queue.SqlBuilder.ToList();
-                    return QueueManger.ExecuteTable(Queue).ToList<TEntity>();
-                });
-            }
         }
 
         #region 条件
@@ -82,7 +68,7 @@ namespace FS.Core.Data.Table
         ///     查询条件
         /// </summary>
         /// <param name="where">查询条件</param>
-        private TableSet<TEntity> Where<T>(Expression<Func<IEntity<T>, bool>> where)
+        internal TableSet<TEntity> Where<T>(Expression<Func<IEntity<T>, bool>> where)
         {
             Queue.ExpWhere = Queue.ExpWhere == null ? Queue.ExpWhere = where : Expression.Add(Queue.ExpWhere, where);
             return this;
@@ -94,8 +80,6 @@ namespace FS.Core.Data.Table
         /// <param name="desc">字段选择器</param>
         public TableSet<TEntity> Desc<TKey>(Expression<Func<TEntity, TKey>> desc)
         {
-            //((List<TEntity>) CacheManger.GetSetCache(_setState)).OrderByDescending(desc.Compile());
-
             if (Queue.ExpOrderBy == null) { Queue.ExpOrderBy = new Dictionary<Expression, bool>(); }
             if (desc != null) { Queue.ExpOrderBy.Add(desc, false); }
             return this;
@@ -158,23 +142,6 @@ namespace FS.Core.Data.Table
         /// <param name="isRand">返回当前条件下随机的数据</param>
         public DataTable ToTable(int top = 0, bool isDistinct = false, bool isRand = false)
         {
-            if (_setState.SetAtt.IsCache)
-            {
-                var lst = (List<TEntity>)CacheManger.GetSetCache(_setState);
-                if (Queue.ExpWhere != null)
-                {
-                    lst = lst.Where(((Expression<Func<TEntity, bool>>)Queue.ExpWhere).Compile()).ToList();
-                }
-                if (Queue.ExpOrderBy != null)
-                {
-                    foreach (var order in Queue.ExpOrderBy)
-                    {
-                        //lst = order.Value ? lst.OrderBy(((Expression<Func<>) order.Key).Compile()).ToList() : lst.OrderByDescending(((Expression<Func<TEntity, object>>)order.Key).Compile()).ToList();
-                    }
-                }
-                QueueManger.Clear();
-                return lst.ToTable();
-            }
             Queue.SqlBuilder.ToList(top, isDistinct, isRand);
             return QueueManger.ExecuteTable(Queue);
         }

@@ -6,7 +6,7 @@ namespace FS.Extend
     /// <summary>
     ///     Object扩展工具
     /// </summary>
-    public static partial class ObjectExtend
+    public static class ObjectExtend
     {
         /// <summary>
         ///     将任何数组转换成用符号连接的字符串
@@ -110,7 +110,7 @@ namespace FS.Extend
         private static object ConvertType(object objValue, Type objType, Type defType)
         {
             if (objValue == null) { return null; }
-            if (objType == defType) { return objValue;}
+            if (objType == defType) { return objValue; }
 
             var objString = objValue.ToString();
 

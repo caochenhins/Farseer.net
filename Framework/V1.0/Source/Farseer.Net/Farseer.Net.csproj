@@ -162,12 +162,23 @@
     <Compile Include="Core\Data\View\ViewSet.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Extend\BoolExtend.cs" />
     <Compile Include="Extend\DataTableExtend.cs" />
+    <Compile Include="Extend\DateTimeExtend.cs" />
+    <Compile Include="Extend\EnumExtend.cs" />
+    <Compile Include="Extend\ExpressionExtend.cs" />
+    <Compile Include="Extend\Extend.cs" />
     <Compile Include="Extend\IDataReaderExtend.cs" />
+    <Compile Include="Extend\Infrastructure\IAuditInfo.cs" />
+    <Compile Include="Extend\Infrastructure\ICreateInfo.cs" />
+    <Compile Include="Extend\Infrastructure\ILoginInfo.cs" />
+    <Compile Include="Extend\Infrastructure\IUpdateInfo.cs" />
+    <Compile Include="Extend\OrderedQueryable.cs" />
     <Compile Include="Extend\ListExtend.cs" />
     <Compile Include="Extend\ModelExtend.cs" />
     <Compile Include="Extend\ObjectExtend.cs" />
     <Compile Include="Extend\StringExtend.cs" />
+    <Compile Include="Extend\StructExtend.cs" />
     <Compile Include="Extend\ViewSetExtend.cs" />
     <Compile Include="Extend\TableSetExtend.cs" />
     <Compile Include="Mapping\Context\Attribute\FieldAttribute.cs" />
@@ -182,6 +193,32 @@
     <Compile Include="Mapping\Verify\IVerification.cs" />
     <Compile Include="Mapping\Verify\VerifyMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\AdministrativeCode.cs" />
+    <Compile Include="Utils\Assembly.cs" />
+    <Compile Include="Utils\Chinese.cs" />
+    <Compile Include="Utils\Encrypt.cs" />
+    <Compile Include="Utils\Files.cs" />
+    <Compile Include="Utils\InfoComparer.cs" />
+    <Compile Include="Utils\IsType.cs" />
+    <Compile Include="Utils\Json.cs" />
+    <Compile Include="Utils\Mac.cs" />
+    <Compile Include="Utils\Net.cs" />
+    <Compile Include="Utils\OLog.cs" />
+    <Compile Include="Utils\Pro.cs" />
+    <Compile Include="Utils\QueueTask.cs" />
+    <Compile Include="Utils\Rand.cs" />
+    <Compile Include="Utils\Result.cs" />
+    <Compile Include="Utils\Reverser.cs" />
+    <Compile Include="Utils\RMB.cs" />
+    <Compile Include="Utils\Serialized.cs" />
+    <Compile Include="Utils\SmtpMail.cs" />
+    <Compile Include="Utils\SpeedTest.cs" />
+    <Compile Include="Utils\Str.cs" />
+    <Compile Include="Utils\StrPlus.cs" />
+    <Compile Include="Utils\Thumbnail.cs" />
+    <Compile Include="Utils\TimingTasks.cs" />
+    <Compile Include="Utils\Url.cs" />
+    <Compile Include="Utils\WinRAR.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

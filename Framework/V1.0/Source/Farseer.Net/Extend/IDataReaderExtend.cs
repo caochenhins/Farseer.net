@@ -9,7 +9,7 @@ using FS.Mapping.Context.Attribute;
 
 namespace FS.Extend
 {
-    public static partial class IDataReaderExtend2
+    public static class DataReaderExtend2
     {
         public static List<T> ToList2<T>(this IDataReader reader) where T : class, new()
         {

@@ -10,7 +10,7 @@ namespace FS.Extend
     /// <summary>
     ///     DataTable扩展工具
     /// </summary>
-    public static partial class DataTableExtend
+    public static class DataTableExtend
     {
         /// <summary>
         ///     对DataTable排序
@@ -48,43 +48,39 @@ namespace FS.Extend
             }
             var dtNew = dt.Clone();
 
-            if (dt != null)
+            int firstIndex;
+
+            #region 计算 开始索引
+
+            if (pageIndex == 1)
             {
-                int firstIndex;
-                int endIndex;
-
-                #region 计算 开始索引
-
-                if (pageIndex == 1)
+                firstIndex = 0;
+            }
+            else
+            {
+                firstIndex = pageSize * (pageIndex - 1);
+                //索引超出记录总数时，返回空的表格
+                if (firstIndex > dt.Rows.Count)
                 {
-                    firstIndex = 0;
+                    return dtNew;
                 }
-                else
-                {
-                    firstIndex = pageSize * (pageIndex - 1);
-                    //索引超出记录总数时，返回空的表格
-                    if (firstIndex > dt.Rows.Count)
-                    {
-                        return dtNew;
-                    }
-                }
+            }
 
-                #endregion
+            #endregion
 
-                #region 计算 结束索引
+            #region 计算 结束索引
 
-                endIndex = pageSize + firstIndex;
-                if (endIndex > dt.Rows.Count)
-                {
-                    endIndex = dt.Rows.Count;
-                }
+            var endIndex = pageSize + firstIndex;
+            if (endIndex > dt.Rows.Count)
+            {
+                endIndex = dt.Rows.Count;
+            }
 
-                #endregion
+            #endregion
 
-                for (var i = firstIndex; i < endIndex; i++)
-                {
-                    dtNew.ImportRow(dt.Rows[i]);
-                }
+            for (var i = firstIndex; i < endIndex; i++)
+            {
+                dtNew.ImportRow(dt.Rows[i]);
             }
             return dtNew;
         }
@@ -95,7 +91,6 @@ namespace FS.Extend
         /// <param name="dt">源DataTable</param>
         public static DataTable Reverse(this DataTable dt)
         {
-            var rows = dt.Select("");
             var tmpDt = dt.Clone();
 
             for (var i = dt.Rows.Count - 1; i >= 0; i--)
@@ -120,7 +115,7 @@ namespace FS.Extend
         ///     DataTable转换为实体类
         /// </summary>
         /// <param name="dt">源DataTable</param>
-        /// <typeparam name="T">实体类</typeparam>
+        /// <typeparam name="TEntity">实体类</typeparam>
         public static List<TEntity> ToList<TEntity>(this DataTable dt) where TEntity : class, new()
         {
             var list = new List<TEntity>();

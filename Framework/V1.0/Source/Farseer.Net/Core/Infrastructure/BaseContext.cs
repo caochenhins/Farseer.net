@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using FS.Configs;
 using FS.Core.Data;
@@ -46,6 +45,7 @@ namespace FS.Core.Infrastructure
             {
                 if (!propertyInfo.CanWrite || propertyInfo.PropertyType.Name != propertyName) { continue; }
                 // 动态实例化属性
+#warning 需要使用缓存
                 var set = Activator.CreateInstance(propertyInfo.PropertyType, context);
                 propertyInfo.SetValue(context, set, null);
             }
