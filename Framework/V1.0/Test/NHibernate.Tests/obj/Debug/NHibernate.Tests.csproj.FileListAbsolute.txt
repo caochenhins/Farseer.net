@@ -22,3 +22,6 @@ E:\公司\Farseer.Net\Framework\V1.0\Test\NHibernate.Tests\obj\Debug\NHibernate.
 E:\公司\Farseer.Net\Framework\V1.0\Test\NHibernate.Tests\obj\Debug\NHibernate.Tests.pdb
 E:\公司\Farseer.Net\Framework\V1.0\Test\NHibernate.Tests\bin\Debug\Demo.VO.dll
 E:\公司\Farseer.Net\Framework\V1.0\Test\NHibernate.Tests\bin\Debug\Demo.VO.pdb
+D:\360云盘\MyCode\Farseer\Framework\V1.0\Test\NHibernate.Tests\obj\Debug\NHibernate.Tests.csprojResolveAssemblyReference.cache
+D:\360云盘\MyCode\Farseer\Framework\V1.0\Test\NHibernate.Tests\obj\Debug\NHibernate.Tests.dll
+D:\360云盘\MyCode\Farseer\Framework\V1.0\Test\NHibernate.Tests\obj\Debug\NHibernate.Tests.pdb

@@ -9,3 +9,14 @@ E:\公司\Farseer.Net\Framework\V0.2\Demo\Demo.Model\bin\Debug\System.Web.Mvc.xm
 E:\公司\Farseer.Net\Framework\V0.2\Demo\Demo.Model\obj\Debug\FS.Model.csprojResolveAssemblyReference.cache
 E:\公司\Farseer.Net\Framework\V0.2\Demo\Demo.Model\obj\Debug\FS.Model.dll
 E:\公司\Farseer.Net\Framework\V0.2\Demo\Demo.Model\obj\Debug\FS.Model.pdb
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Demo\Demo.Model\bin\Debug\FS.Model.dll
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Demo\Demo.Model\bin\Debug\FS.Model.pdb
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Demo\Demo.Model\bin\Debug\Farseer.Net.dll
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Demo\Demo.Model\bin\Debug\FS.Entity.dll
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Demo\Demo.Model\bin\Debug\System.Web.Mvc.dll
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Demo\Demo.Model\bin\Debug\Farseer.Net.pdb
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Demo\Demo.Model\bin\Debug\FS.Entity.pdb
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Demo\Demo.Model\bin\Debug\System.Web.Mvc.xml
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Demo\Demo.Model\obj\Debug\FS.Model.csprojResolveAssemblyReference.cache
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Demo\Demo.Model\obj\Debug\FS.Model.dll
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Demo\Demo.Model\obj\Debug\FS.Model.pdb

@@ -11,3 +11,16 @@ E:\公司\Farseer.Net\Framework\V0.2\Test\Farseer.Net.Tests\bin\Debug\System.Web
 E:\公司\Farseer.Net\Framework\V0.2\Test\Farseer.Net.Tests\obj\Debug\Farseer.Net.Tests.csprojResolveAssemblyReference.cache
 E:\公司\Farseer.Net\Framework\V0.2\Test\Farseer.Net.Tests\obj\Debug\Farseer.Net.Tests.dll
 E:\公司\Farseer.Net\Framework\V0.2\Test\Farseer.Net.Tests\obj\Debug\Farseer.Net.Tests.pdb
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Test\Farseer.Net.Tests\bin\Debug\Farseer.Net.Tests.dll
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Test\Farseer.Net.Tests\bin\Debug\Farseer.Net.Tests.pdb
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Test\Farseer.Net.Tests\bin\Debug\Farseer.Net.dll
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Test\Farseer.Net.Tests\bin\Debug\FS.Entity.dll
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Test\Farseer.Net.Tests\bin\Debug\FS.Model.dll
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Test\Farseer.Net.Tests\bin\Debug\System.Web.Mvc.dll
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Test\Farseer.Net.Tests\bin\Debug\FS.Entity.pdb
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Test\Farseer.Net.Tests\bin\Debug\FS.Model.pdb
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Test\Farseer.Net.Tests\bin\Debug\Farseer.Net.pdb
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Test\Farseer.Net.Tests\bin\Debug\System.Web.Mvc.xml
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Test\Farseer.Net.Tests\obj\Debug\Farseer.Net.Tests.csprojResolveAssemblyReference.cache
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Test\Farseer.Net.Tests\obj\Debug\Farseer.Net.Tests.dll
+D:\360云盘\MyCode\Farseer\Framework\V0.2\Test\Farseer.Net.Tests\obj\Debug\Farseer.Net.Tests.pdb

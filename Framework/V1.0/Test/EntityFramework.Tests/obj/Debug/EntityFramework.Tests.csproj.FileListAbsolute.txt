@@ -14,3 +14,6 @@ E:\公司\Farseer.Net\Framework\V1.0\Test\EntityFramework.Tests\bin\Debug\Farsee
 E:\公司\Farseer.Net\Framework\V1.0\Test\EntityFramework.Tests\obj\Debug\EntityFramework.Tests.csprojResolveAssemblyReference.cache
 E:\公司\Farseer.Net\Framework\V1.0\Test\EntityFramework.Tests\obj\Debug\EntityFramework.Tests.dll
 E:\公司\Farseer.Net\Framework\V1.0\Test\EntityFramework.Tests\obj\Debug\EntityFramework.Tests.pdb
+D:\360云盘\MyCode\Farseer\Framework\V1.0\Test\EntityFramework.Tests\obj\Debug\EntityFramework.Tests.csprojResolveAssemblyReference.cache
+D:\360云盘\MyCode\Farseer\Framework\V1.0\Test\EntityFramework.Tests\obj\Debug\EntityFramework.Tests.dll
+D:\360云盘\MyCode\Farseer\Framework\V1.0\Test\EntityFramework.Tests\obj\Debug\EntityFramework.Tests.pdb
