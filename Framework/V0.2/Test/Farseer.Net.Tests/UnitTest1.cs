@@ -10,7 +10,7 @@ namespace Farseer.Net.Tests
         [TestMethod]
         public void TestMethod1()
         {
-            // caoc更新 2015-5-7 00:13:00
+            // caoc更新 2015-5-7 00:13:002
             Users.Data.Select(o => new {o.ID, o.LoginCount}).ToInfo();
         }
     }
