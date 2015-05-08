@@ -1,5 +1,4 @@
 D:\360云盘\MyCode\Farseer\Framework\V0.2\Demo\Demo.Entity\bin\Debug\FS.Entity.dll
 D:\360云盘\MyCode\Farseer\Framework\V0.2\Demo\Demo.Entity\bin\Debug\FS.Entity.pdb
-D:\360云盘\MyCode\Farseer\Framework\V0.2\Demo\Demo.Entity\obj\Debug\FS.Entity.csprojResolveAssemblyReference.cache
 D:\360云盘\MyCode\Farseer\Framework\V0.2\Demo\Demo.Entity\obj\Debug\FS.Entity.dll
 D:\360云盘\MyCode\Farseer\Framework\V0.2\Demo\Demo.Entity\obj\Debug\FS.Entity.pdb
